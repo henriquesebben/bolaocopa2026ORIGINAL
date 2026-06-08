@@ -114,11 +114,11 @@ def gerar_jogos():
         _j("R32-8",  "32-avos", 1, True, "1º Grupo L",        "Melhor 3º (EHIJK)",  "2026-07-01", "13:00"),
         _j("R32-9",  "32-avos", 1, True, "1º Grupo G",        "Melhor 3º (AEHIJ)",  "2026-07-01", "17:00"),
         _j("R32-10", "32-avos", 1, True, "1º Grupo D",        "Melhor 3º (BEFIJ)",  "2026-07-01", "21:00"),
-        _j("R32-11", "32-avos", 1, True, "1º Grupo B",        "Melhor 3º (EFGIJ)",  "2026-07-02", "00:00"),
+        _j("R32-11", "32-avos", 1, True, "1º Grupo B",        "Melhor 3º (EFGIJ)",  "2026-07-03", "00:00"),
         _j("R32-12", "32-avos", 1, True, "1º Grupo H",        "2º Grupo J",         "2026-07-02", "16:00"),
         _j("R32-13", "32-avos", 1, True, "2º Grupo K",        "2º Grupo L",         "2026-07-02", "20:00"),
         _j("R32-14", "32-avos", 1, True, "2º Grupo D",        "2º Grupo G",         "2026-07-03", "15:00"),
-        _j("R32-15", "32-avos", 1, True, "1º Grupo J",        "2º Grupo H",         "2026-07-03", "17:00"),
+        _j("R32-15", "32-avos", 1, True, "1º Grupo J",        "2º Grupo H",         "2026-07-03", "19:00"),
         _j("R32-16", "32-avos", 1, True, "1º Grupo K",        "Melhor 3º (DEIJL)",  "2026-07-03", "22:30"),
     ]
 
@@ -128,8 +128,8 @@ def gerar_jogos():
         _j("R16-2", "Oitavas", 1, True, "Vencedor R32-3",  "Vencedor R32-6",  "2026-07-04", "18:00"),
         _j("R16-3", "Oitavas", 1, True, "Vencedor R32-2",  "Vencedor R32-5",  "2026-07-05", "17:00"),
         _j("R16-4", "Oitavas", 1, True, "Vencedor R32-7",  "Vencedor R32-8",  "2026-07-05", "21:00"),
-        _j("R16-5", "Oitavas", 1, True, "Vencedor R32-13", "Vencedor R32-12", "2026-07-06", "15:00"),
-        _j("R16-6", "Oitavas", 1, True, "Vencedor R32-10", "Vencedor R32-9",  "2026-07-06", "20:00"),
+        _j("R16-5", "Oitavas", 1, True, "Vencedor R32-13", "Vencedor R32-12", "2026-07-06", "16:00"),
+        _j("R16-6", "Oitavas", 1, True, "Vencedor R32-10", "Vencedor R32-9",  "2026-07-06", "21:00"),
         _j("R16-7", "Oitavas", 1, True, "Vencedor R32-15", "Vencedor R32-14", "2026-07-07", "13:00"),
         _j("R16-8", "Oitavas", 1, True, "Vencedor R32-11", "Vencedor R32-16", "2026-07-07", "17:00"),
     ]
@@ -139,7 +139,7 @@ def gerar_jogos():
         _j("QF-1", "Quartas", 2, True, "Vencedor R16-2", "Vencedor R16-1", "2026-07-09", "17:00"),
         _j("QF-2", "Quartas", 2, True, "Vencedor R16-5", "Vencedor R16-6", "2026-07-10", "16:00"),
         _j("QF-3", "Quartas", 2, True, "Vencedor R16-3", "Vencedor R16-4", "2026-07-11", "18:00"),
-        _j("QF-4", "Quartas", 2, True, "Vencedor R16-7", "Vencedor R16-8", "2026-07-11", "21:00"),
+        _j("QF-4", "Quartas", 2, True, "Vencedor R16-7", "Vencedor R16-8", "2026-07-11", "22:00"),
     ]
 
     # ── Semis, 3° lugar e Final ───────────────────────────────────────────────
