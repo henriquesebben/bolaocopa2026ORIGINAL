@@ -153,18 +153,24 @@ def calcular_pontos_jogo(
         palpite_avanca = palpite.avanca if pc == pf else ("casa" if pc > pf else "fora")
         acertou_avanca = bool(resultado_avanca and palpite_avanca == resultado_avanca)
         placar_exato = (pc == rc and pf == rf)
+        # Palpitou empate E jogo terminou empatado nos 90min (mas placar diferente)
+        acertou_empate = (pc == pf and rc == rf and not placar_exato)
 
         if placar_exato and acertou_avanca:
             return 10 * multiplicador, "placar_exato"
         if placar_exato:
             # Acertou o placar dos 90 min mas errou quem avança
             return 5 * multiplicador, None
-        if acertou_avanca and (pc == rc or pf == rf):
+        if acertou_empate and acertou_avanca:
+            # Acertou que terminaria empatado + quem avança
             return 7 * multiplicador, "vencedor_mais_gols"
         if acertou_avanca:
             return 5 * multiplicador, "so_vencedor"
-        if pc == rc or pf == rf:
+        if acertou_empate:
+            # Acertou que terminaria empatado mas errou quem avança
             return 2 * multiplicador, "gols_de_um_time"
+        if pc == rc or pf == rf:
+            return 1 * multiplicador, "gols_de_um_time"
         return 0, None
     else:
         # Fase de grupos / 3° lugar
