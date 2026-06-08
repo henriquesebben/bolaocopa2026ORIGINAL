@@ -44,6 +44,7 @@ TEAM_MAP: dict[str, str] = {
     "Canada": "Canadá",
     "Bosnia": "Bósnia-Herzegovina",
     "Bosnia and Herzegovina": "Bósnia-Herzegovina",
+    "Bosnia & Herzegovina": "Bósnia-Herzegovina",
     "Qatar": "Catar",
     "Switzerland": "Suíça",
     "Brazil": "Brasil",
