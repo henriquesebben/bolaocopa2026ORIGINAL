@@ -1,0 +1,1928 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#006341">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Bolão Alquimistas">
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" href="/icon.png">
+  <title>Bolão da Copa 2026</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <!-- datalist de artilheiros por seleção (Copa 2026) — atualizado em 31/05/2026 -->
+  <datalist id="artilheiros-validos">
+    <!-- Grupo A: México -->
+    <option value="Alex Padilla"><option value="Antonio Rodríguez"><option value="Carlos Acevedo"><option value="Carlos Moreno"><option value="Guillermo Ochoa"><option value="Raúl Rangel"><option value="Bryan González"><option value="César Montes"><option value="Edson Álvarez"><option value="Eduardo Águila"><option value="Everardo López"><option value="Israel Reyes"><option value="Jesús Angulo"><option value="Jesús Gallardo"><option value="Jesús Gómez"><option value="Johan Vásquez"><option value="Jorge Sánchez"><option value="Julián Araujo"><option value="Luis Rey"><option value="Mateo Chávez"><option value="Ramón Juárez"><option value="Richard Ledezma"><option value="Víctor Guzmán"><option value="Alexei Domínguez"><option value="Alexis Gutiérrez"><option value="Alvaro Fidalgo"><option value="Brian Gutiérrez"><option value="Carlos Rodríguez"><option value="Diego Lainez"><option value="Efrain Álvarez"><option value="Elias Montiel"><option value="Erick Sánchez"><option value="Erik Lira"><option value="Gilberto Mora"><option value="Isaías Violante"><option value="Luis Chávez"><option value="Luis Romo"><option value="Obed Vargas"><option value="Orbelin Pineda"><option value="Alexis Vega"><option value="Armando González"><option value="César Huerta"><option value="Germán Berterame"><option value="Guillermo Martínez"><option value="Julián Quiñones"><option value="Raúl Jiménez"><option value="Roberto Alvarado"><option value="Santiago Giménez">
+    <!-- Grupo A: África do Sul -->
+    <option value="Ronwen Williams"><option value="Ricardo Goss"><option value="Sipho Chaine"><option value="Khuliso Mudau"><option value="Olwethu Makhanya"><option value="Bradley Cross"><option value="Aubrey Modiba"><option value="Thabang Matuludi"><option value="Nkosinathi Sibisi"><option value="Ime Okon"><option value="Samukele Kabini"><option value="Mbekezeli Mbokazi"><option value="Kamogelo Sebelebele"><option value="Khulumani Ndamane"><option value="Teboho Mokoena"><option value="Thalente Mbatha"><option value="Jayden Adams"><option value="Sphephelo Sithole"><option value="Oswin Appollis"><option value="Tshepang Moremi"><option value="Evidence Makgopa"><option value="Lyle Foster"><option value="Iqraam Rayners"><option value="Relebohile Mofokeng"><option value="Themba Zwane"><option value="Thapelo Maseko">
+    <!-- Grupo A: Coreia do Sul -->
+    <option value="Kim Seung-gyu"><option value="Song Bum-keun"><option value="Jo Hyeon-woo"><option value="Kim Moon-hwan"><option value="Kim Min-jae"><option value="Kim Tae-hyeon"><option value="Park Jin-seob"><option value="Seol Young-woo"><option value="Jens Castrop"><option value="Lee Ki-hyuk"><option value="Lee Tae-seok"><option value="Lee Han-beom"><option value="Cho Yu-min"><option value="Lee Dong-gyeong"><option value="Hwang Hee-chan"><option value="Yang Hyun-jun"><option value="Hwang In-beom"><option value="Lee Jae-sung"><option value="Kim Jin-gyu"><option value="Eom Ji-sung"><option value="Bae Jun-ho"><option value="Lee Kang-in"><option value="Paik Seung-ho"><option value="Cho Gue-sung"><option value="Son Heung-min"><option value="Oh Hyeon-gyu">
+    <!-- Grupo A: Tchéquia -->
+    <option value="Lukas Hornicek"><option value="Martin Jedlicka"><option value="Antonin Kinsky"><option value="Matej Kovar"><option value="Jakub Markovic"><option value="Jindrich Stanek"><option value="Vladimír Coufal"><option value="Robin Hranac"><option value="David Doudera"><option value="David Jurásek"><option value="Štěpán Chaloupek"><option value="Tomáš Holeš"><option value="David Zima"><option value="Ladislav Krejčí"><option value="Jaroslav Zelený"><option value="Martin Vitík"><option value="Pavel Bucha"><option value="Lukas Červ"><option value="Tomáš Ladra"><option value="Alexandr Sojka"><option value="Denis Višinský"><option value="Vladimír Darida"><option value="Pavel Šulc"><option value="Hugo Sochůrek"><option value="Tomáš Souček"><option value="Adam Hložek"><option value="Tomáš Chorý"><option value="Mojmír Chytil"><option value="Christophe Kabongo"><option value="Lukas Provod"><option value="Patrik Schick"><option value="Jan Kuchta">
+    <!-- Grupo B: Catar -->
+    <option value="Shehab El-Leithy"><option value="Salah Zakaria"><option value="Meshaal Barsham"><option value="Mahmoud Abundi"><option value="Boualem Khoukhi"><option value="Pedro Miguel"><option value="Sultan Al-Buraik"><option value="Tarek Salman"><option value="Ahmed Al-Janahi"><option value="Ahmed Alaa"><option value="Bassam Al-Rawi"><option value="Rayan Al-Ali"><option value="Lucas Mendes"><option value="Humam Al-Amin"><option value="Youssef Abdulrazaq"><option value="Ahmed Fathi"><option value="Tahseen Mohammed"><option value="Jassim Jaber"><option value="Hassan Al-Haydos"><option value="Assim Madibo"><option value="Abdulaziz Hatem"><option value="Karim Boudiaf"><option value="Mohammed Manaei"><option value="Edmilson Junior"><option value="Akram Afif"><option value="Almoez Ali"><option value="Sebastian Soria"><option value="Mohammed Muntari">
+    <!-- Grupo B: Suíça -->
+    <option value="Marvin Keller"><option value="Gregor Kobel"><option value="Yvon Mvogo"><option value="Manuel Akanji"><option value="Aurèle Amenda"><option value="Eray Comert"><option value="Nico Elvedi"><option value="Luca Jaquez"><option value="Miro Muheim"><option value="Ricardo Rodriguez"><option value="Silvan Widmer"><option value="Ardon Jashari"><option value="Christian Fassnacht"><option value="Djibril Sow"><option value="Michel Aebischer"><option value="Denis Zakaria"><option value="Fabian Rieder"><option value="Granit Xhaka"><option value="Remo Freuler"><option value="Noah Okafor"><option value="Zeki Amdouni"><option value="Breel Embolo"><option value="Dan Ndoye"><option value="Rubén Vargas"><option value="Cedric Itten">
+    <!-- Grupo B: Bósnia-Herzegovina -->
+    <option value="Nikola Vasilj"><option value="Martin Zlomislic"><option value="Osman Hadzikic"><option value="Sead Kolasinac"><option value="Amar Dedic"><option value="Nihad Mujakic"><option value="Nikola Katic"><option value="Tarik Muharemovic"><option value="Stjepan Radeljic"><option value="Dennis Hadzikadunic"><option value="Nidal Celik"><option value="Amir Hadziahmetovic"><option value="Ivan Sunjic"><option value="Ivan Basic"><option value="Dzenis Burnic"><option value="Ermin Mahmic"><option value="Benjamin Tahirovic"><option value="Amar Memic"><option value="Armin Gigovic"><option value="Kerim Alajbegovic"><option value="Esmir Bajraktarevic"><option value="Ermedin Demirovic"><option value="Jovo Lukic"><option value="Samed Bazdar"><option value="Haris Tabakovic"><option value="Edin Dzeko">
+    <!-- Grupo C: Brasil -->
+    <option value="Alisson"><option value="Ederson"><option value="Weverton"><option value="Alex Sandro"><option value="Bremer"><option value="Danilo Luiz"><option value="Douglas Santos"><option value="Gabriel Magalhães"><option value="Ibañez"><option value="Léo Pereira"><option value="Marquinhos"><option value="Wesley"><option value="Bruno Guimarães"><option value="Casemiro"><option value="Danilo Santos"><option value="Fabinho"><option value="Lucas Paquetá"><option value="Endrick"><option value="Gabriel Martinelli"><option value="Igor Thiago"><option value="Luiz Henrique"><option value="Mateus Cunha"><option value="Neymar"><option value="Raphinha"><option value="Rayan"><option value="Vini Jr.">
+    <!-- Grupo C: Marrocos -->
+    <option value="Yassine Bounou"><option value="Munir El Kajoui"><option value="Ahmed Reda Tagnaouti"><option value="Achraf Hakimi"><option value="Noussair Mazraoui"><option value="Anass Salah-Eddine"><option value="Youssef Belammari"><option value="Nayef Aguerd"><option value="Issa Diop"><option value="Chadi Riad"><option value="Redouane Halhal"><option value="Zakaria El Ouahdi"><option value="Azzedine Ounahi"><option value="Neil El Aynaoui"><option value="Sofyan Amrabat"><option value="Ayoub Bouaddi"><option value="Samir El Mourabet"><option value="Bilal El Khannouss"><option value="Ismaël Saibari"><option value="Brahim Díaz"><option value="Abdessamad Ezzalzouli"><option value="Yassine Bessime"><option value="Chemsdine Talbi"><option value="Soufiane Rahimi"><option value="Ayoub El Kaabi"><option value="Ayoub Amahount">
+    <!-- Grupo C: Haiti -->
+    <option value="Johnny Placide"><option value="Alexandre Pierre"><option value="Josué Duverger"><option value="Carlens Arcus"><option value="Wilguens Pauguain"><option value="Duke Lacroix"><option value="Martin Experience"><option value="JK Duverne"><option value="Ricardo Ade"><option value="Hannes Delcroix"><option value="Keeto Thermoncy"><option value="Leverton Pierre"><option value="Carl-Fred Sainthe"><option value="Jean-Jacques Danley"><option value="Jeanricner Bellegarde"><option value="Pierre Woodenski"><option value="Dominique Simon"><option value="Louicius Deedson"><option value="Ruben Providence"><option value="Josué Casimir"><option value="Derrick Etienne"><option value="Wilson Isidor"><option value="Duckens Nazon"><option value="Frantzdy Pierrot"><option value="Yassin Fortune"><option value="Lenny Joseph">
+    <!-- Grupo C: Escócia -->
+    <option value="Craig Gordon"><option value="Angus Gunn"><option value="Liam Kelly"><option value="Grant Hanley"><option value="Jack Hendry"><option value="Aaron Hickey"><option value="Dom Hyam"><option value="Scott McKenna"><option value="Nathan Patterson"><option value="Anthony Ralston"><option value="Andy Robertson"><option value="John Souttar"><option value="Kieran Tierney"><option value="Ryan Christie"><option value="Findlay Curtis"><option value="Lewis Ferguson"><option value="Ben Doak"><option value="Billy Gilmour"><option value="John McGinn"><option value="Kenny McLean"><option value="Scott McTominay"><option value="Ché Adams"><option value="Lyndon Dykes"><option value="George Hirst"><option value="Lawrence Shankland"><option value="Ross Stewart">
+    <!-- Grupo D: Estados Unidos -->
+    <option value="Chris Brady"><option value="Matt Freese"><option value="Matt Turner"><option value="Alex Freeman"><option value="Antonee Robinson"><option value="Auston Trusty"><option value="Chris Richards"><option value="Mark McKenzie"><option value="Max Arfsten"><option value="Sergiño Dest"><option value="Tim Ream"><option value="Miles Robinson"><option value="Joe Scally"><option value="Brenden Aaronson"><option value="Cristian Roldan"><option value="Gio Reyna"><option value="Sebastian Berhalter"><option value="Malik Tillman"><option value="Tyler Adams"><option value="Weston McKennie"><option value="Alejandro Zendejas"><option value="Christian Pulisic"><option value="Folarin Balogun"><option value="Haji Wright"><option value="Ricardo Pepi"><option value="Tim Weah">
+    <!-- Grupo D: Paraguai -->
+    <option value="Gastón Olveira"><option value="Roberto Jr. Fernández"><option value="Orlando Gill"><option value="Carlos Coronel"><option value="Juan Espínola"><option value="Santiago Rojas"><option value="Juan Cáceres"><option value="Alan Benítez"><option value="Alcides Benítez"><option value="Junior Alonso"><option value="Alexandro Maidana"><option value="Agustín Sandez"><option value="Blas Riveros"><option value="Diego León"><option value="Gustavo Gómez"><option value="Fabián Balbuena"><option value="Saúl Salcedo"><option value="Omar Alderete"><option value="Mateo Gamarra"><option value="Andrés Cubas"><option value="Diego Gómez"><option value="Lucas Romero"><option value="Álvaro Campuzano"><option value="Robert Piris da Motta"><option value="Matías Galarza"><option value="Damián Bobadilla"><option value="Matías Villasanti"><option value="Diego González"><option value="Enso González"><option value="Rodney Redes"><option value="Julio Enciso"><option value="Ángel Romero"><option value="Óscar Romero"><option value="Lorenzo Melgarejo"><option value="Miguel Almirón"><option value="Ramón Sosa"><option value="Antonio Sanabria"><option value="Gabriel Ávalos"><option value="Adam Bareiro">
+    <!-- Grupo E: Alemanha -->
+    <option value="Manuel Neuer"><option value="Oliver Baumann"><option value="Alexander Nubel"><option value="Waldemar Anton"><option value="Nathaniel Brown"><option value="Pascal Gross"><option value="Joshua Kimmich"><option value="Felix Nmecha"><option value="Aleksandar Pavlovic"><option value="David Raum"><option value="Antonio Rudiger"><option value="Nico Schlotterbeck"><option value="Angelo Stiller"><option value="Jonathan Tah"><option value="Malick Thiaw"><option value="Nadiem Amiri"><option value="Maximilian Beier"><option value="Leon Goretzka"><option value="Kai Havertz"><option value="Jamie Leweling"><option value="Jamal Musiala"><option value="Leroy Sané"><option value="Deniz Undav"><option value="Florian Wirtz"><option value="Nick Woltemade">
+    <!-- Grupo E: Costa do Marfim -->
+    <option value="Yahia Fofana"><option value="Mohamed Koné"><option value="Alban Lafont"><option value="Emmanuel Agbadou"><option value="Clément Akpa"><option value="Ousmane Diomande"><option value="Guéla Doué"><option value="Ghislain Konan"><option value="Odilon Kossounou"><option value="Evan Ndicka"><option value="Wilfried Singo"><option value="Seko Fofana"><option value="Parfait Guiagon"><option value="Christ Inao Oulaï"><option value="Franck Kessié"><option value="Ibrahim Sangaré"><option value="Jean Michaël Seri"><option value="Simon Adingra"><option value="Ange-Yoan Bonny"><option value="Amad Diallo"><option value="Oumar Diakité"><option value="Yan Diomande"><option value="Evann Guessand"><option value="Nicolas Pépé"><option value="Bazoumana Touré"><option value="Elye Wahi">
+    <!-- Grupo E: Curaçao -->
+    <option value="Tyrick Bodak"><option value="Trevor Doornbusch"><option value="Eloy Room"><option value="Riechedly Bazoer"><option value="Joshua Brenet"><option value="Roshon van Eijma"><option value="Sherel Floranus"><option value="Deveron Fonville"><option value="Juriën Gaari"><option value="Armando Obispo"><option value="Shurandy Sambo"><option value="Juninho Bacuna"><option value="Leandro Bacuna"><option value="Livano Comenencia"><option value="Kevin Felida"><option value="Ar'Jany Martha"><option value="Tyrese Noslin"><option value="Godfried Romeratoe"><option value="Jeremy Antonisse"><option value="Sontje Hansen"><option value="Tahith Chong"><option value="Brandley Kuwas"><option value="Gervane Kastaneer"><option value="Jürgen Locadia"><option value="Jearl Margaritha"><option value="Kenji Gorré">
+    <!-- Grupo F: Holanda -->
+    <option value="Verbruggen"><option value="Flekken"><option value="Roefs"><option value="Dumfries"><option value="Wieffer"><option value="Van Dijk"><option value="Van Hecke"><option value="Jurriën Timber"><option value="Aké"><option value="Van de Ven"><option value="Hato"><option value="De Jong"><option value="Reijnders"><option value="Gravenberch"><option value="Koopmeiners"><option value="Justin Kluivert"><option value="De Roon"><option value="Quinten Timber"><option value="Til"><option value="Memphis Depay"><option value="Gakpo"><option value="Malen"><option value="Summerville"><option value="Noa Lang"><option value="Weghorst"><option value="Brobbey">
+    <!-- Grupo F: Japão -->
+    <option value="Zion Suzuki"><option value="Keisuke Osako"><option value="Tomoki Hayakawa"><option value="Hiroki Ito"><option value="Junnosuke Suzuki"><option value="Ayumu Seko"><option value="Shogo Taniguchi"><option value="Tsuyoshi Watanabe"><option value="Ko Itakura"><option value="Takehiro Tomiyasu"><option value="Yukinari Sugawara"><option value="Yuto Nagatomo"><option value="Daichi Kamada"><option value="Ao Tanaka"><option value="Kaishu Sano"><option value="Wataru Endo"><option value="Keito Nakamura"><option value="Daizen Maeda"><option value="Ritsu Doan"><option value="Yuito Suzuki"><option value="Junya Ito"><option value="Ayase Ueda"><option value="Koki Ogawa"><option value="Kento Shiogai"><option value="Keisuke Goto"><option value="Takefusa Kubo">
+    <!-- Grupo F: Tunísia -->
+    <option value="Aymen Dahmen"><option value="Sabri Ben Hassen"><option value="Abdelmouhib Chamakh"><option value="Yan Valéry"><option value="Moutaz Neffati"><option value="Dylan Bronn"><option value="Raed Chikhaoui"><option value="Montassar Talbi"><option value="Adem Arous"><option value="Omar Rekik"><option value="Ali Abdi"><option value="Mohamed Ben Hmida"><option value="Ellyes Skhiri"><option value="Anis Ben Slimane"><option value="Rani Khedira"><option value="Mortadha Ben Ouanes"><option value="Ismaël Gharbi"><option value="Mohamed Hadj-Mahmoud"><option value="Hannibal Mejbri"><option value="Elias Saäd"><option value="Khalil Ayari"><option value="Elias Achouri"><option value="Sebastian Tounekti"><option value="Hazem Mastouri"><option value="Firas Chawat"><option value="Rayan Elloumi">
+    <!-- Grupo F: Suécia -->
+    <option value="Viktor Johansson"><option value="Kristoffer Nordfeldt"><option value="Jacob Widell Zetterström"><option value="Hjalmar Ekdal"><option value="Gabriel Gudmundsson"><option value="Isak Hien"><option value="Emil Holm"><option value="Gustaf Lagerbielke"><option value="Victor Nilsson Lindelöf"><option value="Eric Smith"><option value="Carl Starfelt"><option value="Elliot Stroud"><option value="Daniel Svensson"><option value="Taha Ali"><option value="Yasin Ayari"><option value="Lucas Bergvall"><option value="Jesper Karlström"><option value="Mattias Svanberg"><option value="Besfort Zeneli"><option value="Alexander Bernhardsson"><option value="Anthony Elanga"><option value="Viktor Gyökeres"><option value="Alexander Isak"><option value="Gustaf Nilsson"><option value="Benjamin Nygren"><option value="Ken Sema">
+    <!-- Grupo G: Bélgica -->
+    <option value="Thibaut Courtois"><option value="Senne Lammens"><option value="Mike Penders"><option value="Timothy Castagne"><option value="Zeno Debast"><option value="Maxim De Cuyper"><option value="Koni De Winter"><option value="Brandon Mechele"><option value="Thomas Meunier"><option value="Nathan Ngoy"><option value="Joaquin Seys"><option value="Arthur Theate"><option value="Kevin De Bruyne"><option value="Amadou Onana"><option value="Nicolas Raskin"><option value="Youri Tielemans"><option value="Hans Vanaken"><option value="Axel Witsel"><option value="Charles De Ketelaere"><option value="Jeremy Doku"><option value="Matias Fernandez-Pardo"><option value="Romelu Lukaku"><option value="Dodi Lukebakio"><option value="Diego Moreira"><option value="Alexis Saelemaekers"><option value="Leandro Trossard">
+    <!-- Grupo G: Nova Zelândia -->
+    <option value="Max Crocombe"><option value="Alex Paulsen"><option value="Michael Woud"><option value="Tyler Bindon"><option value="Michael Boxall"><option value="Liberato Cacace"><option value="Francis de Vries"><option value="Callan Elliot"><option value="Tim Payne"><option value="Nando Pijnaker"><option value="Tommy Smith"><option value="Finn Surman"><option value="Lachlan Bayliss"><option value="Joe Bell"><option value="Matt Garbett"><option value="Ben Old"><option value="Alex Rufer"><option value="Sarpreet Singh"><option value="Marko Stamenic"><option value="Ryan Thomas"><option value="Kosta Barbarouses"><option value="Eli Just"><option value="Callum McCowatt"><option value="Jesse Randall"><option value="Ben Waine"><option value="Chris Wood">
+    <!-- Grupo H: Cabo Verde -->
+    <option value="Sidny Cabral"><option value="Diney Borges"><option value="Logan Costa"><option value="Roberto Lopes"><option value="Steven Moreira"><option value="Wagner Pina"><option value="Kelvin Pires"><option value="Stopira"><option value="Telmo Arcanjo"><option value="Deroy Duarte"><option value="Laros Duarte"><option value="João Paulo Fernandes"><option value="Jamiro Monteiro"><option value="Kevin Pina"><option value="Yannick Semedo"><option value="Gilson Benchimol"><option value="Jovane Cabral"><option value="Dailon Livramento"><option value="Ryan Mendes"><option value="Nuno da Costa"><option value="Garry Rodrigues"><option value="Willy Semedo"><option value="Hélio Varela">
+    <!-- Grupo H: Espanha -->
+    <option value="Unai Simón"><option value="David Raya"><option value="Joan García"><option value="Pedro Porro"><option value="Marcos Llorente"><option value="Marc Pubill"><option value="Pau Cubarsí"><option value="Eric García"><option value="Aymeric Laporte"><option value="Álex Grimaldo"><option value="Marc Cucurella"><option value="Rodri Hernández"><option value="Martín Zubimendi"><option value="Pedri González"><option value="Fabián Ruiz"><option value="Gavi"><option value="Mikel Merino"><option value="Dani Olmo"><option value="Álex Baena"><option value="Lamine Yamal"><option value="Víctor Muñoz"><option value="Yeremy Pino"><option value="Nico Williams"><option value="Mikel Oyarzabal"><option value="Ferran Torres"><option value="Borja Iglesias">
+    <!-- Grupo H: Uruguai -->
+    <option value="Sergio Rochet"><option value="Fernando Muslera"><option value="Santiago Mele"><option value="Guillermo Varela"><option value="Ronald Araújo"><option value="José María Giménez"><option value="Santiago Bueno"><option value="Sebastián Cáceres"><option value="Mathías Olivera"><option value="Joaquín Piquerez"><option value="Matías Viña"><option value="Juan Manuel Sanabria"><option value="Manuel Ugarte"><option value="Emiliano Martínez"><option value="Rodrigo Bentancur"><option value="Federico Valverde"><option value="Giorgian de Arrascaeta"><option value="Nicolás de la Cruz"><option value="Rodrigo Zalazar"><option value="Agustín Canobbio"><option value="Facundo Pellistri"><option value="Maxi Araújo"><option value="Brian Rodríguez"><option value="Rodrigo Aguirre"><option value="Federico Viñas"><option value="Darwin Núñez">
+    <!-- Grupo I: França -->
+    <option value="Mike Maignan"><option value="Robin Risser"><option value="Brice Samba"><option value="Lucas Digne"><option value="Malo Gusto"><option value="Lucas Hernandez"><option value="Theo Hernandez"><option value="Ibrahima Konaté"><option value="Jules Koundé"><option value="Maxence Lacroix"><option value="William Saliba"><option value="Dayot Upamecano"><option value="N'Golo Kanté"><option value="Manu Koné"><option value="Adrien Rabiot"><option value="Aurélien Tchouaméni"><option value="Warren Zaïre-Emery"><option value="Maghnes Akliouche"><option value="Bradley Barcola"><option value="Rayan Cherki"><option value="Ousmane Dembélé"><option value="Désiré Doué"><option value="Jean-Philippe Mateta"><option value="Kylian Mbappé"><option value="Michael Olise"><option value="Marcus Thuram">
+    <!-- Grupo I: Noruega -->
+    <option value="Orjan Nyland"><option value="David Møller Wolfe"><option value="Stian Gregersen"><option value="Leo Skiri Østigård"><option value="Andreas Hanche-Olsen"><option value="Birger Meling"><option value="Marcus Holmgren Pedersen"><option value="Kristoffer Ajer"><option value="Julian Ryerson"><option value="Fredrik Aursnes"><option value="Martin Ødegaard"><option value="Sander Berge"><option value="Mathias Normann"><option value="Morten Thorsby"><option value="Patrick Berg"><option value="Elias Solberg"><option value="Alexander Sørloth"><option value="Erling Haaland"><option value="Jørgen Strand Larsen"><option value="Oscar Bobb"><option value="Antonio Nusa"><option value="Andreas Schjelderup"><option value="Jens Petter Hauge">
+    <!-- Grupo I: Senegal -->
+    <option value="Edouard Mendy"><option value="Mory Diaw"><option value="Yehvann Diouf"><option value="Krépin Diatta"><option value="Antoine Mendy"><option value="Kalidou Koulibaly"><option value="El Hadji Malich Diouf"><option value="Mamadou Sarr"><option value="Moussa Niakhaté"><option value="Moustapha Mbow"><option value="Abdoulaye Seck"><option value="Ismail Jakobs"><option value="Ilay Camara"><option value="Idrissa Gana Gueye"><option value="Pape Gueye"><option value="Lamine Camara"><option value="Habib Diarra"><option value="Pathé Ciss"><option value="Pape Matar Sarr"><option value="Bara Sapoko Ndiaye"><option value="Sadio Mané"><option value="Ismaila Sarr"><option value="Iliman Ndiaye"><option value="Boulaye Dia"><option value="Nicolas Jackson"><option value="Habib Diallo">
+    <!-- Grupo J: Argentina -->
+    <option value="Emiliano Martínez"><option value="Gerónimo Rulli"><option value="Juan Musso"><option value="Gonzalo Montiel"><option value="Nahuel Molina"><option value="Lisandro Martínez"><option value="Nicolás Otamendi"><option value="Leonardo Balerdi"><option value="Cristian Romero"><option value="Nicolás Tagliafico"><option value="Facundo Medina"><option value="Giovani Lo Celso"><option value="Leandro Paredes"><option value="Rodrigo De Paul"><option value="Exequiel Palacios"><option value="Enzo Fernández"><option value="Alexis Mac Allister"><option value="Valentín Barco"><option value="Lionel Messi"><option value="Nicolás González"><option value="Giuliano Simeone"><option value="Lautaro Martínez"><option value="José Manuel López"><option value="Julián Álvarez"><option value="Thiago Almada"><option value="Nico Paz">
+    <!-- Grupo J: Áustria -->
+    <option value="Patrick Pentz"><option value="Leopold Querfeld"><option value="Stefan Posch"><option value="Kevin Danso"><option value="Philipp Lienhart"><option value="Maximilian Wöber"><option value="Philipp Mwene"><option value="Patrick Wimmer"><option value="David Alaba"><option value="Florian Grillitsch"><option value="Nicolas Seiwald"><option value="Konrad Laimer"><option value="Christoph Baumgartner"><option value="Alexander Prass"><option value="Marcel Sabitzer"><option value="Michael Gregoritsch"><option value="Marko Arnautovic"><option value="Guido Burgstaller"><option value="Andreas Weimann"><option value="Lukas Nmecha">
+    <!-- Grupo K: Colômbia -->
+    <option value="David Ospina"><option value="Kevin Mier"><option value="Álvaro Montero"><option value="Dávinson Sánchez"><option value="Yerry Mina"><option value="Willer Ditta"><option value="Daniel Muñoz"><option value="Santiago Arias"><option value="Johan Mojica"><option value="Déiver Machado"><option value="Jhon Lucumí"><option value="Richard Ríos"><option value="Jefferson Lerma"><option value="Kevin Castaño"><option value="Juan Portilla"><option value="Gustavo Puerta"><option value="Jorge Carrascal"><option value="Juanfer Quintero"><option value="James Rodríguez"><option value="Jaminton Campaz"><option value="Juan Camilo Hernández"><option value="Luis Díaz"><option value="Luis Suárez"><option value="Carlos Gómez"><option value="Jhon Córdoba"><option value="Jhon Arias">
+    <!-- Grupo K: Portugal -->
+    <option value="Diogo Costa"><option value="José Sá"><option value="Rui Silva"><option value="Diogo Dalot"><option value="Matheus Nunes"><option value="Nélson Semedo"><option value="João Cancelo"><option value="Nuno Mendes"><option value="Gonçalo Inácio"><option value="Renato Veiga"><option value="Rúben Dias"><option value="Tomás Araújo"><option value="Rúben Neves"><option value="Samuel Costa"><option value="João Neves"><option value="Vitinha"><option value="Bruno Fernandes"><option value="Bernardo Silva"><option value="João Félix"><option value="Francisco Trincão"><option value="Francisco Conceição"><option value="Pedro Neto"><option value="Rafael Leão"><option value="Gonçalo Guedes"><option value="Gonçalo Ramos"><option value="Cristiano Ronaldo">
+    <!-- Grupo K: RD Congo -->
+    <option value="Matthieu Epolo"><option value="Timothy Fayulu"><option value="Lionel Mpasi"><option value="Dylan Batubinsika"><option value="Aaron Tshibola"><option value="Gedeon Kalulu"><option value="Steve Kapuadi"><option value="Joris Kayembe"><option value="Arthur Masuaku"><option value="Chancel Mbemba"><option value="Axel Tuanzebe"><option value="Aaron Wan-Bissaka"><option value="Theo Bongonda"><option value="Brian Cipenga"><option value="Meshack Elia"><option value="Gael Kakuta"><option value="Edo Kayembe"><option value="Nathanael Mbuku"><option value="Samuel Bastien"><option value="Cedric Bakambu"><option value="Cédric Doumbe"><option value="Fiston Mayele"><option value="Héritier Deyonge"><option value="Paul-José Mpoku"><option value="Silas Mvumpa"><option value="Yoane Wissa">
+    <!-- Grupo L: Croácia -->
+    <option value="Dominik Livaković"><option value="Ivica Ivusic"><option value="Nediljko Labrovic"><option value="Josko Gvardiol"><option value="Duje Caleta-Car"><option value="Josip Sutalo"><option value="Josip Stanisic"><option value="Marin Pongracic"><option value="Martin Erlic"><option value="Luka Vuskovic"><option value="Luka Modric"><option value="Mateo Kovacic"><option value="Mario Pasalic"><option value="Nikola Vlasic"><option value="Luka Sucic"><option value="Martin Baturina"><option value="Kristijan Jakic"><option value="Petar Sucic"><option value="Nikola Moro"><option value="Toni Fruk"><option value="Ivan Perisic"><option value="Andrej Kramaric"><option value="Ante Budimir"><option value="Marco Pasalic"><option value="Petar Musa"><option value="Igor Matanovic">
+    <!-- Grupo L: Inglaterra -->
+    <option value="Jordan Pickford"><option value="Dean Henderson"><option value="James Trafford"><option value="Reece James"><option value="Ezri Konsa"><option value="Jarell Quansah"><option value="John Stones"><option value="Marc Guehi"><option value="Dan Burn"><option value="Nico O'Reilly"><option value="Djed Spence"><option value="Tino Livramento"><option value="Declan Rice"><option value="Elliot Anderson"><option value="Kobbie Mainoo"><option value="Jordan Henderson"><option value="Morgan Rogers"><option value="Jude Bellingham"><option value="Eberechi Eze"><option value="Harry Kane"><option value="Ivan Toney"><option value="Ollie Watkins"><option value="Bukayo Saka"><option value="Marcus Rashford"><option value="Anthony Gordon"><option value="Noni Madueke">
+    <!-- Grupo L: Panamá -->
+    <option value="Luis Mejía"><option value="Orlando Mosquera"><option value="César Samudio"><option value="Fidel Escobar"><option value="Roderick Miller"><option value="Edgardo Fariña"><option value="Cesar Blackman"><option value="Michael Murillo"><option value="Adalberto Carrasquilla"><option value="Ismael Díaz"><option value="Alberto Quintero"><option value="Édgar Bárcenas"><option value="Rolando Blackburn"><option value="Anibal Godoy"><option value="Abdiel Arroyo"><option value="Freddy Góndola"><option value="Cecilio Waterman"><option value="Cris Martínez"><option value="Mauricio Pinillo"><option value="Harold Cummings">
+  </datalist>
+
+  <!-- datalist compartilhado para autocomplete de nomes de seleções -->
+  <datalist id="times-validos">
+    <option value="México"><option value="África do Sul"><option value="Coreia do Sul"><option value="Tchéquia">
+    <option value="Canadá"><option value="Bósnia-Herzegovina"><option value="Catar"><option value="Suíça">
+    <option value="Brasil"><option value="Marrocos"><option value="Haiti"><option value="Escócia">
+    <option value="Estados Unidos"><option value="Paraguai"><option value="Austrália"><option value="Turquia">
+    <option value="Alemanha"><option value="Equador"><option value="Curaçao"><option value="Costa do Marfim">
+    <option value="Holanda"><option value="Tunísia"><option value="Suécia"><option value="Japão">
+    <option value="Bélgica"><option value="Egito"><option value="Irã"><option value="Nova Zelândia">
+    <option value="Espanha"><option value="Cabo Verde"><option value="Arábia Saudita"><option value="Uruguai">
+    <option value="França"><option value="Senegal"><option value="Iraque"><option value="Noruega">
+    <option value="Argentina"><option value="Argélia"><option value="Áustria"><option value="Jordânia">
+    <option value="Portugal"><option value="RD Congo"><option value="Uzbequistão"><option value="Colômbia">
+    <option value="Inglaterra"><option value="Croácia"><option value="Gana"><option value="Panamá">
+  </datalist>
+
+  <!-- ── Login Overlay ── -->
+  <div id="login-overlay">
+    <div id="login-box">
+      <h2>🏆 Bolão Copa 2026</h2>
+      <p id="login-subtitulo">Entre com seu nome e senha para acessar</p>
+
+      <input type="text"     id="login-nome"  placeholder="Seu nome..." autocomplete="username">
+      <input type="password" id="login-senha" placeholder="Senha..."    autocomplete="current-password"
+             onkeypress="if(event.key==='Enter') submitLogin()">
+      <input type="password" id="login-confirma" placeholder="Confirmar senha..."
+             style="display:none;"
+             onkeypress="if(event.key==='Enter') submitLogin()">
+
+      <button class="acao" id="btn-submit" onclick="submitLogin()">Entrar</button>
+
+      <div style="margin-top:16px; border-top:1px solid #eee; padding-top:14px;">
+        <p style="font-size:13px; color:#888; margin-bottom:8px;" id="login-toggle-label">
+          Ainda não tem conta?
+        </p>
+        <button onclick="alternarModo()"
+                style="background:none; border:2px solid #009c3b; color:#009c3b;
+                       padding:8px 18px; border-radius:6px; cursor:pointer;
+                       font-size:14px; font-weight:600; width:100%;"
+                id="btn-alternar">Criar conta</button>
+      </div>
+
+      <div id="login-erro"></div>
+    </div>
+  </div>
+
+  <!-- ── Toast ── -->
+  <div id="toast"></div>
+
+  <!-- ── Cabeçalho ── -->
+  <header>
+    <h1>🏆 Bolão da Copa do Mundo 2026</h1>
+    <p>Mostra que você manja de futebol — palpita aí!</p>
+    <div id="usuario-info" style="display:none;">
+      <span id="usuario-nome-label"></span>
+      <button class="perigo" onclick="fazerLogout()" style="font-size:12px;">🚪 Sair</button>
+    </div>
+  </header>
+
+  <!-- ── Nav ── -->
+  <nav id="nav-bar" style="display:none;">
+    <button onclick="mostrarView('inicio')"    class="ativo">🏠 Início</button>
+    <button onclick="mostrarView('palpites')">🎯 Palpites</button>
+    <button onclick="mostrarView('todos')">👀 Todos</button>
+    <button onclick="mostrarView('historico')">📊 Histórico</button>
+    <button id="btn-admin" onclick="mostrarView('admin')" style="display:none;">🛠️ Admin</button>
+    <button onclick="mostrarView('ranking')">🏅 Ranking</button>
+    <button onclick="mostrarView('regras')">📋 Regras</button>
+  </nav>
+  <div id="offline-aviso" style="display:none; background:#d32f2f; color:#fff; text-align:center; font-size:13px; padding:6px;">
+    ⚠️ Sem conexão com o servidor — dados podem estar desatualizados
+  </div>
+
+  <main id="main-content" style="display:none;">
+
+    <!-- ── Início ── -->
+    <section id="view-inicio" class="view ativo">
+      <h2>Bem-vindo ao bolão!</h2>
+      <p>Painel central do bolão da Copa 2026. Veja estatísticas e os grupos.</p>
+      <h3>📊 Estatísticas</h3>
+      <div id="stats-inicio"></div>
+      <h3>📅 Cronograma da Copa</h3>
+      <div id="timeline-copa"></div>
+      <h3>🌎 Grupos da Copa</h3>
+      <div id="grupos-container" class="grupos-container"></div>
+    </section>
+
+    <!-- ── Palpites ── -->
+    <section id="view-palpites" class="view">
+      <h2>🎯 Palpites</h2>
+
+      <!-- Bônus no topo -->
+      <div id="bonus-form-container">
+        <h3>⭐ Palpites Bônus</h3>
+        <p style="font-size:14px;color:#555;margin-bottom:10px;">
+          Palpite no <strong>Campeão</strong> (+20 pts) e no <strong>Artilheiro</strong> (+20 pts).
+          <strong style="color:#d32f2f;">Prazo: 11/06 às 15h50 (Brasília).</strong>
+        </p>
+        <div id="bonus-travado-aviso" style="display:none; background:#fff3e0; border-left:4px solid #f57c00; padding:10px 14px; border-radius:6px; font-size:14px; color:#e65100; margin-bottom:15px;">
+          🔒 Palpites bônus encerrados — prazo expirou em 11/06 às 15h50.
+        </div>
+        <div id="bonus-salvo-aviso" style="display:none; background:#e8f5e9; border-left:4px solid #006341; padding:10px 14px; border-radius:6px; font-size:14px; color:#006341; margin-bottom:14px;">
+          ✅ Palpites bônus registrados! Você pode alterar até 11/06 às 15h50 (Brasília).
+        </div>
+        <div style="display:flex; gap:15px; flex-wrap:wrap; margin-bottom:20px;">
+          <div style="flex:1; min-width:180px;">
+            <label style="font-weight:600; font-size:13px;">🏆 Campeão da Copa</label>
+            <select id="palpite-campeao" style="margin-top:5px;"></select>
+          </div>
+          <div style="flex:1; min-width:180px;">
+            <label style="font-weight:600; font-size:13px;">⚽ Artilheiro</label>
+            <input type="text" id="palpite-artilheiro" list="artilheiros-validos" placeholder="Ex: Vinicius Jr" style="margin-top:5px;">
+          </div>
+          <div style="display:flex; align-items:flex-end;">
+            <button class="acao" id="btn-salvar-bonus" onclick="salvarBonus()">Salvar bônus</button>
+          </div>
+        </div>
+      </div>
+
+      <hr style="border:none; border-top:2px solid #f0f0f0; margin-bottom:20px;">
+
+      <!-- Só o admin vê o select para consultar palpites de qualquer jogador -->
+      <div id="palpites-select-admin" style="display:none; margin-bottom:15px;">
+        <label style="font-weight:600;">Visualizar palpites de:</label>
+        <select id="select-jogador" onchange="carregarPalpites()" style="margin-top:5px;"></select>
+      </div>
+
+      <h3>📋 Palpites dos Jogos</h3>
+      <p style="font-size:13px;color:#555;margin-bottom:10px;">
+        Quando o botão mostrar <strong>✓ Salvo</strong>, seu palpite está registrado. Você pode alterar e salvar novamente até <strong>10 minutos antes</strong> do início de cada jogo.
+      </p>
+
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:15px; flex-wrap:wrap;">
+        <label style="font-weight:600; font-size:14px; white-space:nowrap;">Filtrar por dia:</label>
+        <select id="filtro-data" onchange="carregarPalpites()"
+                style="flex:1; max-width:320px; padding:8px 12px; border:2px solid #ddd;
+                       border-radius:6px; font-size:14px; cursor:pointer;">
+          <option value="">Todos os dias</option>
+        </select>
+      </div>
+
+      <div id="palpites-lista"><p style="color:#888;font-style:italic;">Carregando...</p></div>
+    </section>
+
+    <!-- ── Admin ── -->
+    <section id="view-admin" class="view">
+      <h2>🛠️ Admin — Resultados Oficiais</h2>
+
+      <!-- Sync automático -->
+      <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:18px;
+                  background:#f0faf4; border-radius:8px; padding:12px 16px;">
+        <div style="flex:1; min-width:200px;">
+          <strong style="color:#006341;">🔄 Sincronização automática</strong>
+          <p id="sync-status-txt" style="font-size:13px; color:#555; margin-top:3px;">Verificando...</p>
+        </div>
+        <button class="acao" onclick="syncAgora()" id="btn-sync">🔄 Sincronizar agora</button>
+      </div>
+
+      <h3>👥 Gerenciar Jogadores</h3>
+      <div class="dica">Cadastre aqui os jogadores do bolão. O admin define o nome e a senha de cada um.</div>
+      <div style="display:flex; gap:10px; margin:12px 0 15px; flex-wrap:wrap;">
+        <input type="text"     id="novo-jogador-nome"  placeholder="Nome do jogador..." maxlength="30" style="flex:1; min-width:120px;">
+        <input type="password" id="novo-jogador-senha" placeholder="Senha..."           maxlength="50" style="flex:1; min-width:120px;">
+        <button class="acao" onclick="adicionarJogador()">Adicionar</button>
+      </div>
+      <table id="tabela-jogadores">
+        <thead><tr><th>Nome</th><th>Palpites feitos</th><th>Ações</th><th></th><th></th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <p style="font-size:12px;color:#888;margin-top:6px;">
+        "Limpar palpites" apaga apenas os palpites do jogador — o cadastro é mantido.
+      </p>
+
+      <h3 style="margin-top:30px;">🏆 Resultados Oficiais</h3>
+      <p>Conforme os jogos vão acontecendo, o placar é atualizado automaticamente. Você também pode lançar manualmente abaixo.</p>
+      <div id="admin-jogos"></div>
+
+      <h3 style="margin-top:30px;">🔗 Sync mata-mata — Registrar times reais</h3>
+      <div class="dica">
+        Quando o mata-mata começar, registre aqui os times reais de cada jogo (ex.: "Brasil" em vez de "Vencedor R32-1").
+        O sync automático vai reconhecer esses nomes e lançar o resultado sem precisar de intervenção manual.
+      </div>
+      <div id="mata-mata-times" style="margin-top:10px;"></div>
+
+      <h3 style="margin-top:30px;">🏆 Bônus — Resultado oficial</h3>
+      <p style="font-size:14px;color:#666;margin-bottom:10px;">Defina o campeão e artilheiro reais no final da Copa para distribuir os pontos bônus.</p>
+      <div id="secao-oficiais" style="display:flex; gap:15px; flex-wrap:wrap; margin-bottom:20px;">
+        <div style="flex:1; min-width:180px;">
+          <label style="font-weight:600; font-size:13px;">Campeão da Copa:</label>
+          <select id="campeao-oficial" style="margin-top:5px;"></select>
+        </div>
+        <div style="flex:1; min-width:180px;">
+          <label style="font-weight:600; font-size:13px;">Artilheiro oficial:</label>
+          <input type="text" id="artilheiro-oficial" list="artilheiros-validos" placeholder="Nome do artilheiro" style="margin-top:5px;">
+        </div>
+        <div style="display:flex; align-items:flex-end;">
+          <button class="acao" onclick="salvarOficiais()">Salvar oficiais</button>
+        </div>
+      </div>
+
+      <h3 style="margin-top:30px;">🔑 Minha Conta</h3>
+      <button class="acao" onclick="alterarMinhaSenha()">Alterar minha senha</button>
+
+      <h3 style="color:#d32f2f;margin-top:30px;">⚠️ Zona de Perigo</h3>
+      <div class="dica" style="border-left-color:#d32f2f;background:#ffebee;">
+        <strong>Resetar bolão:</strong> apaga todos os palpites (inclusive bônus), todos os resultados e os confrontos do mata-mata. Os cadastros dos jogadores são mantidos. <strong>Não pode ser desfeito!</strong>
+      </div>
+      <button class="perigo" onclick="resetarTudo()">🗑️ Apagar todos os dados</button>
+    </section>
+
+    <!-- ── Ranking ── -->
+    <section id="view-ranking" class="view">
+      <h2>🏅 Ranking</h2>
+      <p>Pontuação geral. Atualiza a cada 30 segundos automaticamente.</p>
+      <div class="table-scroll">
+        <table id="tabela-ranking">
+          <thead>
+            <tr>
+              <th>#</th><th>Jogador</th><th>Pontos</th>
+              <th title="1° critério de desempate">Placar exato</th>
+              <th title="2° critério de desempate">Result. correto</th>
+              <th title="3° critério de desempate">Artilheiro</th>
+              <th title="4° critério de desempate">Campeão</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+    </section>
+
+    <!-- ── Regras ── -->
+    <section id="view-regras" class="view">
+      <h2>📋 Regras do Bolão</h2>
+
+      <!-- Guia das abas -->
+      <h3>🗺️ O que tem em cada aba</h3>
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px;">
+        <div class="regras-aba-card">
+          <span class="regras-aba-icon">🏠</span>
+          <div><strong>Início</strong> — Estatísticas gerais, cronograma da Copa e tabela de classificação dos grupos.</div>
+        </div>
+        <div class="regras-aba-card">
+          <span class="regras-aba-icon">🎯</span>
+          <div><strong>Palpites</strong> — Onde você registra e edita seus palpites para cada jogo, e também os palpites bônus (Campeão e Artilheiro).</div>
+        </div>
+        <div class="regras-aba-card">
+          <span class="regras-aba-icon">👀</span>
+          <div><strong>Todos</strong> — Veja o palpite de todos os participantes jogo a jogo. Os palpites só aparecem aqui após o travamento (10 min antes do jogo), garantindo que ninguém copie ninguém.</div>
+        </div>
+        <div class="regras-aba-card">
+          <span class="regras-aba-icon">📊</span>
+          <div><strong>Histórico</strong> — Seu desempenho detalhado: pontos por jogo, acertos e erros ao longo do torneio.</div>
+        </div>
+        <div class="regras-aba-card">
+          <span class="regras-aba-icon">🏅</span>
+          <div><strong>Ranking</strong> — Classificação geral com pontuação e critérios de desempate de todos os participantes. Atualiza automaticamente a cada 30 segundos.</div>
+        </div>
+      </div>
+
+      <!-- Como fazer um palpite -->
+      <h3 style="margin-top:24px;">🎯 Como fazer um palpite</h3>
+      <ol class="regras-steps">
+        <li>Acesse a aba <strong>Palpites</strong> e use o filtro de dia para encontrar o jogo que quer palpitar.</li>
+        <li>Digite o número de gols do time da casa e do time visitante nos campos do jogo.</li>
+        <li>Clique em <strong>Salvar</strong> — o botão fica verde confirmando o registro.</li>
+        <li>Você pode alterar o palpite quantas vezes quiser até o <strong>travamento</strong> (10 min antes do jogo).</li>
+      </ol>
+      <div class="dica" style="margin-top:10px;">
+        <strong>Mata-mata:</strong> se você palpitar empate num jogo eliminatório (32-avos, Oitavas, Quartas, Semis ou Final), um campo extra aparece para você indicar <strong>quem avança</strong> (via prorrogação/pênaltis). Preencha — sem isso o palpite fica incompleto.
+      </div>
+      <div style="background:#e8f5e9; border-left:4px solid #43a047; padding:10px 14px; border-radius:6px; font-size:13px; color:#2e7d32; margin-top:8px;">
+        ℹ️ Após salvar os dois palpites bônus (Campeão e Artilheiro), a seção desaparece da aba Palpites. Isso é normal — seus palpites estão registrados!
+      </div>
+
+      <!-- Exemplo prático -->
+      <h3 style="margin-top:24px;">💡 Exemplo de pontuação</h3>
+      <p style="font-size:13px;color:#555;margin:6px 0 10px;">Resultado oficial: <strong>Brasil 2 × 1 Marrocos</strong></p>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>Seu palpite</th><th>O que acertou</th><th>Pontos</th></tr></thead>
+          <tbody>
+            <tr><td><strong>2 × 1</strong></td><td>Placar exato</td><td><strong style="color:#2e7d32;">10 pts</strong></td></tr>
+            <tr><td><strong>2 × 0</strong></td><td>Vencedor + gols do Brasil</td><td><strong style="color:#f57f17;">7 pts</strong></td></tr>
+            <tr><td><strong>3 × 0</strong></td><td>Só o vencedor</td><td><strong style="color:#e65100;">5 pts</strong></td></tr>
+            <tr><td><strong>0 × 1</strong></td><td>Errou resultado, acertou gols de Marrocos</td><td><strong style="color:#c62828;">2 pts</strong></td></tr>
+            <tr><td><strong>1 × 2</strong></td><td>Errou tudo</td><td><strong style="color:#999;">0 pts</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="font-size:12px;color:#888;margin-top:6px;">Em fases com multiplicador, os pontos acima são multiplicados pelo fator da fase.</p>
+
+      <!-- Pontuação -->
+      <h3 style="margin-top:24px;">💰 Pontuação base por jogo</h3>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>Situação</th><th>Pontos</th></tr></thead>
+          <tbody>
+            <tr><td>Placar exato (+ quem avança, se mata-mata)</td><td><strong>10 pts</strong></td></tr>
+            <tr><td>Acertou o vencedor/avança + gols de um dos times</td><td><strong>7 pts</strong></td></tr>
+            <tr><td>Só o vencedor/avança (ou empate exato nos grupos)</td><td><strong>5 pts</strong></td></tr>
+            <tr><td>Errou o resultado, mas acertou gols de um time</td><td><strong>2 pts</strong></td></tr>
+            <tr><td>Errou tudo (BURRO)</td><td><strong>0 pts</strong></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3>✖️ Multiplicadores por fase</h3>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>Fase</th><th>Mult.</th><th>Placar exato</th></tr></thead>
+          <tbody>
+            <tr><td>Grupos / 32-avos / Oitavas / 3º Lugar</td><td><strong>×1</strong></td><td>10 pts</td></tr>
+            <tr><td>Quartas de final</td><td><strong>×2</strong></td><td>20 pts</td></tr>
+            <tr><td>Semifinais</td><td><strong>×3</strong></td><td>30 pts</td></tr>
+            <tr><td>FINAL</td><td><strong>×4</strong></td><td>40 pts</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3>⭐ Bônus</h3>
+      <ul style="margin-left:20px;margin-top:10px;">
+        <li><strong>Campeão da Copa:</strong> +20 pontos</li>
+        <li><strong>Artilheiro do torneio:</strong> +20 pontos</li>
+      </ul>
+      <h3>🏅 Critérios de desempate</h3>
+      <ol style="margin-left:20px;margin-top:10px;line-height:1.8;">
+        <li>Maior número de <strong>placares exatos</strong></li>
+        <li>Maior número de <strong>resultados corretos</strong> (acertou o vencedor/empate/quem avança)</li>
+        <li>Acertou o <strong>artilheiro</strong> do torneio</li>
+        <li>Acertou o <strong>campeão</strong> da Copa</li>
+      </ol>
+      <h3>📌 Prazos</h3>
+      <ul style="margin-left:20px;margin-top:10px;line-height:1.9;">
+        <li>Os palpites de cada jogo <strong>travam 10 minutos antes</strong> do horário de início (horário de Brasília).</li>
+        <li>Os palpites bônus (Campeão e Artilheiro) <strong>travam em 11/06/2026 às 15h50 (Brasília)</strong>, antes do primeiro jogo da Copa.</li>
+      </ul>
+    </section>
+
+    <!-- ── Todos os palpites ── -->
+    <section id="view-todos" class="view">
+      <h2>👀 Palpites de Todos</h2>
+      <p style="font-size:14px;color:#555;margin-bottom:12px;">
+        Palpites revelados após o travamento de cada jogo (10 min antes do início).
+      </p>
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:15px; flex-wrap:wrap;">
+        <label style="font-weight:600; font-size:14px; white-space:nowrap;">Filtrar por dia:</label>
+        <select id="filtro-todos-data" onchange="filtrarTodos()"
+                style="flex:1; max-width:320px; padding:8px 12px; border:2px solid #ddd;
+                       border-radius:6px; font-size:14px; cursor:pointer;">
+          <option value="">Todos os dias</option>
+        </select>
+      </div>
+      <div id="todos-lista"><p style="color:#888;">Carregando...</p></div>
+    </section>
+
+    <!-- ── Histórico ── -->
+    <section id="view-historico" class="view">
+      <h2>📊 Histórico</h2>
+      <p style="font-size:14px;color:#555;margin-bottom:16px;">
+        Participação dos jogadores e seu histórico de palpites jogo a jogo.
+      </p>
+      <div id="historico-lista"><p style="color:#888;">Carregando...</p></div>
+    </section>
+
+  </main>
+
+  <script>
+    // ============================================================
+    // CONFIGURAÇÃO
+    // ============================================================
+    const API = "";  // vazio = mesma origem; altere para URL do Render em produção
+
+    // ── Códigos ISO das bandeiras (flagcdn.com) ───────────────────────────────
+    // Emojis de bandeira não renderizam no Windows — usamos imagens do CDN
+    const CODIGOS = {
+      "México": "mx", "África do Sul": "za", "Coreia do Sul": "kr", "Tchéquia": "cz",
+      "Canadá": "ca", "Bósnia-Herzegovina": "ba", "Catar": "qa", "Suíça": "ch",
+      "Brasil": "br", "Marrocos": "ma", "Haiti": "ht", "Escócia": "gb-sct",
+      "Estados Unidos": "us", "Paraguai": "py", "Austrália": "au", "Turquia": "tr",
+      "Alemanha": "de", "Equador": "ec", "Curaçao": "cw", "Costa do Marfim": "ci",
+      "Holanda": "nl", "Tunísia": "tn", "Suécia": "se", "Japão": "jp",
+      "Bélgica": "be", "Egito": "eg", "Irã": "ir", "Nova Zelândia": "nz",
+      "Espanha": "es", "Cabo Verde": "cv", "Arábia Saudita": "sa", "Uruguai": "uy",
+      "França": "fr", "Senegal": "sn", "Iraque": "iq", "Noruega": "no",
+      "Argentina": "ar", "Argélia": "dz", "Áustria": "at", "Jordânia": "jo",
+      "Portugal": "pt", "RD Congo": "cd", "Uzbequistão": "uz", "Colômbia": "co",
+      "Inglaterra": "gb-eng", "Croácia": "hr", "Gana": "gh", "Panamá": "pa",
+    };
+
+    // Normaliza string: remove acentos, cedilha, til, etc. e converte para minúsculas
+    function _normNome(s) {
+      return (s || "").trim().toLowerCase().normalize("NFKD").replace(/[̀-ͯ]/g, "");
+    }
+    // Tabela pré-computada: nome normalizado → código ISO (lookup tolerante a acentos/caixa)
+    const _CODIGOS_NORM = Object.fromEntries(
+      Object.entries(CODIGOS).map(([k, v]) => [_normNome(k), v])
+    );
+
+    // flagcdn.com só aceita: 20, 40, 80, 160, 320, 640, 1280, 2560
+    function flagImg(nome, tamanho = 40) {
+      const code = CODIGOS[nome] || _CODIGOS_NORM[_normNome(nome)];
+      if (!code) return "";
+      const cdnSize = tamanho <= 20 ? 20 : 40;
+      return `<img src="https://flagcdn.com/w${cdnSize}/${code}.png" alt="${nome}" style="width:${tamanho}px;height:auto;border-radius:3px;">`;
+    }
+
+    const DIAS_PT = ["domingo","segunda-feira","terça-feira","quarta-feira","quinta-feira","sexta-feira","sábado"];
+    const MESES_PT = ["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];
+
+    function formatarData(dataStr) {
+      const [y, m, d] = dataStr.split("-").map(Number);
+      const dt = new Date(Date.UTC(y, m - 1, d));
+      const dia = DIAS_PT[dt.getUTCDay()];
+      return `${dia.charAt(0).toUpperCase() + dia.slice(1)}, ${d} de ${MESES_PT[m-1]} de ${y}`;
+    }
+
+    function timeBadge(nome, comBandeira = false) {
+      const flag = comBandeira ? `<span class="bandeira">${flagImg(nome, 36)}</span>` : "";
+      return `<div class="time">${flag}<span class="nome">${nome}</span></div>`;
+    }
+
+    // ============================================================
+    // ESTADO DA SESSÃO
+    // ============================================================
+    let token = localStorage.getItem("bolao_token") || null;
+    let eu = JSON.parse(localStorage.getItem("bolao_eu") || "null");
+    let jogosCache  = [];
+    let jogosPorId  = {};
+    let timesCache  = [];
+    let jogadoresCache = [];
+    let resultadosCache = {};  // jogo_id → {gols_casa, gols_fora, avanca}
+    let _todosPublicos  = null;
+
+    // ============================================================
+    // UTILITÁRIOS HTTP
+    // ============================================================
+    async function api(metodo, rota, corpo) {
+      const opts = {
+        method: metodo,
+        headers: { "Content-Type": "application/json" },
+      };
+      if (token) opts.headers["Authorization"] = "Bearer " + token;
+      if (corpo !== undefined) opts.body = JSON.stringify(corpo);
+
+      const resp = await fetch(API + rota, opts);
+      if (resp.status === 204) return null;
+      const json = await resp.json();
+      if (resp.status === 401 && token) {
+        token = null; eu = null;
+        localStorage.removeItem("bolao_token");
+        localStorage.removeItem("bolao_eu");
+        alert("Sua sessão expirou. Entre novamente para continuar.");
+        location.reload();
+        return;
+      }
+      if (!resp.ok) throw new Error(json.detail || "Erro desconhecido");
+      return json;
+    }
+
+    const _toastFila = [];
+    let _toastAtivo = false;
+
+    function toast(msg, cor = "#006341") {
+      _toastFila.push({ msg, cor });
+      if (!_toastAtivo) _processarToast();
+    }
+
+    function _processarToast() {
+      if (!_toastFila.length) { _toastAtivo = false; return; }
+      _toastAtivo = true;
+      const { msg, cor } = _toastFila.shift();
+      const el = document.getElementById("toast");
+      el.textContent = msg;
+      el.style.background = cor;
+      el.classList.add("visivel");
+      setTimeout(() => {
+        el.classList.remove("visivel");
+        setTimeout(_processarToast, 300);
+      }, 3000);
+    }
+
+    // ============================================================
+    // AUTENTICAÇÃO
+    // ============================================================
+    let modoRegistro = false;
+
+    function alternarModo() {
+      modoRegistro = !modoRegistro;
+      const confirma = document.getElementById("login-confirma");
+      const subtitulo = document.getElementById("login-subtitulo");
+      const btnSubmit = document.getElementById("btn-submit");
+      const btnAlternar = document.getElementById("btn-alternar");
+      const toggleLabel = document.getElementById("login-toggle-label");
+
+      if (modoRegistro) {
+        confirma.style.display = "block";
+        subtitulo.textContent = "Crie sua conta para participar do bolão";
+        btnSubmit.textContent = "Criar conta";
+        btnAlternar.textContent = "Já tenho conta";
+        toggleLabel.textContent = "Já participou antes?";
+      } else {
+        confirma.style.display = "none";
+        subtitulo.textContent = "Entre com seu nome e senha para acessar";
+        btnSubmit.textContent = "Entrar";
+        btnAlternar.textContent = "Criar conta";
+        toggleLabel.textContent = "Ainda não tem conta?";
+      }
+      document.getElementById("login-erro").textContent = "";
+    }
+
+    function submitLogin() {
+      modoRegistro ? fazerRegistro() : fazerLogin();
+    }
+
+    async function fazerLogin() {
+      const nome  = document.getElementById("login-nome").value.trim();
+      const senha = document.getElementById("login-senha").value;
+      const erro  = document.getElementById("login-erro");
+      erro.textContent = "";
+      if (!nome || !senha) { erro.textContent = "Preencha nome e senha."; return; }
+
+      try {
+        const data = await api("POST", "/api/auth/login", { nome, senha });
+        salvarSessao(data);
+      } catch (e) {
+        erro.textContent = "❌ " + e.message;
+      }
+    }
+
+    async function fazerRegistro() {
+      const nome     = document.getElementById("login-nome").value.trim();
+      const senha    = document.getElementById("login-senha").value;
+      const confirma = document.getElementById("login-confirma").value;
+      const erro     = document.getElementById("login-erro");
+      erro.textContent = "";
+
+      if (!nome)    { erro.textContent = "Digite um nome."; return; }
+      if (nome.length > 30) { erro.textContent = "Nome muito longo (máx. 30 caracteres)."; return; }
+      if (!senha)   { erro.textContent = "Digite uma senha."; return; }
+      if (senha.length < 4) { erro.textContent = "Senha muito curta (mínimo 4 caracteres)."; return; }
+      if (senha !== confirma) { erro.textContent = "As senhas não coincidem."; return; }
+
+      try {
+        const data = await api("POST", "/api/auth/registrar", { nome, senha });
+        salvarSessao(data);
+      } catch (e) {
+        erro.textContent = "❌ " + e.message;
+      }
+    }
+
+    function salvarSessao(data) {
+      token = data.access_token;
+      eu    = { id: data.jogador_id, nome: data.nome, is_admin: data.is_admin };
+      localStorage.setItem("bolao_token", token);
+      localStorage.setItem("bolao_eu",    JSON.stringify(eu));
+      iniciarApp();
+    }
+
+    function fazerLogout() {
+      if (!confirm("Deseja sair da sua conta?")) return;
+      token = null; eu = null;
+      localStorage.removeItem("bolao_token");
+      localStorage.removeItem("bolao_eu");
+      location.reload();
+    }
+
+    // ============================================================
+    // INICIALIZAÇÃO PÓS-LOGIN
+    // ============================================================
+    async function iniciarApp() {
+      document.getElementById("login-overlay").style.display  = "none";
+      document.getElementById("nav-bar").style.display        = "flex";
+      document.getElementById("main-content").style.display   = "block";
+      document.getElementById("usuario-info").style.display   = "flex";
+      document.getElementById("usuario-nome-label").textContent =
+        (eu.is_admin ? "🛠️ " : "👤 ") + eu.nome;
+
+      if (eu.is_admin) {
+        document.getElementById("btn-admin").style.display = "inline-block";
+        document.getElementById("secao-oficiais").style.display = "flex";
+        document.getElementById("palpites-select-admin").style.display = "block";
+      }
+
+      await carregarCaches();
+      renderInicio();
+      renderSelectJogadores();
+      popularSelectTimes();
+      renderRanking();
+
+      carregarBonus();
+      if (!eu.is_admin) {
+        carregarPalpites();
+      }
+
+      // Atualização automática a cada 30s
+      setInterval(atualizacaoAutomatica, 30_000);
+
+      // Web Push — solicita permissão de forma não intrusiva
+      configurarPush();
+    }
+
+    // ============================================================
+    // WEB PUSH NOTIFICATIONS
+    // ============================================================
+    function urlBase64ToUint8Array(base64String) {
+      const padding = "=".repeat((4 - base64String.length % 4) % 4);
+      const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
+      const raw = atob(base64);
+      return Uint8Array.from([...raw].map(c => c.charCodeAt(0)));
+    }
+
+    async function configurarPush() {
+      if (!("serviceWorker" in navigator) || !("PushManager" in window)) return;
+      if (Notification.permission === "denied") return;
+
+      try {
+        const { public_key } = await api("GET", "/api/push/vapid-key");
+        const reg = await navigator.serviceWorker.ready;
+        let sub = await reg.pushManager.getSubscription();
+
+        if (!sub) {
+          // Pede permissão apenas se ainda não decidiu
+          if (Notification.permission === "default") {
+            const perm = await Notification.requestPermission();
+            if (perm !== "granted") return;
+          }
+          sub = await reg.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: urlBase64ToUint8Array(public_key),
+          });
+        }
+
+        await api("POST", "/api/push/subscribe", sub.toJSON());
+      } catch (_) { /* silencioso */ }
+    }
+
+    async function carregarCaches() {
+      [jogosCache, timesCache, jogadoresCache] = await Promise.all([
+        api("GET", "/api/jogos"),
+        api("GET", "/api/times"),
+        api("GET", "/api/jogadores"),
+      ]);
+      jogosPorId = Object.fromEntries(jogosCache.map(j => [j.id, j]));
+      const resultados = await api("GET", "/api/resultados");
+      resultadosCache = Object.fromEntries(resultados.map(r => [r.jogo_id, r]));
+      popularFiltroDatas();
+    }
+
+    function popularFiltroDatas() {
+      const datas = [...new Set(jogosCache.map(j => j.data).filter(Boolean))].sort();
+      const hoje  = new Date().toISOString().slice(0, 10);
+
+      for (const selId of ["filtro-data", "filtro-todos-data"]) {
+        const sel = document.getElementById(selId);
+        if (!sel) continue;
+        const valorAtual = sel.value;
+        sel.innerHTML = '<option value="">Todos os dias</option>';
+        datas.forEach(d => {
+          const opt = document.createElement("option");
+          opt.value = d;
+          opt.textContent = formatarData(d);
+          if (d === valorAtual) opt.selected = true;
+          sel.appendChild(opt);
+        });
+        if (!valorAtual && !eu.is_admin) {
+          const proximoDia = datas.find(d => d >= hoje);
+          if (proximoDia) sel.value = proximoDia;
+        }
+      }
+    }
+
+    let _falhasAutoSync = 0;
+
+    async function atualizacaoAutomatica() {
+      try {
+        const [resultados, jogadores] = await Promise.all([
+          api("GET", "/api/resultados"),
+          api("GET", "/api/jogadores"),
+        ]);
+        resultadosCache = Object.fromEntries(resultados.map(r => [r.jogo_id, r]));
+        jogadoresCache  = jogadores;
+        _falhasAutoSync = 0;
+        document.getElementById("offline-aviso").style.display = "none";
+        renderRanking();
+        renderInicio();
+        // Atualiza palpites se houver jogador selecionado (pra travar campos)
+        const sel = document.getElementById("select-jogador").value;
+        if (sel) carregarPalpites();
+        // Admin: atualiza a aba de resultados se estiver aberta
+        if (eu.is_admin && document.getElementById("view-admin").classList.contains("ativo")) {
+          renderAdmin();
+        }
+      } catch (_) {
+        _falhasAutoSync++;
+        if (_falhasAutoSync >= 3) {
+          document.getElementById("offline-aviso").style.display = "block";
+        }
+      }
+    }
+
+    // ============================================================
+    // NAVEGAÇÃO
+    // ============================================================
+    function mostrarView(nome) {
+      document.querySelectorAll("section.view").forEach(v => v.classList.remove("ativo"));
+      document.querySelectorAll("nav button").forEach(b => b.classList.remove("ativo"));
+      document.getElementById("view-" + nome).classList.add("ativo");
+      event.target.classList.add("ativo");
+
+      if (nome === "admin"    && eu.is_admin) renderAdmin();
+      if (nome === "todos")    renderTodos();
+      if (nome === "historico") renderHistorico();
+    }
+
+    // ============================================================
+    // INÍCIO
+    // ============================================================
+    const TIMES_POR_GRUPO = {
+      "A":["México","África do Sul","Coreia do Sul","Tchéquia"],
+      "B":["Canadá","Bósnia-Herzegovina","Catar","Suíça"],
+      "C":["Brasil","Marrocos","Haiti","Escócia"],
+      "D":["Estados Unidos","Paraguai","Austrália","Turquia"],
+      "E":["Alemanha","Curaçao","Costa do Marfim","Equador"],
+      "F":["Holanda","Japão","Suécia","Tunísia"],
+      "G":["Bélgica","Egito","Irã","Nova Zelândia"],
+      "H":["Espanha","Cabo Verde","Arábia Saudita","Uruguai"],
+      "I":["França","Senegal","Iraque","Noruega"],
+      "J":["Argentina","Argélia","Áustria","Jordânia"],
+      "K":["Portugal","RD Congo","Uzbequistão","Colômbia"],
+      "L":["Inglaterra","Croácia","Gana","Panamá"],
+    };
+
+    function calcularClassificacaoGrupo(grupo, times) {
+      const stats = {};
+      times.forEach(t => { stats[t] = { pts: 0, p: 0, gf: 0, gc: 0 }; });
+
+      jogosCache
+        .filter(j => j.fase === `Grupo ${grupo}`)
+        .forEach(j => {
+          const r = resultadosCache[j.id];
+          if (!r) return;
+          const gc = r.gols_casa, gf = r.gols_fora;
+          stats[j.casa].p++;  stats[j.fora].p++;
+          stats[j.casa].gf += gc; stats[j.casa].gc += gf;
+          stats[j.fora].gf += gf; stats[j.fora].gc += gc;
+          if (gc > gf)       stats[j.casa].pts += 3;
+          else if (gc === gf) { stats[j.casa].pts += 1; stats[j.fora].pts += 1; }
+          else                stats[j.fora].pts += 3;
+        });
+
+      return times
+        .map(t => ({ nome: t, ...stats[t], diff: stats[t].gf - stats[t].gc }))
+        .sort((a, b) => b.pts - a.pts || b.diff - a.diff || b.gf - a.gf);
+    }
+
+    function renderInicio() {
+      const total = jogosCache.length;
+      const finalizados = Object.keys(resultadosCache).length;
+      document.getElementById("stats-inicio").innerHTML = `
+        <span class="stat">👥 ${jogadoresCache.length} jogadores</span>
+        <span class="stat">⚽ ${total} jogos no total</span>
+        <span class="stat">✅ ${finalizados} jogos finalizados</span>
+      `;
+
+      (function renderTimeline() {
+        const hoje = new Date(); hoje.setHours(0,0,0,0);
+        const fases = [
+          { nome: "Fase de Grupos",      icone: "🌎", ini: "2026-06-11", fim: "2026-06-27", n: 72 },
+          { nome: "32-avos de Final",    icone: "⚔️",  ini: "2026-06-28", fim: "2026-07-03", n: 16 },
+          { nome: "Oitavas de Final",    icone: "⚡",  ini: "2026-07-04", fim: "2026-07-07", n:  8 },
+          { nome: "Quartas de Final",    icone: "🔥",  ini: "2026-07-09", fim: "2026-07-11", n:  4 },
+          { nome: "Semifinais",          icone: "💫",  ini: "2026-07-14", fim: "2026-07-15", n:  2 },
+          { nome: "Partida de 3° Lugar", icone: "🥉",  ini: "2026-07-18", fim: "2026-07-18", n:  1 },
+          { nome: "Final",               icone: "🏆",  ini: "2026-07-19", fim: "2026-07-19", n:  1 },
+        ];
+        const meses = ["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"];
+        const fmt = s => { const [,m,d] = s.split("-"); return `${+d} ${meses[+m-1]}`; };
+        let tlHtml = '<div class="timeline-copa">';
+        fases.forEach(f => {
+          const ini = new Date(f.ini + "T00:00:00"), fim2 = new Date(f.fim + "T23:59:59");
+          let cls = "", label = "Próxima", badgeCls = "tl-badge-proxima";
+          if (hoje > fim2) { cls = " tl-concluida"; label = "Concluída"; badgeCls = "tl-badge-concluida"; }
+          else if (hoje >= ini) { cls = " tl-ativa"; label = "Em andamento"; badgeCls = "tl-badge-ativa"; }
+          const datas = f.ini === f.fim ? fmt(f.ini) : `${fmt(f.ini)} – ${fmt(f.fim)}`;
+          tlHtml += `<div class="timeline-fase${cls}">
+            <div class="tl-header">
+              <span class="tl-nome">${f.icone} ${f.nome}</span>
+              <span class="tl-badge ${badgeCls}">${label}</span>
+            </div>
+            <div class="tl-datas">📅 ${datas}</div>
+            <div class="tl-jogos">⚽ ${f.n} jogo${f.n > 1 ? "s" : ""}</div>
+          </div>`;
+        });
+        tlHtml += "</div>";
+        document.getElementById("timeline-copa").innerHTML = tlHtml;
+      })();
+
+      let html = "";
+      for (const g in TIMES_POR_GRUPO) {
+        const class_ = calcularClassificacaoGrupo(g, TIMES_POR_GRUPO[g]);
+        html += `
+          <div class="grupo-card">
+            <h4>Grupo ${g}</h4>
+            <table class="tabela-grupo">
+              <thead><tr><th>Time</th><th>PTS</th><th>P</th><th>Diff</th></tr></thead>
+              <tbody>`;
+        class_.forEach(t => {
+          const diffStr = t.diff > 0 ? `+${t.diff}` : `${t.diff}`;
+          const diffClass = t.diff > 0 ? "diff-pos" : t.diff < 0 ? "diff-neg" : "";
+          html += `
+                <tr>
+                  <td><span class="time-nome">${flagImg(t.nome, 18)} ${t.nome}</span></td>
+                  <td class="pts">${t.pts}</td>
+                  <td>${t.p}</td>
+                  <td class="${diffClass}">${diffStr}</td>
+                </tr>`;
+        });
+        html += `</tbody></table></div>`;
+      }
+      document.getElementById("grupos-container").innerHTML = html;
+    }
+
+    // ============================================================
+    // JOGADORES
+    // ============================================================
+    async function adicionarJogador() {
+      const nome  = document.getElementById("novo-jogador-nome").value.trim();
+      const senha = document.getElementById("novo-jogador-senha").value;
+      if (!nome)  return alert("Digite um nome!");
+      if (!senha) return alert("Digite uma senha!");
+      try {
+        await api("POST", "/api/jogadores", { nome, senha });
+        document.getElementById("novo-jogador-nome").value  = "";
+        document.getElementById("novo-jogador-senha").value = "";
+        jogadoresCache = await api("GET", "/api/jogadores");
+        renderJogadores();
+        renderSelectJogadores();
+        toast("✅ Jogador adicionado!");
+      } catch (e) {
+        alert("Erro: " + e.message);
+      }
+    }
+
+    async function limparPalpites(id, nome) {
+      if (!confirm(`Limpar todos os palpites de ${nome}? O cadastro será mantido.`)) return;
+      try {
+        await api("DELETE", `/api/palpites/${id}`);
+        jogadoresCache = await api("GET", "/api/jogadores");
+        renderJogadores();
+        renderRanking();
+        toast(`🧹 Palpites de ${nome} apagados.`);
+      } catch (e) {
+        alert("Erro: " + e.message);
+      }
+    }
+
+    async function removerJogador(id, nome) {
+      if (!confirm(`Remover ${nome}? Os palpites dele também serão apagados.`)) return;
+      try {
+        await api("DELETE", `/api/jogadores/${id}`);
+        jogadoresCache = await api("GET", "/api/jogadores");
+        renderJogadores();
+        renderSelectJogadores();
+        renderRanking();
+        toast("🗑️ Jogador removido.");
+      } catch (e) {
+        alert("Erro: " + e.message);
+      }
+    }
+
+    function renderJogadores() {
+      const tbody = document.querySelector("#tabela-jogadores tbody");
+      tbody.innerHTML = "";
+      const lista = jogadoresCache.filter(j => !j.is_admin);
+      if (lista.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:#888;">Nenhum jogador cadastrado.</td></tr>';
+        return;
+      }
+      lista.forEach(j => {
+        const nomeEsc = j.nome.replace(/'/g, "\\'");
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td><strong>${j.nome}</strong></td>
+          <td><button class="btn-ver-palpites" onclick="verPalpitesJogador(${j.id}, '${nomeEsc}')">${j.total_palpites}/${jogosCache.length} 👁</button></td>
+          <td><button style="background:#e65100;color:#fff;border:none;padding:6px 10px;border-radius:4px;cursor:pointer;font-size:12px;"
+                onclick="limparPalpites(${j.id}, '${nomeEsc}')">Limpar palpites</button></td>
+          <td><button style="background:#1565c0;color:#fff;border:none;padding:6px 10px;border-radius:4px;cursor:pointer;font-size:12px;"
+                onclick="redefinirSenha(${j.id}, '${nomeEsc}')">Redefinir senha</button></td>
+          <td><button class="perigo" onclick="removerJogador(${j.id}, '${nomeEsc}')">Remover</button></td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    async function alterarMinhaSenha() {
+      const nova = prompt("Digite sua nova senha (mínimo 4 caracteres):");
+      if (nova === null) return;
+      if (nova.length < 4) { alert("Senha muito curta (mínimo 4 caracteres)."); return; }
+      const confirma = prompt("Confirme a nova senha:");
+      if (confirma === null) return;
+      if (nova !== confirma) { alert("As senhas não coincidem."); return; }
+      try {
+        await api("PUT", `/api/jogadores/${eu.id}/senha`, { nova_senha: nova });
+        toast("🔑 Senha alterada com sucesso.");
+      } catch (e) {
+        alert("Erro ao alterar senha: " + (e.message || e));
+      }
+    }
+
+    async function redefinirSenha(id, nome) {
+      const nova = prompt(`Nova senha para "${nome}" (mínimo 4 caracteres):`);
+      if (nova === null) return;
+      if (nova.length < 4) { alert("Senha muito curta (mínimo 4 caracteres)."); return; }
+      const confirma = prompt(`Confirme a nova senha para "${nome}":`);
+      if (confirma === null) return;
+      if (nova !== confirma) { alert("As senhas não coincidem."); return; }
+      try {
+        await api("PUT", `/api/jogadores/${id}/senha`, { nova_senha: nova });
+        toast(`🔑 Senha de ${nome} redefinida com sucesso.`);
+      } catch (e) {
+        alert("Erro: " + e.message);
+      }
+    }
+
+    async function verPalpitesJogador(id, nome) {
+      abrirModalPalpites(nome, null);
+      try {
+        const palpites = await api("GET", `/api/palpites/${id}`);
+        abrirModalPalpites(nome, palpites);
+      } catch (e) {
+        fecharModalPalpites();
+        toast("❌ " + e.message, "#d32f2f");
+      }
+    }
+
+    function abrirModalPalpites(nome, palpites) {
+      const palpiteMap = palpites ? Object.fromEntries(palpites.map(p => [p.jogo_id, p])) : null;
+      const ORDEM = [
+        "Grupo A","Grupo B","Grupo C","Grupo D","Grupo E","Grupo F",
+        "Grupo G","Grupo H","Grupo I","Grupo J","Grupo K","Grupo L",
+        "32-avos","Oitavas","Quartas","Semifinal","3º Lugar","FINAL"
+      ];
+      const ICONES = {
+        "Grupo A":"🌎","Grupo B":"🌎","Grupo C":"🌎","Grupo D":"🌎",
+        "Grupo E":"🌎","Grupo F":"🌎","Grupo G":"🌎","Grupo H":"🌎",
+        "Grupo I":"🌎","Grupo J":"🌎","Grupo K":"🌎","Grupo L":"🌎",
+        "32-avos":"⚔️","Oitavas":"⚡","Quartas":"🔥","Semifinal":"💫",
+        "3º Lugar":"🥉","FINAL":"🏆"
+      };
+
+      const faseMap = {};
+      jogosCache.forEach(j => {
+        if (!faseMap[j.fase]) faseMap[j.fase] = [];
+        faseMap[j.fase].push(j);
+      });
+
+      const totalFeitos = palpiteMap ? Object.keys(palpiteMap).length : 0;
+      const totalJogos  = jogosCache.length;
+
+      let corpo = "";
+      if (!palpiteMap) {
+        corpo = '<div style="text-align:center;padding:32px;color:#888;">Carregando...</div>';
+      } else {
+        ORDEM.forEach(fase => {
+          const jogos = faseMap[fase];
+          if (!jogos) return;
+          const feitos = jogos.filter(j => palpiteMap[j.id]).length;
+          const icone  = ICONES[fase] || "⚽";
+          const tudo   = feitos === jogos.length ? " fase-completa" : (feitos === 0 ? " fase-vazia" : "");
+          corpo += `<div class="mp-fase${tudo}">
+            <div class="mp-fase-header">
+              <span>${icone} ${fase}</span>
+              <span class="mp-fase-count">${feitos}/${jogos.length}</span>
+            </div>`;
+          jogos.forEach(j => {
+            const p   = palpiteMap[j.id];
+            const ok  = p && p.gols_casa !== null;
+            const placar = ok ? `${p.gols_casa}×${p.gols_fora}` : "—";
+            corpo += `<div class="mp-jogo ${ok ? "mp-ok" : "mp-sem"}">
+              <span class="mp-status">${ok ? "✅" : "❌"}</span>
+              <span class="mp-times">${j.casa} × ${j.fora}</span>
+              <span class="mp-placar">${placar}</span>
+            </div>`;
+          });
+          corpo += `</div>`;
+        });
+      }
+
+      const el = document.getElementById("modal-palpites-jogador");
+      el.innerHTML = `
+        <div class="mp-overlay" onclick="if(event.target===this)fecharModalPalpites()">
+          <div class="mp-box">
+            <div class="mp-header">
+              <div>
+                <div class="mp-titulo">👤 ${nome}</div>
+                ${palpiteMap ? `<div class="mp-subtitulo">${totalFeitos} de ${totalJogos} jogos palpitados</div>` : ""}
+              </div>
+              <button class="mp-fechar" onclick="fecharModalPalpites()">✕</button>
+            </div>
+            <div class="mp-corpo">${corpo}</div>
+          </div>
+        </div>`;
+      el.style.display = "block";
+      document.body.style.overflow = "hidden";
+    }
+
+    function fecharModalPalpites() {
+      document.getElementById("modal-palpites-jogador").style.display = "none";
+      document.body.style.overflow = "";
+    }
+
+    function renderSelectJogadores() {
+      const el = document.getElementById("select-jogador");
+      if (!el) return;
+      const val = el.value || eu.id;
+      el.innerHTML = '<option value="">-- Escolha um jogador --</option>';
+      jogadoresCache.forEach(j => {
+        const opt = document.createElement("option");
+        opt.value = j.id;
+        opt.textContent = j.is_admin ? `${j.nome} (você)` : j.nome;
+        if (String(j.id) === String(val)) opt.selected = true;
+        el.appendChild(opt);
+      });
+    }
+
+    // ============================================================
+    // PALPITES
+    // ============================================================
+    async function carregarPalpites() {
+      const selectEl = document.getElementById("select-jogador");
+      const jogadorId = eu.is_admin ? (selectEl ? selectEl.value : "") : eu.id;
+      const div = document.getElementById("palpites-lista");
+      if (!jogadorId) {
+        div.innerHTML = '<p style="color:#888;font-style:italic;">Escolha um jogador acima.</p>';
+        return;
+      }
+
+      let palpites = {};
+      try {
+        const lista = await api("GET", `/api/palpites/${jogadorId}`);
+        lista.forEach(p => { palpites[p.jogo_id] = p; });
+      } catch (e) {
+        div.innerHTML = `<p style="color:red;">Erro ao carregar palpites: ${e.message}</p>`;
+        return;
+      }
+
+      // Filtra por dia selecionado (se houver)
+      const filtroData = document.getElementById("filtro-data")?.value || "";
+      const jogosFiltrados = filtroData
+        ? jogosCache.filter(j => j.data === filtroData)
+        : jogosCache;
+
+      // Agrupa por data e ordena cronologicamente
+      const porData = {};
+      jogosFiltrados.forEach(j => {
+        const key = j.data || "0000-00-00";
+        if (!porData[key]) porData[key] = [];
+        porData[key].push(j);
+      });
+      const datasOrdenadas = Object.keys(porData).sort();
+
+      let html = "";
+      for (const dataKey of datasOrdenadas) {
+        const jogosNoDia = porData[dataKey].sort((a, b) => a.horario.localeCompare(b.horario));
+        html += `<div class="dia-header">📅 ${formatarData(dataKey)}</div>`;
+
+        jogosNoDia.forEach(jogo => {
+          const p = palpites[jogo.id] || {};
+          const r = resultadosCache[jogo.id];
+          const bloqueado = !eu.is_admin && jogoTravado(jogo);
+          const pts = r && p.gols_casa !== undefined && p.gols_fora !== undefined
+            ? calcularPontosFront(p, r, jogo) : null;
+
+          const multLabel = jogo.multiplicador > 1
+            ? `<span class="mult-badge">×${jogo.multiplicador}</span> ` : "";
+
+          let infoResultado = "";
+          if (r) {
+            infoResultado = ` · ${r.gols_casa}×${r.gols_fora}`;
+            if (jogo.eh_mata_mata && r.gols_casa === r.gols_fora && r.avanca) {
+              infoResultado += ` (${r.avanca === "casa" ? jogo.casa : jogo.fora} avançou)`;
+            }
+          }
+
+          const empateAtual = p.gols_casa !== undefined && p.gols_fora !== undefined && Number(p.gols_casa) === Number(p.gols_fora);
+          const avancaHtml = jogo.eh_mata_mata ? `
+            <div class="avanca-row" id="avanca-row-${jogo.id}" style="display:${empateAtual ? "flex" : "none"}">
+              <label>${["FINAL","3L"].includes(jogo.id) ? "🏆 Escolha o Vencedor" : "⚡ Quem avança?"}</label>
+              <select id="avanca-${jogo.id}"
+                      ${bloqueado ? "disabled" : `onchange="salvarPalpite(${jogadorId}, '${jogo.id}', this)"`}>
+                <option value="">-- Selecione --</option>
+                <option value="casa" ${p.avanca === "casa" ? "selected" : ""}>${jogo.casa}</option>
+                <option value="fora" ${p.avanca === "fora" ? "selected" : ""}>${jogo.fora}</option>
+              </select>
+            </div>` : "";
+
+          const jaSalvo = p.gols_casa !== undefined && p.gols_casa !== null && p.gols_fora !== undefined && p.gols_fora !== null;
+          const btnSalvar = bloqueado ? "" : `
+            <button id="btn-salvar-${jogo.id}" class="btn-salvar-jogo${jaSalvo ? ' salvo' : ''}"
+                    onclick="salvarPalpite(${jogadorId}, '${jogo.id}')">${jaSalvo ? '✓ Salvo' : 'Salvar'}</button>`;
+
+          html += `
+            <div class="jogo ${r ? "com-resultado" : ""}">
+              <div class="info">
+                <span style="color:#777;font-size:12px;">${jogo.fase}</span>
+                ${multLabel}· ${jogo.horario} (Brasília)${infoResultado}
+              </div>
+              ${timeBadge(jogo.casa, true)}
+              <input type="number" min="0" max="20"
+                     id="gc-${jogo.id}"
+                     value="${p.gols_casa ?? ""}"
+                     ${bloqueado ? "disabled" : ""}
+                     onchange="onPalpiteChange(${jogadorId}, '${jogo.id}')">
+              <span class="vs">x</span>
+              <input type="number" min="0" max="20"
+                     id="gf-${jogo.id}"
+                     value="${p.gols_fora ?? ""}"
+                     ${bloqueado ? "disabled" : ""}
+                     onchange="onPalpiteChange(${jogadorId}, '${jogo.id}')">
+              ${timeBadge(jogo.fora, true)}
+              ${pts !== null ? `<span class="pontos">${pts} pts</span>` : ""}
+              ${avancaHtml}
+              ${btnSalvar}
+            </div>
+          `;
+        });
+      }
+      div.innerHTML = html;
+    }
+
+    // Dispara quando um input de gols muda — atualiza visibilidade do "quem avança" e salva
+    function onPalpiteChange(jogadorId, jogoId) {
+      const jogo = jogosPorId[jogoId];
+      if (!jogo) return;
+      const gcEl = document.getElementById(`gc-${jogoId}`);
+      const gfEl = document.getElementById(`gf-${jogoId}`);
+      if (!gcEl || !gfEl) return;
+
+      if (jogo.eh_mata_mata) {
+        const avancaRow = document.getElementById(`avanca-row-${jogoId}`);
+        const gc = gcEl.value, gf = gfEl.value;
+        const empate = gc !== "" && gf !== "" && Number(gc) === Number(gf);
+        if (avancaRow) avancaRow.style.display = empate ? "flex" : "none";
+        if (!empate) {
+          const sel = document.getElementById(`avanca-${jogoId}`);
+          if (sel) sel.value = "";
+        }
+      }
+
+      salvarPalpite(jogadorId, jogoId);
+    }
+
+    function jogoTravado(jogo) {
+      if (resultadosCache[jogo.id]) return true;
+      const agora = Date.now();
+      const [ano, mes, dia] = jogo.data.split('-').map(Number);
+      const [hora, min] = jogo.horario.split(':').map(Number);
+      // horario está em BRT (UTC-3); converter para UTC: +3h
+      const inicioUTC = Date.UTC(ano, mes - 1, dia, hora + 3, min);
+      return agora >= inicioUTC - 10 * 60 * 1000;
+    }
+
+    // Calcula pontos no frontend (mesma lógica do backend)
+    function calcularPontosFront(p, r, jogo) {
+      const pc = Number(p.gols_casa), pf = Number(p.gols_fora);
+      const rc = Number(r.gols_casa), rf = Number(r.gols_fora);
+      if (isNaN(pc) || isNaN(pf)) return null;
+      const mult = jogo.multiplicador || 1;
+      let pts;
+
+      if (jogo.eh_mata_mata) {
+        const rAvanca = rc === rf ? r.avanca : (rc > rf ? "casa" : "fora");
+        const pAvanca = pc === pf ? p.avanca : (pc > pf ? "casa" : "fora");
+        const acertouAvanca = rAvanca && pAvanca === rAvanca;
+        const placarExato = (pc === rc && pf === rf);
+
+        if (placarExato && acertouAvanca) pts = 10;
+        else if (placarExato) pts = 5;
+        else if (acertouAvanca && (pc === rc || pf === rf)) pts = 7;
+        else if (acertouAvanca) pts = 5;
+        else if (pc === rc || pf === rf) pts = 2;
+        else pts = 0;
+      } else {
+        if (pc === rc && pf === rf) pts = 10;
+        else if (pc === pf && rc === rf) pts = 5;
+        else if ((pc > pf && rc > rf) || (pc < pf && rc < rf))
+          pts = (pc === rc || pf === rf) ? 7 : 5;
+        else if (pc === rc || pf === rf) pts = 2;
+        else pts = 0;
+      }
+      return pts * mult;
+    }
+
+    const _salvandoPalpite = new Set();
+
+    function _feedbackBotaoSalvo(btn) {
+      btn.textContent = "✓ Salvo";
+      btn.classList.add("salvo");
+      btn.style.background = "";
+      btn.style.color = "";
+      btn.disabled = false;
+    }
+
+    async function salvarPalpite(jogadorId, jogoId, _inputEl) {
+      if (_salvandoPalpite.has(jogoId)) return;
+
+      const gcEl = document.getElementById(`gc-${jogoId}`);
+      const gfEl = document.getElementById(`gf-${jogoId}`);
+      const card = gcEl ? gcEl.closest(".jogo") : (_inputEl && _inputEl.closest(".jogo"));
+      const valCasa = gcEl ? gcEl.value : (card ? card.querySelectorAll("input[type=number]")[0]?.value : "");
+      const valFora = gfEl ? gfEl.value : (card ? card.querySelectorAll("input[type=number]")[1]?.value : "");
+      if (valCasa === "" || valFora === "") return;
+
+      const jogo = jogosPorId[jogoId];
+      const body = { gols_casa: Number(valCasa), gols_fora: Number(valFora) };
+
+      if (jogo?.eh_mata_mata && Number(valCasa) === Number(valFora)) {
+        const avancaEl = document.getElementById(`avanca-${jogoId}`);
+        if (!avancaEl?.value) return; // aguarda seleção de quem avança
+        body.avanca = avancaEl.value;
+      } else {
+        body.avanca = null;
+      }
+
+      _salvandoPalpite.add(jogoId);
+      try {
+        await api("PUT", `/api/palpites/${jogadorId}/${jogoId}`, body);
+        const btn = document.getElementById(`btn-salvar-${jogoId}`);
+        if (btn) _feedbackBotaoSalvo(btn);
+        jogadoresCache = await api("GET", "/api/jogadores");
+        renderJogadores();
+      } catch (e) {
+        toast("❌ " + e.message, "#d32f2f");
+      } finally {
+        _salvandoPalpite.delete(jogoId);
+      }
+    }
+
+    // ============================================================
+    // BÔNUS
+    // ============================================================
+    function popularSelectTimes() {
+      ["palpite-campeao","campeao-oficial"].forEach(id => {
+        const el = document.getElementById(id);
+        const val = el.value;
+        el.innerHTML = id === "campeao-oficial"
+          ? '<option value="">-- Não definido --</option>'
+          : '<option value="">-- Escolha um time --</option>';
+        timesCache.forEach(t => {
+          const opt = document.createElement("option");
+          opt.value = t; opt.textContent = t;
+          if (t === val) opt.selected = true;
+          el.appendChild(opt);
+        });
+      });
+    }
+
+    function bonusTravado() {
+      // Prazo: 11/06/2026 às 15h50 BRT (= 18h50 UTC)
+      return Date.now() >= Date.UTC(2026, 5, 11, 18, 50);
+    }
+
+    function mostrarBonusSalvoSePreenchido() {
+      const campeao    = document.getElementById("palpite-campeao").value;
+      const artilheiro = document.getElementById("palpite-artilheiro").value.trim();
+      document.getElementById("bonus-salvo-aviso").style.display =
+        (campeao && artilheiro) ? "block" : "none";
+    }
+
+    async function carregarBonus() {
+      try {
+        const b = await api("GET", `/api/bonus/${eu.id}`);
+        document.getElementById("palpite-campeao").value    = b.campeao    || "";
+        document.getElementById("palpite-artilheiro").value = b.artilheiro || "";
+      } catch (_) {}
+
+      if (!eu.is_admin && bonusTravado()) {
+        document.getElementById("palpite-campeao").disabled    = true;
+        document.getElementById("palpite-artilheiro").disabled = true;
+        document.getElementById("btn-salvar-bonus").disabled   = true;
+        document.getElementById("bonus-travado-aviso").style.display = "block";
+      }
+
+      if (!eu.is_admin) mostrarBonusSalvoSePreenchido();
+
+      if (eu.is_admin) {
+        try {
+          const of = await api("GET", "/api/oficiais");
+          document.getElementById("campeao-oficial").value    = of.campeao    || "";
+          document.getElementById("artilheiro-oficial").value = of.artilheiro || "";
+        } catch (_) {}
+      }
+    }
+
+    async function salvarBonus() {
+      const campeao    = document.getElementById("palpite-campeao").value;
+      const artilheiro = document.getElementById("palpite-artilheiro").value.trim();
+      try {
+        await api("PUT", `/api/bonus/${eu.id}`, { campeao, artilheiro });
+        toast("✅ Palpites bônus salvos!");
+        mostrarBonusSalvoSePreenchido();
+      } catch (e) {
+        toast("❌ " + e.message, "#d32f2f");
+      }
+    }
+
+    async function salvarOficiais() {
+      const campeao    = document.getElementById("campeao-oficial").value;
+      const artilheiro = document.getElementById("artilheiro-oficial").value.trim();
+      try {
+        await api("PUT", "/api/oficiais", { campeao, artilheiro });
+        toast("✅ Oficiais salvos! Ranking atualizado.");
+        renderRanking();
+      } catch (e) {
+        alert("Erro: " + e.message);
+      }
+    }
+
+    // ============================================================
+    // ADMIN — RESULTADOS
+    // ============================================================
+    async function atualizarStatusSync() {
+      try {
+        const s = await api("GET", "/api/admin/sync/status");
+        const em = s.em_janela ? "🟢 Em janela de jogo — sincronizando automaticamente" : "⚪ Fora de janela de jogo";
+        const log = s.log || "Aguardando primeiro ciclo...";
+        const chamadas = s.chamadas_hoje ?? 0;
+        const limite = s.limite_diario ?? 90;
+        const pct = Math.round(chamadas / limite * 100);
+        const corCont = pct >= 90 ? "#d32f2f" : pct >= 70 ? "#e65100" : "#006341";
+        const contTxt = `<span style="color:${corCont};font-weight:700;">${chamadas}/${limite} chamadas hoje (${pct}%)</span>`;
+        document.getElementById("sync-status-txt").innerHTML =
+          `${em}<br><span style="font-size:12px;">${log} · ${contTxt}</span>`;
+      } catch (_) {}
+    }
+
+    async function syncAgora() {
+      const btn = document.getElementById("btn-sync");
+      btn.disabled = true;
+      btn.textContent = "Sincronizando...";
+      try {
+        const r = await api("POST", "/api/admin/sync");
+        toast(`✅ Sync concluído — ${r.atualizados} resultado(s) atualizado(s)`);
+        const resultados = await api("GET", "/api/resultados");
+        resultadosCache = Object.fromEntries(resultados.map(r => [r.jogo_id, r]));
+        renderAdmin();
+        renderRanking();
+        renderInicio();
+        await atualizarStatusSync();
+      } catch (e) {
+        toast("❌ " + e.message, "#d32f2f");
+      } finally {
+        btn.disabled = false;
+        btn.textContent = "🔄 Sincronizar agora";
+      }
+    }
+
+    async function renderAdmin() {
+      renderJogadores();
+      const div = document.getElementById("admin-jogos");
+      await atualizarStatusSync();
+      const fases = {};
+      jogosCache.forEach(j => {
+        if (!fases[j.fase]) fases[j.fase] = [];
+        fases[j.fase].push(j);
+      });
+
+      let html = "";
+      for (const fase in fases) {
+        html += `<h3>${fase}</h3>`;
+        fases[fase].forEach(jogo => {
+          const r = resultadosCache[jogo.id] || {};
+          const multLabel = jogo.multiplicador > 1
+            ? `<span class="mult-badge">×${jogo.multiplicador}</span> ` : "";
+          const empateAtual = r.gols_casa !== undefined && r.gols_casa === r.gols_fora;
+
+          const avancaHtml = jogo.eh_mata_mata ? `
+            <div class="avanca-row" id="adm-avanca-row-${jogo.id}" style="display:${empateAtual ? "flex" : "none"}">
+              <label>${["FINAL","3L"].includes(jogo.id) ? "🏆 Vencedor" : "⚡ Quem avançou?"}</label>
+              <select id="adm-avanca-${jogo.id}" onchange="salvarResultado('${jogo.id}')">
+                <option value="">-- Selecione --</option>
+                <option value="casa" ${r.avanca === "casa" ? "selected" : ""}>${jogo.casa}</option>
+                <option value="fora" ${r.avanca === "fora" ? "selected" : ""}>${jogo.fora}</option>
+              </select>
+            </div>` : "";
+
+          html += `
+            <div class="jogo ${resultadosCache[jogo.id] ? "com-resultado" : ""}">
+              <div class="info">${multLabel}${jogo.id} · ${jogo.data} ${jogo.horario}</div>
+              ${timeBadge(jogo.casa, true)}
+              <input type="number" min="0" max="20" id="adm-gc-${jogo.id}" value="${r.gols_casa ?? ""}"
+                     onchange="onAdminResultChange('${jogo.id}')">
+              <span class="vs">x</span>
+              <input type="number" min="0" max="20" id="adm-gf-${jogo.id}" value="${r.gols_fora ?? ""}"
+                     onchange="onAdminResultChange('${jogo.id}')">
+              ${timeBadge(jogo.fora, true)}
+              <button class="btn-salvar-jogo" onclick="salvarResultado('${jogo.id}')">Salvar</button>
+              ${resultadosCache[jogo.id]
+                ? `<button class="perigo" onclick="apagarResultado('${jogo.id}')">Apagar</button>`
+                : ""}
+              ${avancaHtml}
+            </div>
+          `;
+        });
+      }
+      div.innerHTML = html;
+      renderMataMataAdmin();
+    }
+
+    function onAdminResultChange(jogoId) {
+      const jogo = jogosPorId[jogoId];
+      if (!jogo) return;
+      const gcEl = document.getElementById(`adm-gc-${jogoId}`);
+      const gfEl = document.getElementById(`adm-gf-${jogoId}`);
+      if (!gcEl || !gfEl) return;
+
+      if (jogo.eh_mata_mata) {
+        const avancaRow = document.getElementById(`adm-avanca-row-${jogoId}`);
+        const gc = gcEl.value, gf = gfEl.value;
+        const empate = gc !== "" && gf !== "" && Number(gc) === Number(gf);
+        if (avancaRow) avancaRow.style.display = empate ? "flex" : "none";
+        if (!empate) {
+          const sel = document.getElementById(`adm-avanca-${jogoId}`);
+          if (sel) sel.value = "";
+        }
+      }
+
+      salvarResultado(jogoId);
+    }
+
+    async function salvarResultado(jogoId) {
+      const gcEl = document.getElementById(`adm-gc-${jogoId}`);
+      const gfEl = document.getElementById(`adm-gf-${jogoId}`);
+      const valCasa = gcEl?.value ?? "";
+      const valFora = gfEl?.value ?? "";
+      if (valCasa === "" || valFora === "") {
+        toast("❌ Preencha os dois placares antes de salvar", "#d32f2f");
+        return;
+      }
+
+      const jogo = jogosPorId[jogoId];
+      const body = { gols_casa: Number(valCasa), gols_fora: Number(valFora) };
+
+      if (jogo?.eh_mata_mata && Number(valCasa) === Number(valFora)) {
+        const avancaEl = document.getElementById(`adm-avanca-${jogoId}`);
+        if (!avancaEl?.value) {
+          toast("❌ Empate em mata-mata: selecione quem avançou", "#d32f2f");
+          return;
+        }
+        body.avanca = avancaEl.value;
+      } else {
+        body.avanca = null;
+      }
+
+      try {
+        const resultado = await api("PUT", `/api/resultados/${jogoId}`, body);
+        resultadosCache[jogoId] = resultado;
+        renderAdmin();
+        renderRanking();
+        renderInicio();
+        const sel = document.getElementById("select-jogador").value;
+        if (sel) carregarPalpites();
+      } catch (e) {
+        toast("❌ " + e.message, "#d32f2f");
+      }
+    }
+
+    async function apagarResultado(jogoId) {
+      if (!confirm("Apagar o resultado desse jogo? Os pontos serão recalculados.")) return;
+      try {
+        await api("DELETE", `/api/resultados/${jogoId}`);
+        delete resultadosCache[jogoId];
+        toast("🗑️ Resultado apagado.");
+        renderAdmin();
+        renderRanking();
+        renderInicio();
+      } catch (e) {
+        toast("❌ " + e.message, "#d32f2f");
+      }
+    }
+
+    async function renderMataMataAdmin() {
+      const div = document.getElementById("mata-mata-times");
+      if (!div) return;
+      let mapeados = {};
+      try {
+        const dados = await api("GET", "/api/admin/jogo-nomes-reais");
+        dados.forEach(d => { mapeados[d.jogo_id] = d; });
+      } catch(e) {}
+      const fases = {};
+      jogosCache.filter(j => j.eh_mata_mata).forEach(j => {
+        if (!fases[j.fase]) fases[j.fase] = [];
+        fases[j.fase].push(j);
+      });
+      let html = "";
+      for (const fase in fases) {
+        html += `<h4 style="color:#006341;margin:14px 0 6px;">${fase}</h4>`;
+        fases[fase].forEach(j => {
+          const m = mapeados[j.id] || {};
+          const registrado = m.casa_real ? `<span style="font-size:11px;color:#388e3c;font-weight:700;">✓ Registrado</span>` : "";
+          html += `<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px;padding:8px 12px;background:#f9f9f9;border-radius:6px;">
+            <span style="font-size:11px;color:#777;min-width:50px;">${j.id}</span>
+            <span style="font-size:12px;color:#555;flex:1;min-width:120px;">${j.casa} × ${j.fora}</span>
+            ${registrado}
+            <input type="text" id="mm-casa-${j.id}" placeholder="Time casa" value="${m.casa_real||''}"
+                   list="times-validos"
+                   style="width:140px;padding:6px 8px;font-size:13px;border:2px solid #ddd;border-radius:6px;">
+            <span style="font-weight:700;color:#999;">×</span>
+            <input type="text" id="mm-fora-${j.id}" placeholder="Time fora" value="${m.fora_real||''}"
+                   list="times-validos"
+                   style="width:140px;padding:6px 8px;font-size:13px;border:2px solid #ddd;border-radius:6px;">
+            <button class="acao" style="padding:7px 12px;font-size:12px;" onclick="salvarTimesMataMata('${j.id}')">Registrar</button>
+            ${m.casa_real ? `<button class="perigo" style="padding:7px 10px;font-size:12px;" onclick="limparTimesMataMata('${j.id}')">✕ Limpar</button>` : ""}
+          </div>`;
+        });
+      }
+      div.innerHTML = html || `<p style="color:#888;font-size:13px;">Nenhum jogo mata-mata encontrado.</p>`;
+    }
+
+    async function salvarTimesMataMata(jogoId) {
+      const casa = document.getElementById(`mm-casa-${jogoId}`)?.value?.trim();
+      const fora = document.getElementById(`mm-fora-${jogoId}`)?.value?.trim();
+      if (!casa || !fora) { toast("❌ Preencha os dois times", "#d32f2f"); return; }
+      try {
+        await api("PUT", `/api/admin/jogo/${jogoId}/times`, { casa, fora });
+        toast(`✅ ${jogoId} registrado — sync vai detectar esse jogo automaticamente.`);
+        await atualizarJogosCache();
+        renderMataMataAdmin();
+      } catch(e) {
+        toast("❌ " + e.message, "#d32f2f");
+      }
+    }
+
+    async function limparTimesMataMata(jogoId) {
+      if (!confirm(`Limpar times registrados de ${jogoId}?`)) return;
+      try {
+        await api("DELETE", `/api/admin/jogo/${jogoId}/times`);
+        toast(`🧹 Times de ${jogoId} removidos.`);
+        await atualizarJogosCache();
+        renderMataMataAdmin();
+      } catch(e) {
+        toast("❌ " + e.message, "#d32f2f");
+      }
+    }
+
+    async function atualizarJogosCache() {
+      jogosCache = await api("GET", "/api/jogos");
+      jogosPorId = Object.fromEntries(jogosCache.map(j => [j.id, j]));
+      popularFiltroDatas();
+    }
+
+    // ============================================================
+    // RANKING
+    // ============================================================
+    async function renderRanking() {
+      const tbody = document.querySelector("#tabela-ranking tbody");
+      try {
+        const ranking = await api("GET", "/api/ranking");
+        tbody.innerHTML = "";
+        if (ranking.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#888;">Cadastre jogadores primeiro!</td></tr>';
+          return;
+        }
+        ranking.forEach((p, i) => {
+          const tr = document.createElement("tr");
+          if (i === 0 && p.total > 0) tr.classList.add("pos-1");
+          else if (i === 1 && p.total > 0) tr.classList.add("pos-2");
+          else if (i === 2 && p.total > 0) tr.classList.add("pos-3");
+          tr.innerHTML = `
+            <td><strong>${p.posicao}º</strong></td>
+            <td><strong>${p.nome}</strong></td>
+            <td><strong style="font-size:18px;color:#006341;">${p.total}</strong></td>
+            <td>${p.placar_exato}</td>
+            <td>${p.resultado_correto}</td>
+            <td>${p.acertou_artilheiro ? "✓" : "—"}</td>
+            <td>${p.acertou_campeao ? "✓" : "—"}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      } catch (e) {
+        tbody.innerHTML = `<tr><td colspan="7" style="color:red;">Erro ao carregar ranking: ${e.message}</td></tr>`;
+      }
+    }
+
+    // ============================================================
+    // TODOS OS PALPITES
+    // ============================================================
+    async function renderTodos() {
+      const div = document.getElementById("todos-lista");
+      div.innerHTML = '<p style="color:#888;">Carregando...</p>';
+      try {
+        _todosPublicos = await api("GET", "/api/palpites/publicos");
+        _renderTodosLista();
+      } catch (e) {
+        div.innerHTML = `<p style="color:red;">Erro: ${e.message}</p>`;
+      }
+    }
+
+    function filtrarTodos() {
+      if (_todosPublicos !== null) _renderTodosLista();
+    }
+
+    function togglePalpitesTodos(header) {
+      header.classList.toggle('aberto');
+      const palpites = header.nextElementSibling;
+      palpites.style.display = palpites.style.display === 'none' ? 'flex' : 'none';
+    }
+
+    function _renderTodosLista() {
+      const div      = document.getElementById("todos-lista");
+      const publicos = _todosPublicos || {};
+      const filtroData = document.getElementById("filtro-todos-data")?.value || "";
+
+      const jogosTravados = jogosCache.filter(j => jogoTravado(j));
+      if (jogosTravados.length === 0) {
+        div.innerHTML = '<p style="color:#888;">Nenhum jogo travado ainda. Os palpites aparecem aqui 10 min antes de cada partida.</p>';
+        return;
+      }
+
+      const jogosFiltrados = filtroData
+        ? jogosTravados.filter(j => j.data === filtroData)
+        : jogosTravados;
+
+      if (jogosFiltrados.length === 0) {
+        div.innerHTML = '<p style="color:#888;">Nenhum jogo travado neste dia.</p>';
+        return;
+      }
+
+      // Agrupa por data
+      const porData = {};
+      jogosFiltrados.forEach(j => {
+        if (!porData[j.data]) porData[j.data] = [];
+        porData[j.data].push(j);
+      });
+
+      let html = "";
+      for (const data of Object.keys(porData).sort()) {
+        html += `<div class="dia-header">${formatarData(data)}</div>`;
+        for (const jogo of porData[data]) {
+          const r = resultadosCache[jogo.id];
+          const palpitesJogo = publicos[jogo.id] || [];
+          const multLabel = jogo.multiplicador > 1 ? `<div style="text-align:center;"><span class="mult-badge">×${jogo.multiplicador}</span></div>` : "";
+          const scoreClass = r ? "finalizado" : "andamento";
+          const scoreTexto = r ? `${r.gols_casa} × ${r.gols_fora}` : "? × ?";
+
+          let palpitesHtml = "";
+          if (palpitesJogo.length === 0) {
+            palpitesHtml = `<p style="font-size:13px;color:#aaa;margin:4px 0 0;">Nenhum palpite registrado.</p>`;
+          } else {
+            palpitesHtml = palpitesJogo
+              .sort((a, b) => a.nome.localeCompare(b.nome))
+              .map(p => {
+                const temPalpite = p.gols_casa !== null && p.gols_fora !== null;
+                const palpiteStr = temPalpite
+                  ? `${p.gols_casa} × ${p.gols_fora}${p.avanca ? ` (${p.avanca === "casa" ? jogo.casa : jogo.fora})` : ""}`
+                  : "—";
+                let pts = null, corPts = "";
+                if (r && temPalpite) {
+                  pts = calcularPontosFront(p, r, jogo);
+                  corPts = pts >= 10 ? "#2e7d32" : pts >= 5 ? "#f57f17" : pts >= 2 ? "#e65100" : "#c62828";
+                }
+                const isMe = p.jogador_id === eu.id;
+                return `<div class="todos-palpite-row${isMe ? " todos-palpite-eu" : ""}">
+                  <span class="todos-palpite-nome">${p.nome}${isMe ? " <span class='todos-eu-badge'>você</span>" : ""}</span>
+                  <span class="todos-palpite-placar">${palpiteStr}</span>
+                  ${r ? `<span class="todos-palpite-pts" style="color:${corPts};">${pts !== null ? pts + " pts" : "—"}</span>` : ""}
+                </div>`;
+              }).join("");
+          }
+
+          html += `
+            <div class="jogo-todos-card">
+              <div class="jogo-todos-header" onclick="togglePalpitesTodos(this)">
+                ${multLabel}
+                <div class="jogo-todos-placar">
+                  <div class="jogo-todos-time">
+                    ${flagImg(jogo.casa, 28)}
+                    <span>${jogo.casa}</span>
+                  </div>
+                  <div class="jogo-todos-score ${scoreClass}">${scoreTexto}</div>
+                  <div class="jogo-todos-time fora">
+                    <span>${jogo.fora}</span>
+                    ${flagImg(jogo.fora, 28)}
+                  </div>
+                </div>
+                <div class="jogo-todos-meta">${jogo.horario}h · ${jogo.fase}</div>
+                <div class="jogo-todos-toggle">▼</div>
+              </div>
+              <div class="jogo-todos-palpites">
+                ${palpitesHtml}
+              </div>
+            </div>`;
+        }
+      }
+      div.innerHTML = html;
+    }
+
+    // ============================================================
+    // HISTÓRICO PESSOAL
+    // ============================================================
+    async function renderHistorico() {
+      const div = document.getElementById("historico-lista");
+
+      // Tabela de participação (síncrona, usa cache)
+      const listaJog = jogadoresCache.filter(j => !j.is_admin);
+      let partHtml = `<h3 style="margin-bottom:10px;">👥 Participação no bolão</h3>
+        <div class="table-scroll" style="margin-bottom:6px;"><table style="font-size:13px;">
+          <thead><tr><th>Jogador</th><th>Palpites feitos</th></tr></thead><tbody>`;
+      if (listaJog.length === 0) {
+        partHtml += `<tr><td colspan="2" style="color:#888;text-align:center;">Nenhum jogador.</td></tr>`;
+      } else {
+        listaJog.forEach(j => {
+          const pct = jogosCache.length > 0 ? Math.round(j.total_palpites / jogosCache.length * 100) : 0;
+          const isMe = j.id === eu.id;
+          partHtml += `<tr style="${isMe ? "background:#f3f8ff;" : ""}">
+            <td><strong>${j.nome}</strong>${isMe ? " <span style='font-size:11px;color:#1565c0;'>(você)</span>" : ""}</td>
+            <td>${j.total_palpites} de ${jogosCache.length} (${pct}%)</td>
+          </tr>`;
+        });
+      }
+      partHtml += `</tbody></table></div>
+        <hr style="border:none;border-top:2px solid #f0f0f0;margin:20px 0;">
+        <h3 style="margin-bottom:12px;">📋 Meu histórico jogo a jogo</h3>`;
+
+      div.innerHTML = partHtml + '<p style="color:#888;">Carregando...</p>';
+
+      try {
+        const meusPalpites = await api("GET", `/api/palpites/${eu.id}`);
+        const pMap = Object.fromEntries(meusPalpites.map(p => [p.jogo_id, p]));
+
+        const jogosComResultado = jogosCache.filter(j => resultadosCache[j.id]);
+        if (jogosComResultado.length === 0) {
+          div.innerHTML = '<p style="color:#888;">Nenhum resultado disponível ainda.</p>';
+          return;
+        }
+
+        let totalPts = 0, exatos = 0, corretos = 0, erros = 0;
+        const porFase = {};
+        jogosComResultado.forEach(j => {
+          if (!porFase[j.fase]) porFase[j.fase] = [];
+          porFase[j.fase].push(j);
+        });
+
+        let html = "";
+        for (const fase of Object.keys(porFase)) {
+          html += `<h3 style="margin:20px 0 8px;">${fase}</h3>`;
+          html += `<div class="table-scroll"><table style="font-size:13px;width:100%;">
+            <thead><tr><th>Jogo</th><th>Resultado</th><th>Meu palpite</th><th>Pts</th></tr></thead><tbody>`;
+          porFase[fase].forEach(jogo => {
+            const r = resultadosCache[jogo.id];
+            const p = pMap[jogo.jogo_id] || pMap[jogo.id];
+            const temPalpite = p && p.gols_casa !== null && p.gols_fora !== null;
+            const pts = (r && temPalpite) ? calcularPontosFront(p, r, jogo) : null;
+
+            let cor = "#f5f5f5", icone = "—";
+            if (pts !== null) {
+              if (pts >= 10 * jogo.multiplicador) { cor = "#e8f5e9"; icone = "✓✓"; exatos++; }
+              else if (pts >= 5 * jogo.multiplicador) { cor = "#fff8e1"; icone = "✓"; corretos++; }
+              else if (pts >= 2) { cor = "#fff3e0"; icone = "~"; }
+              else { cor = "#ffebee"; icone = "✗"; erros++; }
+              totalPts += pts;
+            }
+
+            const resultadoStr = r ? `${r.gols_casa} × ${r.gols_fora}${r.avanca ? ` (${r.avanca === "casa" ? jogo.casa : jogo.fora})` : ""}` : "—";
+            const palpiteStr = temPalpite ? `${p.gols_casa} × ${p.gols_fora}${p.avanca ? ` (${p.avanca === "casa" ? jogo.casa : jogo.fora})` : ""}` : "<span style='color:#bbb;'>sem palpite</span>";
+
+            html += `<tr style="background:${cor};">
+              <td><strong>${jogo.casa}</strong> × <strong>${jogo.fora}</strong></td>
+              <td>${resultadoStr}</td>
+              <td>${palpiteStr}</td>
+              <td style="font-weight:700;">${pts !== null ? `${pts} ${icone}` : "—"}</td>
+            </tr>`;
+          });
+          html += `</tbody></table></div>`;
+        }
+
+        // Resumo no topo
+        const resumo = `
+          <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px;">
+            <div style="background:#e8f5e9;border-radius:8px;padding:10px 18px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#2e7d32;">${totalPts}</div>
+              <div style="font-size:12px;color:#555;">pontos (jogos finalizados)</div>
+            </div>
+            <div style="background:#e3f2fd;border-radius:8px;padding:10px 18px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#1565c0;">${exatos}</div>
+              <div style="font-size:12px;color:#555;">placares exatos ✓✓</div>
+            </div>
+            <div style="background:#fff8e1;border-radius:8px;padding:10px 18px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#f57f17;">${corretos}</div>
+              <div style="font-size:12px;color:#555;">resultados certos ✓</div>
+            </div>
+            <div style="background:#ffebee;border-radius:8px;padding:10px 18px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:#c62828;">${erros}</div>
+              <div style="font-size:12px;color:#555;">erros ✗</div>
+            </div>
+          </div>`;
+        div.innerHTML = partHtml + resumo + html;
+      } catch (e) {
+        div.innerHTML = partHtml + `<p style="color:red;">Erro: ${e.message}</p>`;
+      }
+    }
+
+    // ============================================================
+    // RESET COMPLETO (admin)
+    // ============================================================
+    async function resetarTudo() {
+      if (!confirm("Tem certeza? Isso apaga todos os palpites, resultados e confrontos do mata-mata. Os cadastros dos jogadores são mantidos. Não pode ser desfeito.")) return;
+      if (!confirm("Última chance!")) return;
+      try {
+        await api("POST", "/api/admin/reset");
+        resultadosCache = {};
+        jogadoresCache  = await api("GET", "/api/jogadores");
+        renderJogadores();
+        renderRanking();
+        renderInicio();
+        toast("🗑️ Bolão resetado! Cadastros mantidos.");
+      } catch (e) {
+        alert("Erro ao resetar: " + e.message);
+      }
+    }
+
+    // ============================================================
+    // BOOT — verifica se já tem token salvo
+    // ============================================================
+    if (token && eu) {
+      iniciarApp();
+    }
+
+    // Registra service worker para PWA (ícone na tela inicial)
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js').catch(() => {});
+    }
+  </script>
+  <div id="modal-palpites-jogador" style="display:none;"></div>
+</body>
+</html>

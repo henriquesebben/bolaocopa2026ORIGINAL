@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<!--
+  Bolão da Copa do Mundo 2026
+  ============================
+  Protótipo criado para o Henrique e amigos.
+
+  COMO USAR:
+  1. Abra este arquivo no navegador (clique duas vezes nele)
+  2. Cadastre os jogadores na aba "Jogadores"
+  3. Cada jogador faz seus palpites na aba "Palpites"
+  4. Conforme os jogos vão acontecendo, cadastre os resultados na aba "Admin"
+  5. O ranking é calculado automaticamente na aba "Ranking"
+
+  Tudo fica salvo no seu navegador (localStorage). Não precisa de servidor!
+
+  Para usar com seus amigos online (no futuro): a gente evolui isso pra um
+  app com banco de dados e login. Esse aqui é o protótipo pra você ver
+  funcionando primeiro.
+-->
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bolão da Copa 2026</title>
+
+  <style>
+    /* ============================================================
+       ESTILOS (CSS)
+       ============================================================ */
+
+    /* Reset básico — tira margens padrão do navegador */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* Estilo geral do corpo da página */
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: linear-gradient(135deg, #006341 0%, #009c3b 100%);
+      min-height: 100vh;
+      color: #1a1a1a;
+    }
+
+    /* Cabeçalho com o título do bolão */
+    header {
+      background: rgba(0, 0, 0, 0.3);
+      color: #fff;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+
+    header h1 {
+      font-size: 28px;
+      margin-bottom: 5px;
+    }
+
+    header p {
+      opacity: 0.9;
+      font-size: 14px;
+    }
+
+    /* Menu de navegação entre as abas */
+    nav {
+      background: #fff;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 5px;
+      padding: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    nav button {
+      background: #f0f0f0;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      color: #444;
+      transition: all 0.2s;
+    }
+
+    nav button:hover {
+      background: #ddd;
+    }
+
+    /* Aba ativa fica destacada */
+    nav button.ativo {
+      background: #ffdf00;
+      color: #006341;
+    }
+
+    /* Container principal do conteúdo */
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 25px 20px;
+    }
+
+    /* Cada "tela" é uma section — só uma aparece por vez */
+    section.view {
+      display: none;
+      background: #fff;
+      border-radius: 12px;
+      padding: 25px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    }
+
+    section.view.ativo {
+      display: block;
+    }
+
+    section.view h2 {
+      color: #006341;
+      margin-bottom: 15px;
+      border-bottom: 3px solid #ffdf00;
+      padding-bottom: 8px;
+    }
+
+    section.view h3 {
+      color: #006341;
+      margin-top: 20px;
+      margin-bottom: 10px;
+    }
+
+    /* Inputs e botões padrão */
+    input, select {
+      padding: 8px 12px;
+      border: 2px solid #ddd;
+      border-radius: 6px;
+      font-size: 14px;
+      width: 100%;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: #009c3b;
+    }
+
+    button.acao {
+      background: #009c3b;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    button.acao:hover {
+      background: #007a2e;
+    }
+
+    button.perigo {
+      background: #d32f2f;
+      color: #fff;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    button.perigo:hover {
+      background: #b71c1c;
+    }
+
+    /* Tabelas — para ranking e jogos */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    th, td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid #eee;
+    }
+
+    th {
+      background: #f5f5f5;
+      color: #006341;
+      font-weight: 700;
+    }
+
+    tr:hover {
+      background: #fafafa;
+    }
+
+    /* Estilo dos cards de jogo */
+    .jogo {
+      background: #f9f9f9;
+      border-radius: 8px;
+      padding: 12px 15px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      border-left: 4px solid #009c3b;
+    }
+
+    .jogo.com-resultado {
+      border-left-color: #ffdf00;
+      background: #fffde7;
+    }
+
+    .jogo .time {
+      flex: 1;
+      font-weight: 600;
+      min-width: 100px;
+    }
+
+    .jogo .time.casa {
+      text-align: right;
+    }
+
+    .jogo input[type="number"] {
+      width: 50px;
+      text-align: center;
+      padding: 6px;
+    }
+
+    .jogo .vs {
+      font-weight: 700;
+      color: #999;
+    }
+
+    .jogo .info {
+      width: 100%;
+      font-size: 12px;
+      color: #777;
+      margin-bottom: 5px;
+    }
+
+    .jogo .pontos {
+      background: #ffdf00;
+      color: #006341;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    /* Caixa de aviso/dica */
+    .dica {
+      background: #fffde7;
+      border-left: 4px solid #ffdf00;
+      padding: 12px 16px;
+      border-radius: 6px;
+      margin: 15px 0;
+      font-size: 14px;
+    }
+
+    .dica strong {
+      color: #006341;
+    }
+
+    /* Estatística no card */
+    .stat {
+      display: inline-block;
+      background: #006341;
+      color: #fff;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 13px;
+      margin-right: 8px;
+    }
+
+    /* Lista de grupos da Copa */
+    .grupos-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 12px;
+      margin-top: 15px;
+    }
+
+    .grupo-card {
+      background: #f9f9f9;
+      border-radius: 8px;
+      padding: 12px;
+      border-top: 4px solid #009c3b;
+    }
+
+    .grupo-card h4 {
+      color: #006341;
+      margin-bottom: 8px;
+    }
+
+    .grupo-card ul {
+      list-style: none;
+    }
+
+    .grupo-card ul li {
+      padding: 4px 0;
+      font-size: 14px;
+    }
+
+    /* Posições do ranking */
+    .pos-1 { background: linear-gradient(90deg, #ffd700 0%, #fff 100%) !important; }
+    .pos-2 { background: linear-gradient(90deg, #c0c0c0 0%, #fff 100%) !important; }
+    .pos-3 { background: linear-gradient(90deg, #cd7f32 0%, #fff 100%) !important; }
+
+    /* Responsividade — em telas pequenas */
+    @media (max-width: 600px) {
+      header h1 { font-size: 22px; }
+      .jogo .time { font-size: 14px; }
+      nav button { padding: 8px 12px; font-size: 12px; }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- ========================================================
+       CABEÇALHO
+       ======================================================== -->
+  <header>
+    <h1>🏆 Bolão da Copa do Mundo 2026</h1>
+    <p>Mostra que você manja de futebol — palpita aí!</p>
+  </header>
+
+  <!-- ========================================================
+       NAVEGAÇÃO ENTRE ABAS
+       ======================================================== -->
+  <nav>
+    <button onclick="mostrarView('inicio')" class="ativo">🏠 Início</button>
+    <button onclick="mostrarView('jogadores')">👥 Jogadores</button>
+    <button onclick="mostrarView('palpites')">🎯 Palpites</button>
+    <button onclick="mostrarView('bonus')">⭐ Bônus</button>
+    <button onclick="mostrarView('admin')">🛠️ Admin</button>
+    <button onclick="mostrarView('ranking')">🏅 Ranking</button>
+    <button onclick="mostrarView('regras')">📋 Regras</button>
+  </nav>
+
+  <main>
+    <!-- ========================================================
+         VIEW: INÍCIO
+         ======================================================== -->
+    <section id="view-inicio" class="view ativo">
+      <h2>Bem-vindo ao bolão!</h2>
+      <p>Esse é o painel central do bolão da Copa 2026. Por aqui você vê quantos jogadores estão cadastrados, quantos jogos já tiveram resultado, e atalhos para as principais ações.</p>
+
+      <div class="dica">
+        <strong>Primeira vez aqui?</strong> Comece cadastrando os jogadores na aba <em>Jogadores</em>. Depois, cada um faz seus palpites na aba <em>Palpites</em>.
+      </div>
+
+      <h3>📊 Estatísticas</h3>
+      <div id="stats-inicio">
+        <!-- preenchido por JS -->
+      </div>
+
+      <h3>🌎 Grupos da Copa</h3>
+      <p style="font-size: 14px; color: #666; margin-bottom: 10px;">
+        Os 48 times estão divididos em 12 grupos de 4. Você pode editar os times pela aba <em>Admin</em> caso o sorteio oficial seja diferente.
+      </p>
+      <div id="grupos-container" class="grupos-container">
+        <!-- preenchido por JS -->
+      </div>
+    </section>
+
+    <!-- ========================================================
+         VIEW: JOGADORES
+         ======================================================== -->
+    <section id="view-jogadores" class="view">
+      <h2>👥 Jogadores</h2>
+      <p>Cadastre aqui as pessoas que vão participar do bolão.</p>
+
+      <div class="dica">
+        Sugestão: peça pra cada amigo te mandar o nome, você adiciona aqui, e depois manda o link do app pra eles fazerem os palpites.
+      </div>
+
+      <div style="display: flex; gap: 10px; margin: 15px 0;">
+        <input type="text" id="novo-jogador" placeholder="Nome do jogador..." maxlength="30">
+        <button class="acao" onclick="adicionarJogador()">Adicionar</button>
+      </div>
+
+      <table id="tabela-jogadores">
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Palpites feitos</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- preenchido por JS -->
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ========================================================
+         VIEW: PALPITES
+         ======================================================== -->
+    <section id="view-palpites" class="view">
+      <h2>🎯 Palpites dos Jogos</h2>
+      <p>Selecione um jogador e dê os palpites de cada jogo. Lembre: depois que o jogo tiver resultado oficial, o palpite trava!</p>
+
+      <div style="margin: 15px 0;">
+        <label style="font-weight: 600;">Jogador atual:</label>
+        <select id="select-jogador" onchange="carregarPalpites()" style="margin-top: 5px;">
+          <option value="">-- Escolha um jogador --</option>
+        </select>
+      </div>
+
+      <div id="palpites-lista">
+        <p style="color: #888; font-style: italic;">Escolha um jogador acima para ver/dar os palpites.</p>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         VIEW: PALPITES BÔNUS (Campeão + Artilheiro)
+         ======================================================== -->
+    <section id="view-bonus" class="view">
+      <h2>⭐ Palpites Bônus</h2>
+      <p>Cada jogador palpita quem vai ser o <strong>Campeão</strong> da Copa (+10 pontos se acertar) e o <strong>Artilheiro</strong> do torneio (+5 pontos se acertar).</p>
+
+      <div class="dica">
+        Esses palpites devem ser feitos <strong>antes da Copa começar</strong>! Depois que a bola rolar, é melhor travar.
+      </div>
+
+      <div style="margin: 15px 0;">
+        <label style="font-weight: 600;">Jogador:</label>
+        <select id="select-jogador-bonus" onchange="carregarBonus()" style="margin-top: 5px;">
+          <option value="">-- Escolha um jogador --</option>
+        </select>
+      </div>
+
+      <div id="bonus-form" style="display: none;">
+        <div style="margin: 15px 0;">
+          <label style="font-weight: 600;">🏆 Quem será o campeão?</label>
+          <select id="palpite-campeao" style="margin-top: 5px;">
+            <option value="">-- Escolha um time --</option>
+          </select>
+        </div>
+
+        <div style="margin: 15px 0;">
+          <label style="font-weight: 600;">⚽ Quem será o artilheiro?</label>
+          <input type="text" id="palpite-artilheiro" placeholder="Nome do jogador (ex: Vinicius Jr)" style="margin-top: 5px;">
+        </div>
+
+        <button class="acao" onclick="salvarBonus()">Salvar palpites bônus</button>
+      </div>
+
+      <h3>🎯 Definir resultado oficial (só admin)</h3>
+      <p style="font-size: 14px; color: #666;">Quando a Copa acabar, defina aqui o campeão e o artilheiro reais para distribuir os pontos bônus.</p>
+      <div style="margin: 15px 0;">
+        <label style="font-weight: 600;">Campeão da Copa:</label>
+        <select id="campeao-oficial" style="margin-top: 5px;">
+          <option value="">-- Não definido --</option>
+        </select>
+        <label style="font-weight: 600; margin-top: 10px; display: block;">Artilheiro oficial:</label>
+        <input type="text" id="artilheiro-oficial" placeholder="Nome do artilheiro" style="margin-top: 5px;">
+        <button class="acao" onclick="salvarOficiais()" style="margin-top: 10px;">Salvar oficiais</button>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         VIEW: ADMIN (cadastro de resultados reais)
+         Acesso protegido por senha.
+         ======================================================== -->
+    <section id="view-admin" class="view">
+      <h2>🛠️ Admin</h2>
+
+      <!-- Tela de login do admin (aparece quando NÃO autenticado) -->
+      <div id="admin-login">
+        <div class="dica">
+          🔒 Esta é uma área <strong>restrita ao administrador</strong> do bolão. Digite a senha para acessar.
+        </div>
+        <div style="display: flex; gap: 10px; margin: 15px 0; max-width: 400px;">
+          <input type="password" id="senha-admin" placeholder="Digite a senha..."
+                 onkeypress="if(event.key==='Enter') autenticarAdmin()">
+          <button class="acao" onclick="autenticarAdmin()">Entrar</button>
+        </div>
+        <p id="erro-senha" style="color: #d32f2f; font-weight: 600; display: none;">
+          ❌ Senha incorreta!
+        </p>
+      </div>
+
+      <!-- Conteúdo do admin (aparece SÓ depois de autenticar) -->
+      <div id="admin-conteudo" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+          <p style="margin: 0;">Bem-vindo, admin! 👋</p>
+          <button class="perigo" onclick="sairAdmin()">🚪 Sair</button>
+        </div>
+
+        <h3>📋 Resultados Oficiais</h3>
+        <p>Conforme os jogos vão acontecendo, cadastre aqui o placar real. Os pontos são recalculados automaticamente!</p>
+
+        <div id="admin-jogos">
+          <!-- preenchido por JS -->
+        </div>
+
+        <h3 style="color: #d32f2f; margin-top: 30px;">⚠️ Zona de Perigo</h3>
+        <div class="dica" style="border-left-color: #d32f2f; background: #ffebee;">
+          <strong>Resetar tudo:</strong> apaga todos os dados do bolão (jogadores, palpites e resultados). Essa ação <strong>não pode ser desfeita</strong>.
+        </div>
+        <button class="perigo" onclick="resetarTudo()">🗑️ Apagar todos os dados</button>
+      </div>
+    </section>
+
+    <!-- ========================================================
+         VIEW: RANKING
+         ======================================================== -->
+    <section id="view-ranking" class="view">
+      <h2>🏅 Ranking</h2>
+      <p>Pontuação geral dos jogadores. Atualiza automaticamente conforme os resultados são cadastrados.</p>
+
+      <table id="tabela-ranking">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Jogador</th>
+            <th>Pontos</th>
+            <th>Placar exato (10pts)</th>
+            <th>Vencedor + gols (7pts)</th>
+            <th>Só vencedor (5pts)</th>
+            <th>Gols de um time (2pts)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- preenchido por JS -->
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ========================================================
+         VIEW: REGRAS
+         ======================================================== -->
+    <section id="view-regras" class="view">
+      <h2>📋 Regras do Bolão</h2>
+
+      <h3>💰 Pontuação por jogo</h3>
+      <table>
+        <thead>
+          <tr><th>Situação</th><th>Pontos</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Placar exato (ex: apostou 2x1, deu 2x1)</td><td><strong>10 pts</strong></td></tr>
+          <tr><td>Acertou o vencedor + os gols de um dos times</td><td><strong>7 pts</strong></td></tr>
+          <tr><td>Acertou só o vencedor</td><td><strong>5 pts</strong></td></tr>
+          <tr><td>Acertou o empate (sem placar exato)</td><td><strong>5 pts</strong></td></tr>
+          <tr><td>Errou o resultado, mas acertou os gols de um time</td><td><strong>2 pts</strong></td></tr>
+          <tr><td>Errou tudo</td><td><strong>0 pts</strong></td></tr>
+        </tbody>
+      </table>
+
+      <h3>⭐ Bônus</h3>
+      <p>Cada jogador pode dar dois palpites extras antes da Copa começar:</p>
+      <ul style="margin-left: 20px; margin-top: 10px;">
+        <li><strong>Campeão da Copa:</strong> +10 pontos se acertar</li>
+        <li><strong>Artilheiro do torneio:</strong> +5 pontos se acertar</li>
+      </ul>
+
+      <h3>🔥 Jogo da Final</h3>
+      <p>A pontuação do <strong>jogo da final</strong> vale o <strong>DOBRO</strong>! Se acertar o placar exato da final, são 20 pontos!</p>
+
+      <h3>📌 Observações importantes</h3>
+      <ul style="margin-left: 20px; margin-top: 10px;">
+        <li>Os palpites devem ser feitos antes do jogo começar.</li>
+        <li>Os dados ficam salvos no navegador onde você abriu o app.</li>
+        <li>Em caso de empate na pontuação total, vence quem tiver mais placares exatos.</li>
+      </ul>
+
+      <div class="dica" style="margin-top: 20px;">
+        <strong>💡 Quer resetar tudo?</strong> O botão para apagar todos os dados foi movido para a aba <em>🛠️ Admin</em> (protegida por senha).
+      </div>
+    </section>
+  </main>
+
+  <!-- ========================================================
+       JAVASCRIPT — toda a lógica do app
+       ======================================================== -->
+  <script>
+    // ============================================================
+    // 🔐 SENHA DO ADMIN
+    // ============================================================
+    // Para TROCAR a senha, basta mudar o valor entre as aspas abaixo.
+    // Exemplo: const ADMIN_SENHA = "minhanovasenha123";
+    // Depois é só salvar o arquivo e recarregar a página.
+    const ADMIN_SENHA = "copa2026";
+
+    // Variável que guarda se o admin já está logado nesta sessão.
+    // Fica APENAS na memória (não é salva), então toda vez que
+    // a página é recarregada, precisa logar de novo. Isso é mais seguro.
+    let adminAutenticado = false;
+
+    // ============================================================
+    // DADOS BASE — Times e Grupos da Copa do Mundo 2026
+    // ============================================================
+    // 48 seleções divididas em 12 grupos de 4 times.
+    // Esses são exemplos baseados em times prováveis. O sorteio
+    // oficial pode ser diferente — edite conforme necessário.
+
+    const TIMES_POR_GRUPO = {
+      "A": ["México", "África do Sul", "Coreia do Sul", "República Tcheca"],
+      "B": ["Canadá", "Bósnia", "Catar", "Suíça"],
+      "C": ["Brasil", "Marrocos", "Haiti", "Escócia"],
+      "D": ["Estados Unidos", "Paraguai", "Austrália", "Turquia"],
+      "E": ["Alemanha", "Equador", "Curaçau", "Costa do Marfim"],
+      "F": ["Países Baixos", "Tunísia", "Suécia", "Irã"],
+      "G": ["Bélgica", "Nova Zelândia", "Japão", "Panamá"],
+      "H": ["Espanha", "Uruguai", "Argélia", "Jordânia"],
+      "I": ["França", "Senegal", "Iraque", "Noruega"],
+      "J": ["Argentina", "Áustria", "Cabo Verde", "Costa Rica"],
+      "K": ["Portugal", "RD Congo", "Uzbequistão", "Colômbia"],
+      "L": ["Inglaterra", "Croácia", "Gana", "Nigéria"]
+    };
+
+    // Lista plana com todos os times (para o select de campeão)
+    const TODOS_TIMES = [];
+    for (const grupo in TIMES_POR_GRUPO) {
+      TIMES_POR_GRUPO[grupo].forEach(t => {
+        if (!TODOS_TIMES.includes(t)) TODOS_TIMES.push(t);
+      });
+    }
+
+    // ============================================================
+    // GERAÇÃO DOS JOGOS
+    // ============================================================
+    // Cada grupo tem 6 jogos (cada time joga contra os outros 3).
+    // Aqui geramos automaticamente todos os confrontos.
+
+    function gerarJogosFaseGrupos() {
+      const jogos = [];
+      let id = 1;
+
+      for (const grupo in TIMES_POR_GRUPO) {
+        const times = TIMES_POR_GRUPO[grupo];
+        // Combinações 2 a 2 (cada time joga contra cada outro)
+        for (let i = 0; i < times.length; i++) {
+          for (let j = i + 1; j < times.length; j++) {
+            jogos.push({
+              id: `G-${id}`,
+              fase: `Grupo ${grupo}`,
+              ehFinal: false,
+              casa: times[i],
+              fora: times[j]
+            });
+            id++;
+          }
+        }
+      }
+      return jogos;
+    }
+
+    // Jogos do mata-mata (placeholders — o admin define os times depois)
+    function gerarJogosMataMata() {
+      return [
+        // 16 jogos de oitavas (Round of 32) com placeholders
+        ...Array.from({length: 16}, (_, i) => ({
+          id: `R32-${i+1}`, fase: "32-avos", ehFinal: false,
+          casa: `Time ${i*2+1}`, fora: `Time ${i*2+2}`
+        })),
+        // Oitavas (8 jogos)
+        ...Array.from({length: 8}, (_, i) => ({
+          id: `R16-${i+1}`, fase: "Oitavas", ehFinal: false,
+          casa: `Vencedor R32-${i*2+1}`, fora: `Vencedor R32-${i*2+2}`
+        })),
+        // Quartas (4 jogos)
+        ...Array.from({length: 4}, (_, i) => ({
+          id: `QF-${i+1}`, fase: "Quartas", ehFinal: false,
+          casa: `Vencedor R16-${i*2+1}`, fora: `Vencedor R16-${i*2+2}`
+        })),
+        // Semis (2 jogos)
+        {id: "SF-1", fase: "Semifinal", ehFinal: false, casa: "Vencedor QF-1", fora: "Vencedor QF-2"},
+        {id: "SF-2", fase: "Semifinal", ehFinal: false, casa: "Vencedor QF-3", fora: "Vencedor QF-4"},
+        // Disputa do 3º lugar
+        {id: "3L", fase: "3º Lugar", ehFinal: false, casa: "Perdedor SF-1", fora: "Perdedor SF-2"},
+        // Final — vale o dobro!
+        {id: "FINAL", fase: "FINAL", ehFinal: true, casa: "Vencedor SF-1", fora: "Vencedor SF-2"}
+      ];
+    }
+
+    // Lista completa de jogos do bolão
+    const JOGOS = [...gerarJogosFaseGrupos(), ...gerarJogosMataMata()];
+
+    // ============================================================
+    // PERSISTÊNCIA — salvar/carregar dados no navegador
+    // ============================================================
+    // Usamos localStorage, que é uma espécie de "caderninho" do navegador
+    // que guarda dados mesmo depois que a página é fechada.
+
+    function carregarDados() {
+      const dados = localStorage.getItem("bolao_copa_2026");
+      if (dados) return JSON.parse(dados);
+      // Estrutura inicial
+      return {
+        jogadores: [],            // ["Henrique", "Maria", ...]
+        palpites: {},             // { "Henrique": { "G-1": {casa: 2, fora: 1}, ... } }
+        resultados: {},           // { "G-1": {casa: 2, fora: 1}, ... }
+        bonus: {},                // { "Henrique": { campeao: "Brasil", artilheiro: "Vini Jr" } }
+        oficiais: { campeao: null, artilheiro: null }
+      };
+    }
+
+    function salvarDados() {
+      localStorage.setItem("bolao_copa_2026", JSON.stringify(dados));
+    }
+
+    let dados = carregarDados();
+
+    // ============================================================
+    // NAVEGAÇÃO ENTRE ABAS
+    // ============================================================
+    function mostrarView(nome) {
+      // Esconde todas as views
+      document.querySelectorAll("section.view").forEach(v => v.classList.remove("ativo"));
+      // Tira o destaque de todos os botões do menu
+      document.querySelectorAll("nav button").forEach(b => b.classList.remove("ativo"));
+      // Mostra a view escolhida
+      document.getElementById("view-" + nome).classList.add("ativo");
+      // Destaca o botão correspondente
+      event.target.classList.add("ativo");
+      // Atualiza o conteúdo dinâmico de cada aba
+      atualizarTudo();
+      // Caso especial: na aba admin, mostrar login ou conteúdo
+      if (nome === "admin") atualizarTelaAdmin();
+    }
+
+    // ============================================================
+    // AUTENTICAÇÃO DO ADMIN
+    // ============================================================
+    // Mostra a tela de login se não estiver autenticado;
+    // mostra o conteúdo do admin se já estiver.
+    function atualizarTelaAdmin() {
+      const login = document.getElementById("admin-login");
+      const conteudo = document.getElementById("admin-conteudo");
+      if (adminAutenticado) {
+        login.style.display = "none";
+        conteudo.style.display = "block";
+        renderAdmin();
+      } else {
+        login.style.display = "block";
+        conteudo.style.display = "none";
+        // Limpa o campo de senha cada vez que volta pra tela de login
+        document.getElementById("senha-admin").value = "";
+        document.getElementById("erro-senha").style.display = "none";
+      }
+    }
+
+    // Verifica a senha digitada e autentica se estiver correta
+    function autenticarAdmin() {
+      const senhaDigitada = document.getElementById("senha-admin").value;
+      const erro = document.getElementById("erro-senha");
+      if (senhaDigitada === ADMIN_SENHA) {
+        adminAutenticado = true;
+        erro.style.display = "none";
+        atualizarTelaAdmin();
+      } else {
+        erro.style.display = "block";
+        // Após 3 segundos, esconde a mensagem de erro
+        setTimeout(() => { erro.style.display = "none"; }, 3000);
+      }
+    }
+
+    // Desloga o admin (volta pra tela de senha)
+    function sairAdmin() {
+      adminAutenticado = false;
+      atualizarTelaAdmin();
+    }
+
+    // ============================================================
+    // LÓGICA DE PONTUAÇÃO — coração do bolão!
+    // ============================================================
+    // Recebe palpite e resultado, retorna quantos pontos o jogador fez.
+
+    function calcularPontosJogo(palpite, resultado, ehFinal) {
+      // Se não tem palpite ou resultado ainda, vale 0
+      if (!palpite || !resultado) return 0;
+      // Resultado incompleto (só um lado preenchido) não conta
+      if (resultado.casa === null || resultado.casa === undefined ||
+          resultado.fora === null || resultado.fora === undefined) return 0;
+
+      const palpiteCasa = Number(palpite.casa);
+      const palpiteFora = Number(palpite.fora);
+      const realCasa = Number(resultado.casa);
+      const realFora = Number(resultado.fora);
+
+      let pontos = 0;
+
+      // 1) Placar exato (10 pts)
+      if (palpiteCasa === realCasa && palpiteFora === realFora) {
+        pontos = 10;
+      }
+      // 2) Acertou o empate sem placar exato (5 pts)
+      else if (palpiteCasa === palpiteFora && realCasa === realFora) {
+        pontos = 5;
+      }
+      // 3) Acertou o vencedor
+      else if (
+        (palpiteCasa > palpiteFora && realCasa > realFora) ||
+        (palpiteCasa < palpiteFora && realCasa < realFora)
+      ) {
+        // Acertou vencedor + gols de um dos times (7 pts)
+        if (palpiteCasa === realCasa || palpiteFora === realFora) {
+          pontos = 7;
+        } else {
+          // Só acertou o vencedor (5 pts)
+          pontos = 5;
+        }
+      }
+      // 4) Errou o resultado, mas acertou os gols de um dos times (2 pts)
+      else if (palpiteCasa === realCasa || palpiteFora === realFora) {
+        pontos = 2;
+      }
+      // 5) Errou tudo — 0 pts
+
+      // Se for a final, dobra os pontos!
+      if (ehFinal) pontos *= 2;
+
+      return pontos;
+    }
+
+    function calcularPontosTotal(jogador) {
+      let total = 0;
+      const stats = {placarExato: 0, vencedorMaisGols: 0, soVencedor: 0, golsDeUmTime: 0};
+
+      JOGOS.forEach(jogo => {
+        const palpite = (dados.palpites[jogador] || {})[jogo.id];
+        const resultado = dados.resultados[jogo.id];
+        if (!palpite || !resultado) return;
+
+        const pts = calcularPontosJogo(palpite, resultado, jogo.ehFinal);
+        total += pts;
+
+        // Categorizar para mostrar nas estatísticas
+        const base = jogo.ehFinal ? pts/2 : pts;
+        if (base === 10) stats.placarExato++;
+        else if (base === 7) stats.vencedorMaisGols++;
+        else if (base === 5) stats.soVencedor++;
+        else if (base === 2) stats.golsDeUmTime++;
+      });
+
+      // Bônus de campeão (+10) e artilheiro (+5)
+      const palpiteBonus = dados.bonus[jogador] || {};
+      if (dados.oficiais.campeao && palpiteBonus.campeao === dados.oficiais.campeao) total += 10;
+      if (dados.oficiais.artilheiro &&
+          palpiteBonus.artilheiro &&
+          palpiteBonus.artilheiro.toLowerCase().trim() === dados.oficiais.artilheiro.toLowerCase().trim()) {
+        total += 5;
+      }
+
+      return { total, stats };
+    }
+
+    // ============================================================
+    // FUNÇÕES DE TELA: JOGADORES
+    // ============================================================
+    function adicionarJogador() {
+      const input = document.getElementById("novo-jogador");
+      const nome = input.value.trim();
+      if (!nome) return alert("Digite um nome!");
+      if (dados.jogadores.includes(nome)) return alert("Esse jogador já existe!");
+      dados.jogadores.push(nome);
+      salvarDados();
+      input.value = "";
+      atualizarTudo();
+    }
+
+    function removerJogador(nome) {
+      if (!confirm(`Remover ${nome} do bolão? Os palpites dele também serão apagados.`)) return;
+      dados.jogadores = dados.jogadores.filter(j => j !== nome);
+      delete dados.palpites[nome];
+      delete dados.bonus[nome];
+      salvarDados();
+      atualizarTudo();
+    }
+
+    function renderJogadores() {
+      const tbody = document.querySelector("#tabela-jogadores tbody");
+      tbody.innerHTML = "";
+      if (dados.jogadores.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:#888;">Nenhum jogador cadastrado ainda.</td></tr>';
+        return;
+      }
+      dados.jogadores.forEach(nome => {
+        const palpites = dados.palpites[nome] || {};
+        const qtdPalpites = Object.keys(palpites).length;
+        const linha = document.createElement("tr");
+        linha.innerHTML = `
+          <td><strong>${nome}</strong></td>
+          <td>${qtdPalpites} de ${JOGOS.length}</td>
+          <td><button class="perigo" onclick="removerJogador('${nome.replace(/'/g, "\\'")}')">Remover</button></td>
+        `;
+        tbody.appendChild(linha);
+      });
+    }
+
+    // ============================================================
+    // FUNÇÕES DE TELA: PALPITES
+    // ============================================================
+    function renderSelectJogadores() {
+      const selects = ["select-jogador", "select-jogador-bonus"];
+      selects.forEach(id => {
+        const el = document.getElementById(id);
+        const valorAtual = el.value;
+        el.innerHTML = '<option value="">-- Escolha um jogador --</option>';
+        dados.jogadores.forEach(nome => {
+          const opt = document.createElement("option");
+          opt.value = nome;
+          opt.textContent = nome;
+          if (nome === valorAtual) opt.selected = true;
+          el.appendChild(opt);
+        });
+      });
+    }
+
+    function carregarPalpites() {
+      const jogador = document.getElementById("select-jogador").value;
+      const div = document.getElementById("palpites-lista");
+      if (!jogador) {
+        div.innerHTML = '<p style="color: #888; font-style: italic;">Escolha um jogador acima.</p>';
+        return;
+      }
+
+      const palpites = dados.palpites[jogador] || {};
+      // Agrupar jogos por fase para ficar mais organizado
+      const fases = {};
+      JOGOS.forEach(j => {
+        if (!fases[j.fase]) fases[j.fase] = [];
+        fases[j.fase].push(j);
+      });
+
+      let html = "";
+      for (const fase in fases) {
+        html += `<h3>${fase}</h3>`;
+        fases[fase].forEach(jogo => {
+          const p = palpites[jogo.id] || {};
+          const resultado = dados.resultados[jogo.id];
+          const temResultado = resultado !== undefined;
+          const pontos = temResultado ? calcularPontosJogo(p, resultado, jogo.ehFinal) : null;
+
+          html += `
+            <div class="jogo ${temResultado ? 'com-resultado' : ''}">
+              <div class="info">${jogo.id}${jogo.ehFinal ? ' ⭐ FINAL (pontos x2!)' : ''}${temResultado ? ' — Resultado oficial: ' + resultado.casa + ' x ' + resultado.fora : ''}</div>
+              <span class="time casa">${jogo.casa}</span>
+              <input type="number" min="0" max="20" value="${p.casa ?? ''}"
+                     onchange="salvarPalpite('${jogador.replace(/'/g, "\\'")}', '${jogo.id}', 'casa', this.value)"
+                     ${temResultado ? 'disabled' : ''}>
+              <span class="vs">x</span>
+              <input type="number" min="0" max="20" value="${p.fora ?? ''}"
+                     onchange="salvarPalpite('${jogador.replace(/'/g, "\\'")}', '${jogo.id}', 'fora', this.value)"
+                     ${temResultado ? 'disabled' : ''}>
+              <span class="time">${jogo.fora}</span>
+              ${pontos !== null ? `<span class="pontos">${pontos} pts</span>` : ''}
+            </div>
+          `;
+        });
+      }
+      div.innerHTML = html;
+    }
+
+    function salvarPalpite(jogador, jogoId, lado, valor) {
+      if (!dados.palpites[jogador]) dados.palpites[jogador] = {};
+      if (!dados.palpites[jogador][jogoId]) dados.palpites[jogador][jogoId] = {};
+      dados.palpites[jogador][jogoId][lado] = valor === "" ? null : Number(valor);
+      // Se o palpite estiver incompleto (só um lado), apagar pra não bagunçar
+      const p = dados.palpites[jogador][jogoId];
+      if (p.casa === null && p.fora === null) {
+        delete dados.palpites[jogador][jogoId];
+      }
+      salvarDados();
+      renderJogadores();
+    }
+
+    // ============================================================
+    // FUNÇÕES DE TELA: BÔNUS
+    // ============================================================
+    function popularSelectTimes() {
+      ["palpite-campeao", "campeao-oficial"].forEach(id => {
+        const el = document.getElementById(id);
+        const valorAtual = el.value;
+        el.innerHTML = id === "campeao-oficial"
+          ? '<option value="">-- Não definido --</option>'
+          : '<option value="">-- Escolha um time --</option>';
+        TODOS_TIMES.sort().forEach(t => {
+          const opt = document.createElement("option");
+          opt.value = t;
+          opt.textContent = t;
+          if (t === valorAtual) opt.selected = true;
+          el.appendChild(opt);
+        });
+      });
+    }
+
+    function carregarBonus() {
+      const jogador = document.getElementById("select-jogador-bonus").value;
+      const form = document.getElementById("bonus-form");
+      if (!jogador) {
+        form.style.display = "none";
+        return;
+      }
+      form.style.display = "block";
+      const b = dados.bonus[jogador] || {};
+      document.getElementById("palpite-campeao").value = b.campeao || "";
+      document.getElementById("palpite-artilheiro").value = b.artilheiro || "";
+    }
+
+    function salvarBonus() {
+      const jogador = document.getElementById("select-jogador-bonus").value;
+      if (!jogador) return alert("Escolha um jogador primeiro!");
+      const campeao = document.getElementById("palpite-campeao").value;
+      const artilheiro = document.getElementById("palpite-artilheiro").value.trim();
+      dados.bonus[jogador] = { campeao, artilheiro };
+      salvarDados();
+      alert("Palpites bônus salvos!");
+    }
+
+    function salvarOficiais() {
+      const campeao = document.getElementById("campeao-oficial").value;
+      const artilheiro = document.getElementById("artilheiro-oficial").value.trim();
+      dados.oficiais = { campeao, artilheiro };
+      salvarDados();
+      alert("Resultados oficiais salvos! O ranking foi atualizado.");
+      atualizarTudo();
+    }
+
+    // ============================================================
+    // FUNÇÕES DE TELA: ADMIN (RESULTADOS REAIS)
+    // ============================================================
+    function renderAdmin() {
+      const div = document.getElementById("admin-jogos");
+      const fases = {};
+      JOGOS.forEach(j => {
+        if (!fases[j.fase]) fases[j.fase] = [];
+        fases[j.fase].push(j);
+      });
+
+      let html = "";
+      for (const fase in fases) {
+        html += `<h3>${fase}</h3>`;
+        fases[fase].forEach(jogo => {
+          const r = dados.resultados[jogo.id] || {};
+          html += `
+            <div class="jogo ${dados.resultados[jogo.id] ? 'com-resultado' : ''}">
+              <div class="info">${jogo.id}${jogo.ehFinal ? ' ⭐ FINAL' : ''}</div>
+              <span class="time casa">${jogo.casa}</span>
+              <input type="number" min="0" max="20" value="${r.casa ?? ''}"
+                     onchange="salvarResultado('${jogo.id}', 'casa', this.value)">
+              <span class="vs">x</span>
+              <input type="number" min="0" max="20" value="${r.fora ?? ''}"
+                     onchange="salvarResultado('${jogo.id}', 'fora', this.value)">
+              <span class="time">${jogo.fora}</span>
+              ${dados.resultados[jogo.id] ? `<button class="perigo" onclick="apagarResultado('${jogo.id}')">Apagar</button>` : ''}
+            </div>
+          `;
+        });
+      }
+      div.innerHTML = html;
+    }
+
+    function salvarResultado(jogoId, lado, valor) {
+      if (!dados.resultados[jogoId]) dados.resultados[jogoId] = {};
+      dados.resultados[jogoId][lado] = valor === "" ? null : Number(valor);
+      const r = dados.resultados[jogoId];
+      if (r.casa === null && r.fora === null) delete dados.resultados[jogoId];
+      salvarDados();
+      // Atualiza o visual imediatamente após salvar (card, ranking, estatísticas)
+      renderAdmin();
+      renderRanking();
+      renderInicio();
+    }
+
+    function apagarResultado(jogoId) {
+      if (!confirm("Apagar o resultado desse jogo? Os pontos serão recalculados.")) return;
+      delete dados.resultados[jogoId];
+      salvarDados();
+      atualizarTudo();
+    }
+
+    // ============================================================
+    // FUNÇÕES DE TELA: RANKING
+    // ============================================================
+    function renderRanking() {
+      const tbody = document.querySelector("#tabela-ranking tbody");
+      tbody.innerHTML = "";
+      if (dados.jogadores.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:#888;">Cadastre jogadores primeiro!</td></tr>';
+        return;
+      }
+
+      // Calcula pontuação de cada jogador
+      const ranking = dados.jogadores.map(nome => {
+        const { total, stats } = calcularPontosTotal(nome);
+        return { nome, total, ...stats };
+      });
+
+      // Ordena: maior pontuação primeiro; desempate por placares exatos
+      ranking.sort((a, b) => {
+        if (b.total !== a.total) return b.total - a.total;
+        return b.placarExato - a.placarExato;
+      });
+
+      ranking.forEach((p, i) => {
+        const linha = document.createElement("tr");
+        if (i === 0 && p.total > 0) linha.classList.add("pos-1");
+        else if (i === 1 && p.total > 0) linha.classList.add("pos-2");
+        else if (i === 2 && p.total > 0) linha.classList.add("pos-3");
+        linha.innerHTML = `
+          <td><strong>${i+1}º</strong></td>
+          <td><strong>${p.nome}</strong></td>
+          <td><strong style="font-size: 18px; color: #006341;">${p.total}</strong></td>
+          <td>${p.placarExato}</td>
+          <td>${p.vencedorMaisGols}</td>
+          <td>${p.soVencedor}</td>
+          <td>${p.golsDeUmTime}</td>
+        `;
+        tbody.appendChild(linha);
+      });
+    }
+
+    // ============================================================
+    // FUNÇÕES DE TELA: INÍCIO (estatísticas e grupos)
+    // ============================================================
+    function renderInicio() {
+      const totalJogos = JOGOS.length;
+      const jogosComResultado = Object.keys(dados.resultados).filter(id => {
+        const r = dados.resultados[id];
+        return r && r.casa !== null && r.casa !== undefined && r.fora !== null && r.fora !== undefined;
+      }).length;
+
+      document.getElementById("stats-inicio").innerHTML = `
+        <span class="stat">👥 ${dados.jogadores.length} jogadores</span>
+        <span class="stat">⚽ ${totalJogos} jogos no total</span>
+        <span class="stat">✅ ${jogosComResultado} jogos finalizados</span>
+      `;
+
+      const div = document.getElementById("grupos-container");
+      let html = "";
+      for (const g in TIMES_POR_GRUPO) {
+        html += `<div class="grupo-card"><h4>Grupo ${g}</h4><ul>`;
+        TIMES_POR_GRUPO[g].forEach(t => html += `<li>• ${t}</li>`);
+        html += `</ul></div>`;
+      }
+      div.innerHTML = html;
+    }
+
+    // ============================================================
+    // RESETAR TUDO
+    // ============================================================
+    function resetarTudo() {
+      if (!confirm("Tem certeza? Isso vai apagar TODOS os dados (jogadores, palpites e resultados). Essa ação não pode ser desfeita.")) return;
+      if (!confirm("Sério mesmo? Última chance!")) return;
+      localStorage.removeItem("bolao_copa_2026");
+      dados = carregarDados();
+      atualizarTudo();
+      alert("Tudo apagado! Comece do zero quando quiser.");
+    }
+
+    // ============================================================
+    // ATUALIZAR TODAS AS TELAS
+    // ============================================================
+    function atualizarTudo() {
+      renderInicio();
+      renderJogadores();
+      renderSelectJogadores();
+      popularSelectTimes();
+      // Só renderiza a tela de admin se já estiver autenticado
+      if (adminAutenticado) renderAdmin();
+      renderRanking();
+      // Recarrega a tela ativa de palpites se algum jogador estiver selecionado
+      const sel = document.getElementById("select-jogador").value;
+      if (sel) carregarPalpites();
+      // Atualizar resultados oficiais visíveis
+      document.getElementById("campeao-oficial").value = dados.oficiais.campeao || "";
+      document.getElementById("artilheiro-oficial").value = dados.oficiais.artilheiro || "";
+    }
+
+    // ============================================================
+    // SINCRONIZAÇÃO ENTRE ABAS
+    // ============================================================
+    // Se o app estiver aberto em mais de uma aba/janela, qualquer alteração
+    // salva pelo admin é propagada automaticamente para as outras abas.
+    window.addEventListener('storage', function(e) {
+      if (e.key === 'bolao_copa_2026') {
+        dados = carregarDados();
+        atualizarTudo();
+      }
+    });
+
+    // ============================================================
+    // INICIALIZAÇÃO — roda quando a página termina de carregar
+    // ============================================================
+    atualizarTudo();
+  </script>
+</body>
+</html>

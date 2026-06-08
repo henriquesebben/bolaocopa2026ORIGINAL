@@ -1,0 +1,8 @@
+{
+  "typeCheckingMode": "basic",
+  "reportAttributeAccessIssue": "none",
+  "reportReturnType": "warning",
+  "reportMissingImports": "warning",
+  "reportUndefinedVariable": "error",
+  "reportMissingModuleSource": "none"
+}

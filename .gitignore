@@ -1,0 +1,28 @@
+# Variáveis de ambiente (NUNCA subir!)
+.env
+
+# Chaves VAPID geradas localmente (contêm chave privada)
+backend/vapid_keys.json
+
+# Banco de dados local
+*.db
+*.sqlite3
+
+# Cache Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Ambientes virtuais
+venv/
+.venv/
+env/
+
+# IDEs
+.vscode/
+.idea/
+
+# Logs
+*.log

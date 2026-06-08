@@ -1,0 +1,18 @@
+{
+  "name": "Bolão Alquimistas",
+  "short_name": "Alquimistas",
+  "description": "Bolão da Copa do Mundo 2026 — palpita aí!",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#006341",
+  "theme_color": "#006341",
+  "icons": [
+    {
+      "src": "/icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
