@@ -1681,8 +1681,8 @@
             <td><strong style="font-size:18px;color:#006341;">${p.total}</strong></td>
             <td>${p.placar_exato}</td>
             <td>${p.resultado_correto}</td>
-            <td>${p.acertou_artilheiro ? "✓" : "—"}</td>
-            <td>${p.acertou_campeao ? "✓" : "—"}</td>
+            <td>${p.artilheiro_palpite ? (p.acertou_artilheiro ? `<span style="color:#006341;font-weight:bold;">${p.artilheiro_palpite} ✓</span>` : p.artilheiro_palpite) : "—"}</td>
+            <td>${p.campeao_palpite ? (p.acertou_campeao ? `<span style="color:#006341;font-weight:bold;">${p.campeao_palpite} ✓</span>` : p.campeao_palpite) : "—"}</td>
           `;
           tbody.appendChild(tr);
         });

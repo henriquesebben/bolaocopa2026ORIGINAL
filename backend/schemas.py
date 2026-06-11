@@ -110,6 +110,8 @@ class RankingEntry(BaseModel):
     resultado_correto: int  # 2° critério de desempate
     acertou_artilheiro: bool  # 3° critério de desempate
     acertou_campeao: bool     # 4° critério de desempate
+    artilheiro_palpite: Optional[str] = None
+    campeao_palpite: Optional[str] = None
     vencedor_mais_gols: int
     so_vencedor: int
     gols_de_um_time: int

@@ -693,6 +693,8 @@ def ranking(db: Session = Depends(get_db), _=Depends(get_jogador_atual)):
             "total": total,
             "acertou_campeao": acertou_campeao,
             "acertou_artilheiro": acertou_artilheiro,
+            "campeao_palpite": j.bonus.campeao if j.bonus else None,
+            "artilheiro_palpite": j.bonus.artilheiro if j.bonus else None,
             **stats,
         })
 
@@ -715,6 +717,8 @@ def ranking(db: Session = Depends(get_db), _=Depends(get_jogador_atual)):
             resultado_correto=e["resultado_correto"],
             acertou_artilheiro=e["acertou_artilheiro"],
             acertou_campeao=e["acertou_campeao"],
+            artilheiro_palpite=e["artilheiro_palpite"],
+            campeao_palpite=e["campeao_palpite"],
             vencedor_mais_gols=e["vencedor_mais_gols"],
             so_vencedor=e["so_vencedor"],
             gols_de_um_time=e["gols_de_um_time"],
