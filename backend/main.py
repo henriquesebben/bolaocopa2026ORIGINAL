@@ -28,6 +28,14 @@ from . import models, schemas
 from .jogos import JOGOS, JOGOS_POR_ID, TODOS_TIMES
 from .sync import iniciar_scheduler, sync_manual, status_sync, _norm
 
+
+def _artilheiro_match(palpite: str, oficial: str) -> bool:
+    """Aceita abreviações: todas as palavras ≥3 chars do palpite devem constar no nome oficial."""
+    o_words = set(_norm(oficial).split())
+    p_words = [w for w in _norm(palpite).split() if len(w) >= 3]
+    return bool(p_words) and all(w in o_words for w in p_words)
+
+
 # ── VAPID (Web Push) ──────────────────────────────────────────────────────────
 
 _VAPID_KEY_FILE = Path(__file__).parent / "vapid_keys.json"
@@ -227,7 +235,7 @@ def calcular_pontos_total(
             acertou_campeao = True
 
         if (oficiais.artilheiro and jogador.bonus.artilheiro and
-                _norm(jogador.bonus.artilheiro) == _norm(oficiais.artilheiro)):
+                _artilheiro_match(jogador.bonus.artilheiro, oficiais.artilheiro)):
             total += 20
             acertou_artilheiro = True
 
