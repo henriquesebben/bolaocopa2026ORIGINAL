@@ -242,12 +242,26 @@ async def _fetch_allsportsapi2() -> list:
                 
                 # Converter para o formato esperado
                 ts = match.get("startTimestamp") or 0
+
+                # status pode ser dict {"type": "finished", ...} ou string
+                raw_status = match.get("status", "")
+                if isinstance(raw_status, dict):
+                    raw_status = raw_status.get("type", "")
+
+                # score pode ser dict {"current": 2, ...} ou int
+                home_score = match.get("homeScore")
+                away_score = match.get("awayScore")
+                if isinstance(home_score, dict):
+                    home_score = home_score.get("current")
+                if isinstance(away_score, dict):
+                    away_score = away_score.get("current")
+
                 converted.append({
                     "fixture": {
                         "id": match.get("id"),
                         "date": datetime.fromtimestamp(ts, tz=timezone.utc).isoformat(),
                         "status": {
-                            "short": _converter_status(match.get("status", ""))
+                            "short": _converter_status(raw_status)
                         }
                     },
                     "teams": {
@@ -255,8 +269,8 @@ async def _fetch_allsportsapi2() -> list:
                         "away": {"name": match.get("awayTeam", {}).get("name", "")}
                     },
                     "goals": {
-                        "home": match.get("homeScore"),
-                        "away": match.get("awayScore")
+                        "home": home_score,
+                        "away": away_score
                     }
                 })
             
@@ -391,15 +405,15 @@ async def job_principal():
 
     # Verifica condições inteligentes antes de sincronizar
     deve_sync, motivo = _deve_sincronizar()
-    if not deve_sync and not agenda_expirada:
+    if not deve_sync and not agenda_expirada and not _em_janela():
         logger.debug(f"[sync] Pulando sincronização: {motivo}")
         return
-    
+
     if not agenda_expirada and not _em_janela():
         return  # fora de janela e agenda recente → zero chamadas à API
 
     fixtures = await _fetch_hoje()   # UMA chamada serve pra tudo
-    if agenda_expirada:
+    if agenda_expirada and fixtures:
         _atualizar_janelas(fixtures)
     if fixtures:
         await _processar(fixtures)
