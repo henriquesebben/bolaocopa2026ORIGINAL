@@ -277,6 +277,20 @@ def login(request: Request, body: schemas.LoginRequest, db: Session = Depends(ge
     )
 
 
+@app.post("/api/auth/redefinir-senha", status_code=status.HTTP_204_NO_CONTENT)
+def redefinir_senha_publica(request: Request, body: schemas.RedefinirSenhaPublicaRequest, db: Session = Depends(get_db)):
+    _verificar_rate_limit(request.client.host if request.client else "unknown")
+    jogador = db.query(models.Jogador).filter(models.Jogador.nome == body.nome).first()
+    if not jogador:
+        raise HTTPException(status_code=404, detail="Nenhum usuário encontrado com esse nome")
+    if jogador.is_admin:
+        raise HTTPException(status_code=403, detail="Não é possível redefinir a senha de admin por aqui")
+    if len(body.nova_senha) < 4:
+        raise HTTPException(status_code=400, detail="Senha muito curta (mínimo 4 caracteres)")
+    jogador.senha_hash = hash_senha(body.nova_senha)
+    db.commit()
+
+
 @app.post("/api/auth/registrar", response_model=schemas.TokenResponse, status_code=status.HTTP_201_CREATED)
 def registrar(body: schemas.JogadorCreate, db: Session = Depends(get_db)):
     if db.query(models.Jogador).filter(models.Jogador.nome == body.nome).first():

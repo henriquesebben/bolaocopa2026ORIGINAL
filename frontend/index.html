@@ -119,10 +119,24 @@
       <input type="password" id="login-confirma" placeholder="Confirmar senha..."
              style="display:none;"
              onkeypress="if(event.key==='Enter') submitLogin()">
+      <input type="password" id="reset-nova-senha" placeholder="Nova senha..."
+             style="display:none;"
+             onkeypress="if(event.key==='Enter') fazerRedefinirSenha()">
+      <input type="password" id="reset-confirma-senha" placeholder="Confirmar nova senha..."
+             style="display:none;"
+             onkeypress="if(event.key==='Enter') fazerRedefinirSenha()">
 
       <button class="acao" id="btn-submit" onclick="submitLogin()">Entrar</button>
 
-      <div style="margin-top:16px; border-top:1px solid #eee; padding-top:14px;">
+      <div id="forgot-section" style="margin-top:8px; text-align:center;">
+        <button onclick="alternarParaReset()"
+                style="background:none; border:none; color:#888; font-size:12px;
+                       cursor:pointer; text-decoration:underline; padding:4px 0;">
+          Esqueceu sua senha?
+        </button>
+      </div>
+
+      <div id="toggle-section" style="margin-top:16px; border-top:1px solid #eee; padding-top:14px;">
         <p style="font-size:13px; color:#888; margin-bottom:8px;" id="login-toggle-label">
           Ainda não tem conta?
         </p>
@@ -131,6 +145,14 @@
                        padding:8px 18px; border-radius:6px; cursor:pointer;
                        font-size:14px; font-weight:600; width:100%;"
                 id="btn-alternar">Criar conta</button>
+      </div>
+
+      <div id="voltar-section" style="display:none; margin-top:10px; text-align:center;">
+        <button onclick="voltarParaLogin()"
+                style="background:none; border:none; color:#888; font-size:12px;
+                       cursor:pointer; text-decoration:underline; padding:4px 0;">
+          ← Voltar ao login
+        </button>
       </div>
 
       <div id="login-erro"></div>
@@ -590,6 +612,7 @@
     // AUTENTICAÇÃO
     // ============================================================
     let modoRegistro = false;
+    let modoReset = false;
 
     function alternarModo() {
       modoRegistro = !modoRegistro;
@@ -598,6 +621,7 @@
       const btnSubmit = document.getElementById("btn-submit");
       const btnAlternar = document.getElementById("btn-alternar");
       const toggleLabel = document.getElementById("login-toggle-label");
+      const forgotSection = document.getElementById("forgot-section");
 
       if (modoRegistro) {
         confirma.style.display = "block";
@@ -605,18 +629,79 @@
         btnSubmit.textContent = "Criar conta";
         btnAlternar.textContent = "Já tenho conta";
         toggleLabel.textContent = "Já participou antes?";
+        forgotSection.style.display = "none";
       } else {
         confirma.style.display = "none";
         subtitulo.textContent = "Entre com seu nome e senha para acessar";
         btnSubmit.textContent = "Entrar";
         btnAlternar.textContent = "Criar conta";
         toggleLabel.textContent = "Ainda não tem conta?";
+        forgotSection.style.display = "block";
       }
       document.getElementById("login-erro").textContent = "";
     }
 
+    function alternarParaReset() {
+      modoReset = true;
+      document.getElementById("login-senha").style.display = "none";
+      document.getElementById("reset-nova-senha").style.display = "block";
+      document.getElementById("reset-confirma-senha").style.display = "block";
+      document.getElementById("forgot-section").style.display = "none";
+      document.getElementById("toggle-section").style.display = "none";
+      document.getElementById("voltar-section").style.display = "block";
+      document.getElementById("login-subtitulo").textContent = "Digite seu nome e defina uma nova senha";
+      document.getElementById("btn-submit").textContent = "Redefinir senha";
+      document.getElementById("btn-submit").onclick = fazerRedefinirSenha;
+      document.getElementById("login-erro").textContent = "";
+      document.getElementById("login-erro").style.color = "";
+    }
+
+    function voltarParaLogin() {
+      modoReset = false;
+      modoRegistro = false;
+      document.getElementById("login-senha").style.display = "block";
+      document.getElementById("login-confirma").style.display = "none";
+      document.getElementById("reset-nova-senha").style.display = "none";
+      document.getElementById("reset-confirma-senha").style.display = "none";
+      document.getElementById("forgot-section").style.display = "block";
+      document.getElementById("toggle-section").style.display = "block";
+      document.getElementById("voltar-section").style.display = "none";
+      document.getElementById("login-subtitulo").textContent = "Entre com seu nome e senha para acessar";
+      document.getElementById("btn-submit").textContent = "Entrar";
+      document.getElementById("btn-submit").onclick = submitLogin;
+      document.getElementById("btn-alternar").textContent = "Criar conta";
+      document.getElementById("login-toggle-label").textContent = "Ainda não tem conta?";
+      document.getElementById("login-erro").textContent = "";
+      document.getElementById("login-erro").style.color = "";
+    }
+
     function submitLogin() {
       modoRegistro ? fazerRegistro() : fazerLogin();
+    }
+
+    async function fazerRedefinirSenha() {
+      const nome     = document.getElementById("login-nome").value.trim();
+      const nova     = document.getElementById("reset-nova-senha").value;
+      const confirma = document.getElementById("reset-confirma-senha").value;
+      const erro     = document.getElementById("login-erro");
+      erro.textContent = "";
+      erro.style.color = "";
+
+      if (!nome)           { erro.textContent = "Digite seu nome de login."; return; }
+      if (!nova)           { erro.textContent = "Digite a nova senha."; return; }
+      if (nova.length < 4) { erro.textContent = "Senha muito curta (mínimo 4 caracteres)."; return; }
+      if (nova !== confirma) { erro.textContent = "As senhas não coincidem."; return; }
+
+      try {
+        await api("POST", "/api/auth/redefinir-senha", { nome, nova_senha: nova });
+        voltarParaLogin();
+        const erroEl = document.getElementById("login-erro");
+        erroEl.style.color = "#006341";
+        erroEl.textContent = "✅ Senha redefinida! Faça login com a nova senha.";
+        setTimeout(() => { erroEl.style.color = ""; erroEl.textContent = ""; }, 6000);
+      } catch (e) {
+        erro.textContent = "❌ " + e.message;
+      }
     }
 
     async function fazerLogin() {

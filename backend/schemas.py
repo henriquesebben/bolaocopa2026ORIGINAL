@@ -28,6 +28,11 @@ class RedefinirSenhaRequest(BaseModel):
     nova_senha: str
 
 
+class RedefinirSenhaPublicaRequest(BaseModel):
+    nome: str
+    nova_senha: str
+
+
 class JogadorOut(BaseModel):
     id: int
     nome: str
