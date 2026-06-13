@@ -2,10 +2,10 @@ name: Sync Scores
 
 on:
   schedule:
-    # Roda a cada 14 minutos — mantém o servidor Render acordado (dorme após 15 min)
-    # ~68 chamadas/dia — deixa ~32 de margem no limite de 100/dia da API gratuita
-    - cron: "*/14 12-23 * * *"
-    - cron: "*/14 0-4 * * *"
+    # Roda a cada 20 minutos durante o horário de jogos (12h-04h UTC = 09h-01h BRT)
+    # ~51 chamadas/dia — deixa ~49 de margem no limite de 100/dia da API gratuita
+    - cron: "*/20 12-23 * * *"
+    - cron: "*/20 0-4 * * *"
   workflow_dispatch:
 
 jobs:
