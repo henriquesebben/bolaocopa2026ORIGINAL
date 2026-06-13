@@ -26,7 +26,7 @@ from .auth import (
 from .database import Base, engine, get_db, SessionLocal
 from . import models, schemas
 from .jogos import JOGOS, JOGOS_POR_ID, TODOS_TIMES
-from .sync import iniciar_scheduler, sync_manual, status_sync, _norm
+from .sync import iniciar_scheduler, sync_manual, status_sync, fetch_raw_hoje, _norm
 
 
 def _artilheiro_match(palpite: str, oficial: str) -> bool:
@@ -746,6 +746,18 @@ async def sync_agora(_=Depends(get_admin_atual)):
 @app.get("/api/admin/sync/status")
 def sync_status(_=Depends(get_admin_atual)):
     return status_sync()
+
+
+@app.get("/api/sync/debug")
+async def sync_debug(request: Request):
+    """Retorna o que a AllSportsApi2 está devolvendo hoje — para diagnóstico."""
+    secret = os.getenv("SYNC_SECRET", "")
+    if not secret:
+        raise HTTPException(status_code=503, detail="SYNC_SECRET não configurado")
+    key = request.headers.get("X-Sync-Key", request.query_params.get("key", ""))
+    if not key or key != secret:
+        raise HTTPException(status_code=401, detail="Chave inválida")
+    return await fetch_raw_hoje()
 
 
 @app.post("/api/sync/auto")

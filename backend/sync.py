@@ -323,11 +323,65 @@ async def _fetch_hoje() -> list:
         return []
     if not _registrar_chamada():
         return []  # teto diário atingido
-    
+
     if API_PROVIDER == "allsportsapi2":
         return await _fetch_allsportsapi2()
     else:
         return await _fetch_api_football()
+
+
+async def fetch_raw_hoje() -> dict:
+    """Retorna dados brutos da API para diagnóstico — não consome cota extra se já chamado hoje."""
+    if not RAPIDAPI_KEY:
+        return {"erro": "RAPIDAPI_KEY não configurado"}
+    hoje = datetime.now(timezone.utc)
+    day, month, year = hoje.day, hoje.month, hoje.year
+    try:
+        async with httpx.AsyncClient(timeout=15) as c:
+            r = await c.get(
+                f"https://allsportsapi2.p.rapidapi.com/api/matches/{day}/{month}/{year}",
+                headers={
+                    "X-RapidAPI-Key": RAPIDAPI_KEY,
+                    "X-RapidAPI-Host": "allsportsapi2.p.rapidapi.com",
+                },
+            )
+            r.raise_for_status()
+            data = r.json()
+            matches = data.get("events", data.get("response", []))
+            if not isinstance(matches, list):
+                return {"erro": "formato inesperado", "raw_keys": list(data.keys())}
+
+            resumo = []
+            for m in matches:
+                tournament = m.get("tournament", {}).get("name", "")
+                category = m.get("tournament", {}).get("category", {}).get("name", "")
+                raw_status = m.get("status", "")
+                if isinstance(raw_status, dict):
+                    raw_status = raw_status.get("type", "")
+                resumo.append({
+                    "id": m.get("id"),
+                    "tournament": tournament,
+                    "category": category,
+                    "home": m.get("homeTeam", {}).get("name", ""),
+                    "away": m.get("awayTeam", {}).get("name", ""),
+                    "status": raw_status,
+                    "homeScore": m.get("homeScore"),
+                    "awayScore": m.get("awayScore"),
+                    "winnerCode": m.get("winnerCode"),
+                    "startTimestamp": m.get("startTimestamp"),
+                })
+
+            copa_keywords = ("world cup", "fifa world", "copa do mundo", "2026")
+            copa = [m for m in resumo if any(kw in (m["tournament"] + " " + m["category"]).lower() for kw in copa_keywords)]
+
+            return {
+                "total_jogos_hoje": len(resumo),
+                "copa_filtrados": len(copa),
+                "copa_jogos": copa,
+                "todos_torneios": sorted({m["tournament"] for m in resumo}),
+            }
+    except Exception as e:
+        return {"erro": str(e)}
 
 
 # ── Janelas de jogo ───────────────────────────────────────────────────────────
