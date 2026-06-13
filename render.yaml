@@ -25,3 +25,5 @@ services:
         sync: false
       - key: VAPID_SUBJECT
         sync: false
+      - key: SYNC_SECRET
+        sync: false

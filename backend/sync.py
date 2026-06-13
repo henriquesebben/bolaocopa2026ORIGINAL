@@ -235,13 +235,19 @@ async def _fetch_allsportsapi2() -> list:
             # Filtrar apenas jogos da Copa do Mundo e converter para o formato API-Football
             converted = []
             for match in matches:
-                # Verificar se é da Copa do Mundo (tournament contém "world" ou "2026")
+                # Verificar se é da Copa do Mundo
                 tournament = match.get("tournament", {}).get("name", "").lower()
-                if "world" not in tournament and "fifa" not in tournament and "2026" not in tournament:
+                category = match.get("tournament", {}).get("category", {}).get("name", "").lower()
+                full_text = tournament + " " + category
+                copa_keywords = ("world cup", "fifa world", "copa do mundo", "2026")
+                if not any(kw in full_text for kw in copa_keywords):
+                    logger.debug(f"[sync] Jogo ignorado — torneio não identificado como Copa: '{tournament}'")
                     continue
-                
+
                 # Converter para o formato esperado
                 ts = match.get("startTimestamp") or 0
+                if ts == 0:
+                    logger.warning(f"[sync] startTimestamp ausente para jogo id={match.get('id')}")
 
                 # status pode ser dict {"type": "finished", ...} ou string
                 raw_status = match.get("status", "")
@@ -256,17 +262,29 @@ async def _fetch_allsportsapi2() -> list:
                 if isinstance(away_score, dict):
                     away_score = away_score.get("current")
 
+                # winner: winnerCode 1=casa, 2=fora (usado em penaltis/prorrogação)
+                winner_code = match.get("winnerCode")
+                home_winner = (winner_code == 1) if winner_code is not None else None
+                away_winner = (winner_code == 2) if winner_code is not None else None
+
+                status_short = _converter_status(raw_status)
+                logger.debug(
+                    f"[sync] Copa match: {match.get('homeTeam',{}).get('name','')} "
+                    f"x {match.get('awayTeam',{}).get('name','')} "
+                    f"status={raw_status!r}→{status_short} score={home_score}:{away_score}"
+                )
+
                 converted.append({
                     "fixture": {
                         "id": match.get("id"),
-                        "date": datetime.fromtimestamp(ts, tz=timezone.utc).isoformat(),
+                        "date": datetime.fromtimestamp(ts, tz=timezone.utc).isoformat() if ts else "",
                         "status": {
-                            "short": _converter_status(raw_status)
+                            "short": status_short
                         }
                     },
                     "teams": {
-                        "home": {"name": match.get("homeTeam", {}).get("name", "")},
-                        "away": {"name": match.get("awayTeam", {}).get("name", "")}
+                        "home": {"name": match.get("homeTeam", {}).get("name", ""), "winner": home_winner},
+                        "away": {"name": match.get("awayTeam", {}).get("name", ""), "winner": away_winner}
                     },
                     "goals": {
                         "home": home_score,
@@ -285,9 +303,16 @@ def _converter_status(status_str: str) -> str:
     status_map = {
         "finished": "FT",
         "aet": "AET",
+        "afterextratime": "AET",
         "penalties": "PEN",
+        "afterpenalties": "PEN",
+        "penaltieswin": "PEN",
         "live": "1H",
+        "inprogress": "1H",
         "scheduled": "NS",
+        "notstarted": "NS",
+        "cancelled": "CANC",
+        "postponed": "PST",
     }
     return status_map.get(status_str.lower(), "NS")
 
@@ -309,15 +334,19 @@ async def _fetch_hoje() -> list:
 
 def _atualizar_janelas(fixtures: list) -> None:
     global _janelas, _ultimo_fetch
-    _janelas = []
+    novas: list[tuple[datetime, datetime]] = []
     for f in fixtures:
-        kickoff = datetime.fromisoformat(f["fixture"]["date"].replace("Z", "+00:00"))
-        _janelas.append((
+        raw_date = f["fixture"]["date"]
+        if not raw_date:
+            continue
+        kickoff = datetime.fromisoformat(raw_date.replace("Z", "+00:00"))
+        novas.append((
             kickoff - timedelta(minutes=10),
-            kickoff + timedelta(minutes=130),  # 90min jogo + 30min gordo + prorrogação
+            kickoff + timedelta(minutes=160),  # 90min + 30min ET + 30min pênaltis + 10min buffer
         ))
+    _janelas = novas
     _ultimo_fetch = datetime.now(timezone.utc)
-    logger.info(f"[sync] Agenda: {len(_janelas)} jogo(s) hoje")
+    logger.info(f"[sync] Agenda atualizada: {len(_janelas)} jogo(s) hoje")
 
 
 def _em_janela() -> bool:
@@ -399,11 +428,9 @@ def _deve_sincronizar() -> tuple[bool, str]:
 # ── Job principal (roda a cada SYNC_INTERVAL_MINS) ───────────────────────────
 
 async def job_principal():
-    global _ultimo_fetch
     now = datetime.now(timezone.utc)
     agenda_expirada = _ultimo_fetch is None or (now - _ultimo_fetch).total_seconds() > 4 * 3600
 
-    # Verifica condições inteligentes antes de sincronizar
     deve_sync, motivo = _deve_sincronizar()
     if not deve_sync and not agenda_expirada and not _em_janela():
         logger.debug(f"[sync] Pulando sincronização: {motivo}")
@@ -412,10 +439,9 @@ async def job_principal():
     if not agenda_expirada and not _em_janela():
         return  # fora de janela e agenda recente → zero chamadas à API
 
-    fixtures = await _fetch_hoje()   # UMA chamada serve pra tudo
-    if agenda_expirada and fixtures:
-        _atualizar_janelas(fixtures)
+    fixtures = await _fetch_hoje()
     if fixtures:
+        _atualizar_janelas(fixtures)  # sempre atualiza janelas quando há dados
         await _processar(fixtures)
 
 

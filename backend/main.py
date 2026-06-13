@@ -748,6 +748,19 @@ def sync_status(_=Depends(get_admin_atual)):
     return status_sync()
 
 
+@app.post("/api/sync/auto")
+async def sync_auto(request: Request):
+    """Endpoint para triggers externos (cron jobs). Protegido por X-Sync-Key."""
+    secret = os.getenv("SYNC_SECRET", "")
+    if not secret:
+        raise HTTPException(status_code=503, detail="SYNC_SECRET não configurado")
+    key = request.headers.get("X-Sync-Key", "")
+    if not key or key != secret:
+        raise HTTPException(status_code=401, detail="Chave inválida")
+    resultado = await sync_manual()
+    return resultado
+
+
 # ── Mata-mata: registrar times reais para sync automático ────────────────────
 
 @app.get("/api/admin/jogo-nomes-reais")

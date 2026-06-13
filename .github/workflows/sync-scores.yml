@@ -1,0 +1,20 @@
+name: Sync Scores
+
+on:
+  schedule:
+    # Roda a cada 10 minutos durante o horário de jogos (12h-04h UTC = 09h-01h BRT)
+    # Cobre até 04:00 UTC para jogos noturnos que vão para prorrogação/pênaltis
+    - cron: "*/10 12-23 * * *"
+    - cron: "*/10 0-4 * * *"
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger score sync
+        run: |
+          curl -s -o /dev/null -w "%{http_code}" \
+            -X POST \
+            -H "X-Sync-Key: ${{ secrets.SYNC_SECRET }}" \
+            "${{ secrets.APP_URL }}/api/sync/auto"
