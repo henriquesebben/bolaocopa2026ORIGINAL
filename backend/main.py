@@ -7,6 +7,19 @@ from datetime import datetime, timezone, timedelta
 from pathlib import Path
 from typing import List, Optional, Tuple
 
+# ── Cache em memória ──────────────────────────────────────────────────────────
+_RANKING_TTL = 60       # segundos
+_PALPITES_PUB_TTL = 30  # segundos
+
+_ranking_cache: Optional[tuple] = None        # (monotonic_ts, data)
+_palpites_pub_cache: Optional[tuple] = None   # (monotonic_ts, data)
+
+
+def _cache_invalidar():
+    global _ranking_cache, _palpites_pub_cache
+    _ranking_cache = None
+    _palpites_pub_cache = None
+
 from fastapi import Depends, FastAPI, HTTPException, Request, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -397,27 +410,35 @@ def _jogo_travado(jogo: dict) -> bool:
 def ver_palpites_publicos(db: Session = Depends(get_db), _=Depends(get_jogador_atual)):
     """Palpites de todos os jogadores, apenas para jogos já travados.
     Considera travado: horário passou OU resultado já foi registrado."""
+    global _palpites_pub_cache
+    now = time.monotonic()
+    if _palpites_pub_cache is not None:
+        ts, cached = _palpites_pub_cache
+        if now - ts < _PALPITES_PUB_TTL:
+            return cached
+
     com_resultado = {r.jogo_id for r in db.query(models.Resultado).all()}
-    resultado: dict = {}
-    for jogo in JOGOS:
-        if not _jogo_travado(jogo) and jogo["id"] not in com_resultado:
-            continue
-        rows = (
-            db.query(models.Palpite, models.Jogador)
-            .join(models.Jogador, models.Jogador.id == models.Palpite.jogador_id)
-            .filter(models.Palpite.jogo_id == jogo["id"])
-            .all()
-        )
-        resultado[jogo["id"]] = [
-            {
-                "jogador_id": j.id,
-                "nome": j.nome,
-                "gols_casa": p.gols_casa,
-                "gols_fora": p.gols_fora,
-                "avanca": p.avanca,
-            }
-            for p, j in rows
-        ]
+    jogos_travados = {j["id"] for j in JOGOS if _jogo_travado(j) or j["id"] in com_resultado}
+
+    # Uma única query em vez de uma por jogo (elimina N+1)
+    rows = (
+        db.query(models.Palpite, models.Jogador)
+        .join(models.Jogador, models.Jogador.id == models.Palpite.jogador_id)
+        .filter(models.Palpite.jogo_id.in_(jogos_travados))
+        .all()
+    )
+
+    resultado: dict = {jogo_id: [] for jogo_id in jogos_travados}
+    for p, j in rows:
+        resultado[p.jogo_id].append({
+            "jogador_id": j.id,
+            "nome": j.nome,
+            "gols_casa": p.gols_casa,
+            "gols_fora": p.gols_fora,
+            "avanca": p.avanca,
+        })
+
+    _palpites_pub_cache = (now, resultado)
     return resultado
 
 
@@ -624,6 +645,7 @@ def salvar_resultado(
     _propagar_progressao(jogo_id, body.gols_casa, body.gols_fora, avanca, db)
     db.commit()
     db.refresh(resultado)
+    _cache_invalidar()
     return resultado
 
 
@@ -634,6 +656,7 @@ def apagar_resultado(jogo_id: str, db: Session = Depends(get_db), _=Depends(get_
         raise HTTPException(status_code=404, detail="Resultado não encontrado")
     db.delete(resultado)
     db.commit()
+    _cache_invalidar()
 
 
 # ── Bônus ─────────────────────────────────────────────────────────────────────
@@ -702,6 +725,13 @@ def salvar_oficiais(body: schemas.OficiaisUpsert, db: Session = Depends(get_db),
 
 @app.get("/api/ranking", response_model=List[schemas.RankingEntry])
 def ranking(db: Session = Depends(get_db), _=Depends(get_jogador_atual)):
+    global _ranking_cache
+    now = time.monotonic()
+    if _ranking_cache is not None:
+        ts, cached = _ranking_cache
+        if now - ts < _RANKING_TTL:
+            return cached
+
     jogadores = db.query(models.Jogador).all()
     resultados = db.query(models.Resultado).all()
     resultados_map = {r.jogo_id: r for r in resultados}
@@ -720,7 +750,6 @@ def ranking(db: Session = Depends(get_db), _=Depends(get_jogador_atual)):
             **stats,
         })
 
-    # Desempate: 1° placar exato · 2° resultado correto · 3° artilheiro · 4° campeão
     entradas.sort(key=lambda e: (
         -e["total"],
         -e["placar_exato"],
@@ -729,7 +758,7 @@ def ranking(db: Session = Depends(get_db), _=Depends(get_jogador_atual)):
         -e["acertou_campeao"],
     ))
 
-    return [
+    result = [
         schemas.RankingEntry(
             posicao=i + 1,
             jogador_id=e["jogador"].id,
@@ -747,6 +776,8 @@ def ranking(db: Session = Depends(get_db), _=Depends(get_jogador_atual)):
         )
         for i, e in enumerate(entradas)
     ]
+    _ranking_cache = (now, result)
+    return result
 
 
 # ── Sync automático ──────────────────────────────────────────────────────────
