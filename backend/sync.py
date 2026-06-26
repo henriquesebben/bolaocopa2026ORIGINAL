@@ -239,14 +239,22 @@ async def _fetch_allsportsapi2_dia(day: int, month: int, year: int) -> list:
 async def _fetch_allsportsapi2() -> list:
     """
     Busca jogos da AllSportsApi2 (novo provider).
-    Busca hoje e ontem (UTC) para capturar jogos de madrugada BRT que já terminaram.
+    Nas primeiras 9h UTC (até 6h BRT) também busca ontem para capturar jogos
+    noturnos que terminaram após a meia-noite UTC — sem gastar chamada extra
+    no resto do dia.
     Converte para o formato esperado pelo código (compatível com API-Football).
     """
     hoje = datetime.now(timezone.utc)
-    ontem = hoje - timedelta(days=1)
 
     matches_hoje = await _fetch_allsportsapi2_dia(hoje.day, hoje.month, hoje.year)
-    matches_ontem = await _fetch_allsportsapi2_dia(ontem.day, ontem.month, ontem.year)
+
+    # Até 9h UTC (= 6h BRT) jogos da madrugada anterior podem não ter sido capturados
+    if hoje.hour < 9:
+        ontem = hoje - timedelta(days=1)
+        matches_ontem = await _fetch_allsportsapi2_dia(ontem.day, ontem.month, ontem.year)
+    else:
+        matches_ontem = []
+
     all_matches = matches_hoje + matches_ontem
 
     # Filtrar apenas jogos da Copa do Mundo e converter para o formato API-Football
@@ -345,10 +353,13 @@ async def fetch_raw_hoje() -> dict:
     if not RAPIDAPI_KEY:
         return {"erro": "RAPIDAPI_KEY não configurado"}
     hoje = datetime.now(timezone.utc)
-    ontem = hoje - timedelta(days=1)
     try:
         matches_hoje = await _fetch_allsportsapi2_dia(hoje.day, hoje.month, hoje.year)
-        matches_ontem = await _fetch_allsportsapi2_dia(ontem.day, ontem.month, ontem.year)
+        if hoje.hour < 9:
+            ontem = hoje - timedelta(days=1)
+            matches_ontem = await _fetch_allsportsapi2_dia(ontem.day, ontem.month, ontem.year)
+        else:
+            matches_ontem = []
         matches = matches_hoje + matches_ontem
 
         resumo = []
