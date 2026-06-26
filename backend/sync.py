@@ -207,16 +207,21 @@ async def _fetch_api_football() -> list:
         return []
 
 
-async def _fetch_allsportsapi2() -> list:
-    """
-    Busca jogos da AllSportsApi2 (novo provider).
-    Converte para o formato esperado pelo código (compatível com API-Football).
-    """
-    hoje = datetime.now(timezone.utc)
-    day, month, year = hoje.day, hoje.month, hoje.year
+def _extrair_matches(data) -> list:
+    """Extrai lista de matches da resposta da API, aceitando lista direta ou dict com wrapper."""
+    if isinstance(data, list):
+        return data
+    if isinstance(data, dict):
+        matches = data.get("events", data.get("response", []))
+        if isinstance(matches, list):
+            return matches
+    return []
+
+
+async def _fetch_allsportsapi2_dia(day: int, month: int, year: int) -> list:
+    """Busca jogos de um dia específico na AllSportsApi2."""
     try:
         async with httpx.AsyncClient(timeout=15) as c:
-            # Busca todos os jogos do dia
             r = await c.get(
                 f"https://allsportsapi2.p.rapidapi.com/api/matches/{day}/{month}/{year}",
                 headers={
@@ -225,77 +230,82 @@ async def _fetch_allsportsapi2() -> list:
                 },
             )
             r.raise_for_status()
-            data = r.json()
-            
-            # AllSportsApi2 retorna um objeto genérico; extrair a lista de matches
-            matches = data.get("events", data.get("response", []))
-            if not isinstance(matches, list):
-                return []
-            
-            # Filtrar apenas jogos da Copa do Mundo e converter para o formato API-Football
-            converted = []
-            for match in matches:
-                # Verificar se é da Copa do Mundo
-                tournament = match.get("tournament", {}).get("name", "").lower()
-                category = match.get("tournament", {}).get("category", {}).get("name", "").lower()
-                full_text = tournament + " " + category
-                copa_keywords = ("world cup", "fifa world", "copa do mundo", "2026")
-                if not any(kw in full_text for kw in copa_keywords):
-                    logger.debug(f"[sync] Jogo ignorado — torneio não identificado como Copa: '{tournament}'")
-                    continue
-
-                # Converter para o formato esperado
-                ts = match.get("startTimestamp") or 0
-                if ts == 0:
-                    logger.warning(f"[sync] startTimestamp ausente para jogo id={match.get('id')}")
-
-                # status pode ser dict {"type": "finished", ...} ou string
-                raw_status = match.get("status", "")
-                if isinstance(raw_status, dict):
-                    raw_status = raw_status.get("type", "")
-
-                # score pode ser dict {"current": 2, ...} ou int
-                home_score = match.get("homeScore")
-                away_score = match.get("awayScore")
-                if isinstance(home_score, dict):
-                    home_score = home_score.get("current")
-                if isinstance(away_score, dict):
-                    away_score = away_score.get("current")
-
-                # winner: winnerCode 1=casa, 2=fora (usado em penaltis/prorrogação)
-                winner_code = match.get("winnerCode")
-                home_winner = (winner_code == 1) if winner_code is not None else None
-                away_winner = (winner_code == 2) if winner_code is not None else None
-
-                status_short = _converter_status(raw_status)
-                logger.debug(
-                    f"[sync] Copa match: {match.get('homeTeam',{}).get('name','')} "
-                    f"x {match.get('awayTeam',{}).get('name','')} "
-                    f"status={raw_status!r}→{status_short} score={home_score}:{away_score}"
-                )
-
-                converted.append({
-                    "fixture": {
-                        "id": match.get("id"),
-                        "date": datetime.fromtimestamp(ts, tz=timezone.utc).isoformat() if ts else "",
-                        "status": {
-                            "short": status_short
-                        }
-                    },
-                    "teams": {
-                        "home": {"name": match.get("homeTeam", {}).get("name", ""), "winner": home_winner},
-                        "away": {"name": match.get("awayTeam", {}).get("name", ""), "winner": away_winner}
-                    },
-                    "goals": {
-                        "home": home_score,
-                        "away": away_score
-                    }
-                })
-            
-            return converted
+            return _extrair_matches(r.json())
     except Exception as e:
-        logger.error(f"[sync] Erro na AllSportsApi2: {e}")
+        logger.error(f"[sync] Erro na AllSportsApi2 ({day}/{month}/{year}): {e}")
         return []
+
+
+async def _fetch_allsportsapi2() -> list:
+    """
+    Busca jogos da AllSportsApi2 (novo provider).
+    Busca hoje e ontem (UTC) para capturar jogos de madrugada BRT que já terminaram.
+    Converte para o formato esperado pelo código (compatível com API-Football).
+    """
+    hoje = datetime.now(timezone.utc)
+    ontem = hoje - timedelta(days=1)
+
+    matches_hoje = await _fetch_allsportsapi2_dia(hoje.day, hoje.month, hoje.year)
+    matches_ontem = await _fetch_allsportsapi2_dia(ontem.day, ontem.month, ontem.year)
+    all_matches = matches_hoje + matches_ontem
+
+    # Filtrar apenas jogos da Copa do Mundo e converter para o formato API-Football
+    converted = []
+    seen_ids: set = set()
+    copa_keywords = ("world cup", "fifa world", "copa do mundo", "2026")
+    for match in all_matches:
+        match_id = match.get("id")
+        if match_id in seen_ids:
+            continue
+        seen_ids.add(match_id)
+
+        tournament = match.get("tournament", {}).get("name", "").lower()
+        category = match.get("tournament", {}).get("category", {}).get("name", "").lower()
+        full_text = tournament + " " + category
+        if not any(kw in full_text for kw in copa_keywords):
+            logger.debug(f"[sync] Jogo ignorado — torneio não identificado como Copa: '{tournament}'")
+            continue
+
+        ts = match.get("startTimestamp") or 0
+        if ts == 0:
+            logger.warning(f"[sync] startTimestamp ausente para jogo id={match_id}")
+
+        raw_status = match.get("status", "")
+        if isinstance(raw_status, dict):
+            raw_status = raw_status.get("type", "")
+
+        home_score = match.get("homeScore")
+        away_score = match.get("awayScore")
+        if isinstance(home_score, dict):
+            home_score = home_score.get("current")
+        if isinstance(away_score, dict):
+            away_score = away_score.get("current")
+
+        winner_code = match.get("winnerCode")
+        home_winner = (winner_code == 1) if winner_code is not None else None
+        away_winner = (winner_code == 2) if winner_code is not None else None
+
+        status_short = _converter_status(raw_status)
+        logger.debug(
+            f"[sync] Copa match: {match.get('homeTeam',{}).get('name','')} "
+            f"x {match.get('awayTeam',{}).get('name','')} "
+            f"status={raw_status!r}→{status_short} score={home_score}:{away_score}"
+        )
+
+        converted.append({
+            "fixture": {
+                "id": match_id,
+                "date": datetime.fromtimestamp(ts, tz=timezone.utc).isoformat() if ts else "",
+                "status": {"short": status_short},
+            },
+            "teams": {
+                "home": {"name": match.get("homeTeam", {}).get("name", ""), "winner": home_winner},
+                "away": {"name": match.get("awayTeam", {}).get("name", ""), "winner": away_winner},
+            },
+            "goals": {"home": home_score, "away": away_score},
+        })
+
+    return converted
 
 
 def _converter_status(status_str: str) -> str:
@@ -335,51 +345,41 @@ async def fetch_raw_hoje() -> dict:
     if not RAPIDAPI_KEY:
         return {"erro": "RAPIDAPI_KEY não configurado"}
     hoje = datetime.now(timezone.utc)
-    day, month, year = hoje.day, hoje.month, hoje.year
+    ontem = hoje - timedelta(days=1)
     try:
-        async with httpx.AsyncClient(timeout=15) as c:
-            r = await c.get(
-                f"https://allsportsapi2.p.rapidapi.com/api/matches/{day}/{month}/{year}",
-                headers={
-                    "X-RapidAPI-Key": RAPIDAPI_KEY,
-                    "X-RapidAPI-Host": "allsportsapi2.p.rapidapi.com",
-                },
-            )
-            r.raise_for_status()
-            data = r.json()
-            matches = data.get("events", data.get("response", []))
-            if not isinstance(matches, list):
-                return {"erro": "formato inesperado", "raw_keys": list(data.keys())}
+        matches_hoje = await _fetch_allsportsapi2_dia(hoje.day, hoje.month, hoje.year)
+        matches_ontem = await _fetch_allsportsapi2_dia(ontem.day, ontem.month, ontem.year)
+        matches = matches_hoje + matches_ontem
 
-            resumo = []
-            for m in matches:
-                tournament = m.get("tournament", {}).get("name", "")
-                category = m.get("tournament", {}).get("category", {}).get("name", "")
-                raw_status = m.get("status", "")
-                if isinstance(raw_status, dict):
-                    raw_status = raw_status.get("type", "")
-                resumo.append({
-                    "id": m.get("id"),
-                    "tournament": tournament,
-                    "category": category,
-                    "home": m.get("homeTeam", {}).get("name", ""),
-                    "away": m.get("awayTeam", {}).get("name", ""),
-                    "status": raw_status,
-                    "homeScore": m.get("homeScore"),
-                    "awayScore": m.get("awayScore"),
-                    "winnerCode": m.get("winnerCode"),
-                    "startTimestamp": m.get("startTimestamp"),
-                })
+        resumo = []
+        for m in matches:
+            tournament = m.get("tournament", {}).get("name", "")
+            category = m.get("tournament", {}).get("category", {}).get("name", "")
+            raw_status = m.get("status", "")
+            if isinstance(raw_status, dict):
+                raw_status = raw_status.get("type", "")
+            resumo.append({
+                "id": m.get("id"),
+                "tournament": tournament,
+                "category": category,
+                "home": m.get("homeTeam", {}).get("name", ""),
+                "away": m.get("awayTeam", {}).get("name", ""),
+                "status": raw_status,
+                "homeScore": m.get("homeScore"),
+                "awayScore": m.get("awayScore"),
+                "winnerCode": m.get("winnerCode"),
+                "startTimestamp": m.get("startTimestamp"),
+            })
 
-            copa_keywords = ("world cup", "fifa world", "copa do mundo", "2026")
-            copa = [m for m in resumo if any(kw in (m["tournament"] + " " + m["category"]).lower() for kw in copa_keywords)]
+        copa_keywords = ("world cup", "fifa world", "copa do mundo", "2026")
+        copa = [m for m in resumo if any(kw in (m["tournament"] + " " + m["category"]).lower() for kw in copa_keywords)]
 
-            return {
-                "total_jogos_hoje": len(resumo),
-                "copa_filtrados": len(copa),
-                "copa_jogos": copa,
-                "todos_torneios": sorted({m["tournament"] for m in resumo}),
-            }
+        return {
+            "total_jogos_hoje_e_ontem": len(resumo),
+            "copa_filtrados": len(copa),
+            "copa_jogos": copa,
+            "todos_torneios": sorted({m["tournament"] for m in resumo}),
+        }
     except Exception as e:
         return {"erro": str(e)}
 
