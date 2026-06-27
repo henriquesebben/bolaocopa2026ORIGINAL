@@ -40,6 +40,7 @@ from .database import Base, engine, get_db, SessionLocal
 from . import models, schemas
 from .jogos import JOGOS, JOGOS_POR_ID, TODOS_TIMES
 from .sync import iniciar_scheduler, sync_manual, status_sync, fetch_raw_hoje, _norm
+from .progresso import propagar_progressao, popular_confrontos_r32
 
 
 def _artilheiro_match(palpite: str, oficial: str) -> bool:
@@ -548,61 +549,6 @@ def listar_resultados(db: Session = Depends(get_db), _=Depends(get_jogador_atual
     return db.query(models.Resultado).all()
 
 
-def _propagar_progressao(jogo_id: str, gols_casa: int, gols_fora: int, avanca: Optional[str], db: Session) -> None:
-    """Após salvar resultado de mata-mata, atualiza automaticamente os times dos próximos confrontos."""
-    jogo_meta = JOGOS_POR_ID.get(jogo_id)
-    if not jogo_meta or not jogo_meta["eh_mata_mata"]:
-        return
-
-    if gols_casa > gols_fora:
-        slot_vencedor, slot_perdedor = "casa", "fora"
-    elif gols_fora > gols_casa:
-        slot_vencedor, slot_perdedor = "fora", "casa"
-    else:
-        slot_vencedor = avanca
-        slot_perdedor = "fora" if avanca == "casa" else "casa"
-
-    if not slot_vencedor:
-        return
-
-    nome_real = db.query(models.JogoNomeReal).filter(models.JogoNomeReal.jogo_id == jogo_id).first()
-    if slot_vencedor == "casa":
-        nome_vencedor = (nome_real.casa_real if nome_real and nome_real.casa_real else None) or jogo_meta["casa"]
-        nome_perdedor = (nome_real.fora_real if nome_real and nome_real.fora_real else None) or jogo_meta["fora"]
-    else:
-        nome_vencedor = (nome_real.fora_real if nome_real and nome_real.fora_real else None) or jogo_meta["fora"]
-        nome_perdedor = (nome_real.casa_real if nome_real and nome_real.casa_real else None) or jogo_meta["casa"]
-
-    tag_vencedor = f"Vencedor {jogo_id}"
-    tag_perdedor = f"Perdedor {jogo_id}"
-
-    for proximo in JOGOS:
-        novo_casa = novo_fora = None
-        if proximo["casa"] == tag_vencedor:
-            novo_casa = nome_vencedor
-        elif proximo["casa"] == tag_perdedor:
-            novo_casa = nome_perdedor
-        if proximo["fora"] == tag_vencedor:
-            novo_fora = nome_vencedor
-        elif proximo["fora"] == tag_perdedor:
-            novo_fora = nome_perdedor
-
-        if novo_casa is None and novo_fora is None:
-            continue
-
-        rec = db.query(models.JogoNomeReal).filter(models.JogoNomeReal.jogo_id == proximo["id"]).first()
-        if rec:
-            if novo_casa is not None:
-                rec.casa_real = novo_casa
-            if novo_fora is not None:
-                rec.fora_real = novo_fora
-        else:
-            db.add(models.JogoNomeReal(
-                jogo_id=proximo["id"],
-                casa_real=novo_casa or proximo["casa"],
-                fora_real=novo_fora or proximo["fora"],
-            ))
-
 
 @app.put("/api/resultados/{jogo_id}", response_model=schemas.ResultadoOut)
 def salvar_resultado(
@@ -642,7 +588,9 @@ def salvar_resultado(
             resultado.gols_fora = body.gols_fora
             resultado.avanca = avanca
 
-    _propagar_progressao(jogo_id, body.gols_casa, body.gols_fora, avanca, db)
+    propagar_progressao(jogo_id, body.gols_casa, body.gols_fora, avanca, db)
+    if not jogo_meta["eh_mata_mata"]:
+        popular_confrontos_r32(db)
     db.commit()
     db.refresh(resultado)
     _cache_invalidar()
@@ -819,6 +767,15 @@ async def sync_auto(request: Request):
 
 
 # ── Mata-mata: registrar times reais para sync automático ────────────────────
+
+@app.post("/api/admin/popular-r32")
+def calcular_confrontos_r32(db: Session = Depends(get_db), _=Depends(get_admin_atual)):
+    """Admin: calcula classificados da fase de grupos e preenche os confrontos do R32."""
+    resultado = popular_confrontos_r32(db)
+    db.commit()
+    _cache_invalidar()
+    return resultado
+
 
 @app.get("/api/admin/jogo-nomes-reais")
 def listar_jogo_nomes_reais(db: Session = Depends(get_db), _=Depends(get_admin_atual)):

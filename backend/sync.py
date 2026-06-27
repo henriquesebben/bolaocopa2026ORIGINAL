@@ -22,7 +22,8 @@ from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 from .database import SessionLocal
 from . import models
-from .jogos import JOGOS
+from .jogos import JOGOS, JOGOS_POR_ID
+from .progresso import propagar_progressao, popular_confrontos_r32
 
 logger = logging.getLogger(__name__)
 
@@ -424,6 +425,7 @@ def _em_janela() -> bool:
 async def _processar(fixtures: list) -> int:
     global _ultimo_sync_log
     atualizados = 0
+    grupo_atualizado = False
     pair_to_jogo = _construir_pair_to_jogo()
     db = SessionLocal()
     try:
@@ -469,7 +471,15 @@ async def _processar(fixtures: list) -> int:
                 ))
             atualizados += 1
 
+            jogo_meta = JOGOS_POR_ID.get(jogo_id)
+            if jogo_meta and jogo_meta["eh_mata_mata"]:
+                propagar_progressao(jogo_id, gols_casa, gols_fora, avanca, db)
+            else:
+                grupo_atualizado = True
+
         if atualizados:
+            if grupo_atualizado:
+                popular_confrontos_r32(db)
             db.commit()
     finally:
         db.close()

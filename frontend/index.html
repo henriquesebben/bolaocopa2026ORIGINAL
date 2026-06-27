@@ -295,6 +295,17 @@
         Quando o mata-mata começar, registre aqui os times reais de cada jogo (ex.: "Brasil" em vez de "Vencedor R32-1").
         O sync automático vai reconhecer esses nomes e lançar o resultado sem precisar de intervenção manual.
       </div>
+      <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin:10px 0;
+                  background:#e8f5e9; border-radius:8px; padding:12px 16px;">
+        <div style="flex:1; min-width:200px;">
+          <strong style="color:#2e7d32;">📊 Calcular confrontos dos 32-avos</strong>
+          <p style="font-size:13px; color:#555; margin-top:3px;">
+            Usa os resultados da fase de grupos para preencher automaticamente quem joga em cada confronto.
+            Os slots "Melhor 3º" só são resolvidos quando todos os 12 grupos terminam.
+          </p>
+        </div>
+        <button class="acao" onclick="calcularR32()">📊 Calcular R32</button>
+      </div>
       <div id="mata-mata-times" style="margin-top:10px;"></div>
 
       <h3 style="margin-top:30px;">🏆 Bônus — Resultado oficial</h3>
@@ -1734,6 +1745,17 @@
         renderMataMataAdmin();
       } catch(e) {
         toast("❌ " + e.message, "#d32f2f");
+      }
+    }
+
+    async function calcularR32() {
+      try {
+        const r = await api("POST", "/api/admin/popular-r32");
+        toast(`✅ ${r.confrontos_atualizados} confronto(s) preenchido(s) — ${r.grupos_computados} grupo(s) computados, ${r.terceiros_qualificados} terceiros resolvidos`);
+        await atualizarJogosCache();
+        renderMataMataAdmin();
+      } catch (e) {
+        toast("❌ " + (e.message || "Erro ao calcular confrontos"), "#d32f2f");
       }
     }
 
