@@ -101,17 +101,17 @@ if not allow_origins:
 async def lifespan(_app: FastAPI):
     # Cria tabelas e executa migrações de colunas novas
     Base.metadata.create_all(bind=engine)
-    with engine.connect() as conn:
-        for stmt in [
-            "ALTER TABLE palpites ADD COLUMN avanca VARCHAR(10)",
-            "ALTER TABLE resultados ADD COLUMN avanca VARCHAR(10)",
-            "ALTER TABLE jogadores ADD COLUMN is_admin_parcial BOOLEAN DEFAULT 0",
-        ]:
-            try:
+    for stmt in [
+        "ALTER TABLE palpites ADD COLUMN avanca VARCHAR(10)",
+        "ALTER TABLE resultados ADD COLUMN avanca VARCHAR(10)",
+        "ALTER TABLE jogadores ADD COLUMN is_admin_parcial BOOLEAN DEFAULT FALSE",
+    ]:
+        try:
+            with engine.connect() as conn:
                 conn.execute(text(stmt))
                 conn.commit()
-            except Exception:
-                pass  # coluna já existe
+        except Exception:
+            pass  # coluna já existe
 
     # Cria admin padrão se não existir
     db = SessionLocal()
