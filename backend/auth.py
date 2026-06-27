@@ -37,12 +37,13 @@ def verificar_senha(senha: str, hash_: str) -> bool:
     return bcrypt.checkpw(senha.encode(), hash_.encode())
 
 
-def criar_token(jogador_id: int, nome: str, is_admin: bool) -> str:
+def criar_token(jogador_id: int, nome: str, is_admin: bool, is_admin_parcial: bool = False) -> str:
     expire = datetime.now(timezone.utc) + timedelta(days=TOKEN_EXPIRE_DAYS)
     payload = {
         "sub": str(jogador_id),
         "nome": nome,
         "is_admin": is_admin,
+        "is_admin_parcial": is_admin_parcial,
         "exp": expire,
     }
     return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
@@ -72,6 +73,13 @@ def get_jogador_atual(
 
 def get_admin_atual(jogador: models.Jogador = Depends(get_jogador_atual)) -> models.Jogador:
     if not jogador.is_admin:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Acesso restrito ao admin")
+    return jogador
+
+
+def get_admin_parcial_atual(jogador: models.Jogador = Depends(get_jogador_atual)) -> models.Jogador:
+    """Permite acesso a admin completo ou admin auxiliar."""
+    if not jogador.is_admin and not jogador.is_admin_parcial:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Acesso restrito ao admin")
     return jogador
 

@@ -15,6 +15,7 @@ class Jogador(Base):
     nome = Column(String(30), unique=True, nullable=False)
     senha_hash = Column(String, nullable=False)
     is_admin = Column(Boolean, default=False)
+    is_admin_parcial = Column(Boolean, default=False)
     created_at = Column(DateTime(timezone=True), default=now_utc)
 
     palpites = relationship("Palpite", back_populates="jogador", cascade="all, delete-orphan")

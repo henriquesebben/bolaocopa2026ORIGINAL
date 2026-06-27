@@ -15,6 +15,7 @@ class TokenResponse(BaseModel):
     jogador_id: int
     nome: str
     is_admin: bool
+    is_admin_parcial: bool = False
 
 
 # ── Jogadores ─────────────────────────────────────────────────────────────────
@@ -37,6 +38,7 @@ class JogadorOut(BaseModel):
     id: int
     nome: str
     is_admin: bool
+    is_admin_parcial: bool = False
     total_palpites: int = 0
 
     model_config = {"from_attributes": True}

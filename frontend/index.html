@@ -261,53 +261,61 @@
     <section id="view-admin" class="view">
       <h2>🛠️ Admin — Resultados Oficiais</h2>
 
-      <!-- Sync automático -->
-      <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:18px;
-                  background:#f0faf4; border-radius:8px; padding:12px 16px;">
-        <div style="flex:1; min-width:200px;">
-          <strong style="color:#006341;">🔄 Sincronização automática</strong>
-          <p id="sync-status-txt" style="font-size:13px; color:#555; margin-top:3px;">Verificando...</p>
+      <!-- Sync automático — visível apenas para admin completo -->
+      <div id="admin-secao-sync">
+        <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:18px;
+                    background:#f0faf4; border-radius:8px; padding:12px 16px;">
+          <div style="flex:1; min-width:200px;">
+            <strong style="color:#006341;">🔄 Sincronização automática</strong>
+            <p id="sync-status-txt" style="font-size:13px; color:#555; margin-top:3px;">Verificando...</p>
+          </div>
+          <button class="acao" onclick="syncAgora()" id="btn-sync">🔄 Sincronizar agora</button>
+          <button class="acao" onclick="backfillAgora()" id="btn-backfill" style="background:#1565c0;">📥 Buscar histórico (20 dias)</button>
         </div>
-        <button class="acao" onclick="syncAgora()" id="btn-sync">🔄 Sincronizar agora</button>
-        <button class="acao" onclick="backfillAgora()" id="btn-backfill" style="background:#1565c0;">📥 Buscar histórico (20 dias)</button>
       </div>
 
-      <h3>👥 Gerenciar Jogadores</h3>
-      <div class="dica">Cadastre aqui os jogadores do bolão. O admin define o nome e a senha de cada um.</div>
-      <div style="display:flex; gap:10px; margin:12px 0 15px; flex-wrap:wrap;">
-        <input type="text"     id="novo-jogador-nome"  placeholder="Nome do jogador..." maxlength="30" style="flex:1; min-width:120px;">
-        <input type="password" id="novo-jogador-senha" placeholder="Senha..."           maxlength="50" style="flex:1; min-width:120px;">
-        <button class="acao" onclick="adicionarJogador()">Adicionar</button>
+      <!-- Gerenciar Jogadores — visível apenas para admin completo -->
+      <div id="admin-secao-jogadores">
+        <h3>👥 Gerenciar Jogadores</h3>
+        <div class="dica">Cadastre aqui os jogadores do bolão. O admin define o nome e a senha de cada um.</div>
+        <div style="display:flex; gap:10px; margin:12px 0 15px; flex-wrap:wrap;">
+          <input type="text"     id="novo-jogador-nome"  placeholder="Nome do jogador..." maxlength="30" style="flex:1; min-width:120px;">
+          <input type="password" id="novo-jogador-senha" placeholder="Senha..."           maxlength="50" style="flex:1; min-width:120px;">
+          <button class="acao" onclick="adicionarJogador()">Adicionar</button>
+        </div>
+        <table id="tabela-jogadores">
+          <thead><tr><th>Nome</th><th>Palpites feitos</th><th>Ações</th><th></th><th></th><th></th></tr></thead>
+          <tbody></tbody>
+        </table>
+        <p style="font-size:12px;color:#888;margin-top:6px;">
+          "Limpar palpites" apaga apenas os palpites do jogador — o cadastro é mantido.
+        </p>
       </div>
-      <table id="tabela-jogadores">
-        <thead><tr><th>Nome</th><th>Palpites feitos</th><th>Ações</th><th></th><th></th></tr></thead>
-        <tbody></tbody>
-      </table>
-      <p style="font-size:12px;color:#888;margin-top:6px;">
-        "Limpar palpites" apaga apenas os palpites do jogador — o cadastro é mantido.
-      </p>
 
       <h3 style="margin-top:30px;">🏆 Resultados Oficiais</h3>
       <p>Conforme os jogos vão acontecendo, o placar é atualizado automaticamente. Você também pode lançar manualmente abaixo.</p>
       <div id="admin-jogos"></div>
 
-      <h3 style="margin-top:30px;">🔗 Sync mata-mata — Registrar times reais</h3>
-      <div class="dica">
-        Quando o mata-mata começar, registre aqui os times reais de cada jogo (ex.: "Brasil" em vez de "Vencedor R32-1").
-        O sync automático vai reconhecer esses nomes e lançar o resultado sem precisar de intervenção manual.
-      </div>
-      <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin:10px 0;
-                  background:#e8f5e9; border-radius:8px; padding:12px 16px;">
-        <div style="flex:1; min-width:200px;">
-          <strong style="color:#2e7d32;">📊 Calcular confrontos dos 32-avos</strong>
-          <p style="font-size:13px; color:#555; margin-top:3px;">
-            Usa os resultados da fase de grupos para preencher automaticamente quem joga em cada confronto.
-            Os slots "Melhor 3º" só são resolvidos quando todos os 12 grupos terminam.
-          </p>
+      <!-- Sync mata-mata — visível apenas para admin completo -->
+      <div id="admin-secao-mata-mata">
+        <h3 style="margin-top:30px;">🔗 Sync mata-mata — Registrar times reais</h3>
+        <div class="dica">
+          Quando o mata-mata começar, registre aqui os times reais de cada jogo (ex.: "Brasil" em vez de "Vencedor R32-1").
+          O sync automático vai reconhecer esses nomes e lançar o resultado sem precisar de intervenção manual.
         </div>
-        <button class="acao" onclick="calcularR32()">📊 Calcular R32</button>
+        <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin:10px 0;
+                    background:#e8f5e9; border-radius:8px; padding:12px 16px;">
+          <div style="flex:1; min-width:200px;">
+            <strong style="color:#2e7d32;">📊 Calcular confrontos dos 32-avos</strong>
+            <p style="font-size:13px; color:#555; margin-top:3px;">
+              Usa os resultados da fase de grupos para preencher automaticamente quem joga em cada confronto.
+              Os slots "Melhor 3º" só são resolvidos quando todos os 12 grupos terminam.
+            </p>
+          </div>
+          <button class="acao" onclick="calcularR32()">📊 Calcular R32</button>
+        </div>
+        <div id="mata-mata-times" style="margin-top:10px;"></div>
       </div>
-      <div id="mata-mata-times" style="margin-top:10px;"></div>
 
       <h3 style="margin-top:30px;">🏆 Bônus — Resultado oficial</h3>
       <p style="font-size:14px;color:#666;margin-bottom:10px;">Defina o campeão e artilheiro reais no final da Copa para distribuir os pontos bônus.</p>
@@ -325,14 +333,20 @@
         </div>
       </div>
 
-      <h3 style="margin-top:30px;">🔑 Minha Conta</h3>
-      <button class="acao" onclick="alterarMinhaSenha()">Alterar minha senha</button>
-
-      <h3 style="color:#d32f2f;margin-top:30px;">⚠️ Zona de Perigo</h3>
-      <div class="dica" style="border-left-color:#d32f2f;background:#ffebee;">
-        <strong>Resetar bolão:</strong> apaga todos os palpites (inclusive bônus), todos os resultados e os confrontos do mata-mata. Os cadastros dos jogadores são mantidos. <strong>Não pode ser desfeito!</strong>
+      <!-- Minha Conta — visível apenas para admin completo -->
+      <div id="admin-secao-conta">
+        <h3 style="margin-top:30px;">🔑 Minha Conta</h3>
+        <button class="acao" onclick="alterarMinhaSenha()">Alterar minha senha</button>
       </div>
-      <button class="perigo" onclick="resetarTudo()">🗑️ Apagar todos os dados</button>
+
+      <!-- Zona de Perigo — visível apenas para admin completo -->
+      <div id="admin-secao-perigo">
+        <h3 style="color:#d32f2f;margin-top:30px;">⚠️ Zona de Perigo</h3>
+        <div class="dica" style="border-left-color:#d32f2f;background:#ffebee;">
+          <strong>Resetar bolão:</strong> apaga todos os palpites (inclusive bônus), todos os resultados e os confrontos do mata-mata. Os cadastros dos jogadores são mantidos. <strong>Não pode ser desfeito!</strong>
+        </div>
+        <button class="perigo" onclick="resetarTudo()">🗑️ Apagar todos os dados</button>
+      </div>
     </section>
 
     <!-- ── Ranking ── -->
@@ -754,7 +768,7 @@
 
     function salvarSessao(data) {
       token = data.access_token;
-      eu    = { id: data.jogador_id, nome: data.nome, is_admin: data.is_admin };
+      eu    = { id: data.jogador_id, nome: data.nome, is_admin: data.is_admin, is_admin_parcial: data.is_admin_parcial || false };
       localStorage.setItem("bolao_token", token);
       localStorage.setItem("bolao_eu",    JSON.stringify(eu));
       iniciarApp();
@@ -777,11 +791,13 @@
       document.getElementById("main-content").style.display   = "block";
       document.getElementById("usuario-info").style.display   = "flex";
       document.getElementById("usuario-nome-label").textContent =
-        (eu.is_admin ? "🛠️ " : "👤 ") + eu.nome;
+        (eu.is_admin ? "🛠️ " : eu.is_admin_parcial ? "⭐ " : "👤 ") + eu.nome;
 
-      if (eu.is_admin) {
+      if (eu.is_admin || eu.is_admin_parcial) {
         document.getElementById("btn-admin").style.display = "inline-block";
         document.getElementById("secao-oficiais").style.display = "flex";
+      }
+      if (eu.is_admin) {
         document.getElementById("palpites-select-admin").style.display = "block";
       }
 
@@ -891,7 +907,7 @@
         const sel = document.getElementById("select-jogador").value;
         if (sel) carregarPalpites();
         // Admin: atualiza a aba de resultados se estiver aberta
-        if (eu.is_admin && document.getElementById("view-admin").classList.contains("ativo")) {
+        if ((eu.is_admin || eu.is_admin_parcial) && document.getElementById("view-admin").classList.contains("ativo")) {
           renderAdmin();
         }
       } catch (_) {
@@ -911,7 +927,7 @@
       document.getElementById("view-" + nome).classList.add("ativo");
       event.target.classList.add("ativo");
 
-      if (nome === "admin"    && eu.is_admin) renderAdmin();
+      if (nome === "admin"    && (eu.is_admin || eu.is_admin_parcial)) renderAdmin();
       if (nome === "todos")    renderTodos();
       if (nome === "historico") renderHistorico();
     }
@@ -1072,6 +1088,20 @@
       }
     }
 
+    async function toggleAdminParcial(id, nome) {
+      const j = jogadoresCache.find(x => x.id === id);
+      const acao = j && j.is_admin_parcial ? "Remover admin auxiliar" : "Dar admin auxiliar";
+      if (!confirm(`${acao} para "${nome}"?\nAdmin auxiliar pode lançar resultados e definir bônus oficial.`)) return;
+      try {
+        await api("PUT", `/api/admin/jogadores/${id}/admin-parcial`);
+        jogadoresCache = await api("GET", "/api/jogadores");
+        renderJogadores();
+        toast("✅ Permissão de admin auxiliar atualizada.");
+      } catch (e) {
+        alert("Erro: " + e.message);
+      }
+    }
+
     function renderJogadores() {
       const tbody = document.querySelector("#tabela-jogadores tbody");
       tbody.innerHTML = "";
@@ -1083,6 +1113,11 @@
       lista.forEach(j => {
         const nomeEsc = j.nome.replace(/'/g, "\\'");
         const tr = document.createElement("tr");
+        const adminParc = j.is_admin_parcial
+          ? `<button style="background:#1b5e20;color:#fff;border:none;padding:6px 10px;border-radius:4px;cursor:pointer;font-size:12px;"
+                onclick="toggleAdminParcial(${j.id}, '${nomeEsc}')">⭐ Admin auxiliar</button>`
+          : `<button style="background:#555;color:#fff;border:none;padding:6px 10px;border-radius:4px;cursor:pointer;font-size:12px;"
+                onclick="toggleAdminParcial(${j.id}, '${nomeEsc}')">⭐ Dar auxiliar</button>`;
         tr.innerHTML = `
           <td><strong>${j.nome}</strong></td>
           <td><button class="btn-ver-palpites" onclick="verPalpitesJogador(${j.id}, '${nomeEsc}')">${j.total_palpites}/${jogosCache.length} 👁</button></td>
@@ -1091,6 +1126,7 @@
           <td><button style="background:#1565c0;color:#fff;border:none;padding:6px 10px;border-radius:4px;cursor:pointer;font-size:12px;"
                 onclick="redefinirSenha(${j.id}, '${nomeEsc}')">Redefinir senha</button></td>
           <td><button class="perigo" onclick="removerJogador(${j.id}, '${nomeEsc}')">Remover</button></td>
+          <td>${adminParc}</td>
         `;
         tbody.appendChild(tr);
       });
@@ -1489,7 +1525,7 @@
 
       if (!eu.is_admin) mostrarBonusSalvoSePreenchido();
 
-      if (eu.is_admin) {
+      if (eu.is_admin || eu.is_admin_parcial) {
         try {
           const of = await api("GET", "/api/oficiais");
           document.getElementById("campeao-oficial").value    = of.campeao    || "";
@@ -1562,9 +1598,18 @@
     }
 
     async function renderAdmin() {
-      renderJogadores();
+      // Mostra/oculta seções exclusivas do admin completo
+      const secoesFullAdmin = ['admin-secao-sync', 'admin-secao-jogadores', 'admin-secao-mata-mata', 'admin-secao-conta', 'admin-secao-perigo'];
+      secoesFullAdmin.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = eu.is_admin ? '' : 'none';
+      });
+
+      if (eu.is_admin) {
+        renderJogadores();
+        await atualizarStatusSync();
+      }
       const div = document.getElementById("admin-jogos");
-      await atualizarStatusSync();
       const fases = {};
       jogosCache.forEach(j => {
         if (!fases[j.fase]) fases[j.fase] = [];
@@ -1610,7 +1655,7 @@
         });
       }
       div.innerHTML = html;
-      renderMataMataAdmin();
+      if (eu.is_admin) renderMataMataAdmin();
     }
 
     function onAdminResultChange(jogoId) {

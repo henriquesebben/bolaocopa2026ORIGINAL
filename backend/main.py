@@ -32,6 +32,7 @@ from .auth import (
     criar_token,
     exigir_dono_ou_admin,
     get_admin_atual,
+    get_admin_parcial_atual,
     get_jogador_atual,
     hash_senha,
     verificar_senha,
@@ -104,6 +105,7 @@ async def lifespan(_app: FastAPI):
         for stmt in [
             "ALTER TABLE palpites ADD COLUMN avanca VARCHAR(10)",
             "ALTER TABLE resultados ADD COLUMN avanca VARCHAR(10)",
+            "ALTER TABLE jogadores ADD COLUMN is_admin_parcial BOOLEAN DEFAULT 0",
         ]:
             try:
                 conn.execute(text(stmt))
@@ -129,6 +131,14 @@ async def lifespan(_app: FastAPI):
                 is_admin=True,
             ))
             db.commit()
+
+        # Promove admins auxiliares definidos por variável de ambiente
+        nomes_aux = [n.strip() for n in os.getenv("ADMIN_PARCIAL_NOMES", "FKrava").split(",") if n.strip()]
+        for nome_aux in nomes_aux:
+            jaux = db.query(models.Jogador).filter(models.Jogador.nome == nome_aux).first()
+            if jaux and not jaux.is_admin and not jaux.is_admin_parcial:
+                jaux.is_admin_parcial = True
+                db.commit()
     finally:
         db.close()
 
@@ -282,12 +292,13 @@ def login(request: Request, body: schemas.LoginRequest, db: Session = Depends(ge
     jogador = db.query(models.Jogador).filter(models.Jogador.nome == body.nome).first()
     if not jogador or not verificar_senha(body.senha, jogador.senha_hash):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Nome ou senha incorretos")
-    token = criar_token(jogador.id, jogador.nome, jogador.is_admin)
+    token = criar_token(jogador.id, jogador.nome, jogador.is_admin, jogador.is_admin_parcial)
     return schemas.TokenResponse(
         access_token=token,
         jogador_id=jogador.id,
         nome=jogador.nome,
         is_admin=jogador.is_admin,
+        is_admin_parcial=jogador.is_admin_parcial,
     )
 
 
@@ -333,6 +344,7 @@ def listar_jogadores(db: Session = Depends(get_db), _=Depends(get_jogador_atual)
             id=j.id,
             nome=j.nome,
             is_admin=j.is_admin,
+            is_admin_parcial=j.is_admin_parcial,
             total_palpites=len(j.palpites),
         )
         result.append(out)
@@ -369,6 +381,18 @@ def remover_jogador(jogador_id: int, db: Session = Depends(get_db), _=Depends(ge
     if jogador.is_admin:
         raise HTTPException(status_code=400, detail="Não é possível remover o admin")
     db.delete(jogador)
+    db.commit()
+
+
+@app.put("/api/admin/jogadores/{jogador_id}/admin-parcial", status_code=status.HTTP_204_NO_CONTENT)
+def toggle_admin_parcial(jogador_id: int, db: Session = Depends(get_db), _=Depends(get_admin_atual)):
+    """Admin: alterna o papel de admin auxiliar de um jogador (acesso somente a resultados e bônus)."""
+    jogador = db.query(models.Jogador).filter(models.Jogador.id == jogador_id).first()
+    if not jogador:
+        raise HTTPException(status_code=404, detail="Jogador não encontrado")
+    if jogador.is_admin:
+        raise HTTPException(status_code=400, detail="Não é possível alterar o admin principal")
+    jogador.is_admin_parcial = not jogador.is_admin_parcial
     db.commit()
 
 
@@ -555,7 +579,7 @@ def salvar_resultado(
     jogo_id: str,
     body: schemas.ResultadoUpsert,
     db: Session = Depends(get_db),
-    _=Depends(get_admin_atual),
+    _=Depends(get_admin_parcial_atual),
 ):
     if jogo_id not in JOGOS_POR_ID:
         raise HTTPException(status_code=404, detail="Jogo não encontrado")
@@ -656,7 +680,7 @@ def ver_oficiais(db: Session = Depends(get_db), _=Depends(get_jogador_atual)):
 
 
 @app.put("/api/oficiais", response_model=schemas.OficiaisOut)
-def salvar_oficiais(body: schemas.OficiaisUpsert, db: Session = Depends(get_db), _=Depends(get_admin_atual)):
+def salvar_oficiais(body: schemas.OficiaisUpsert, db: Session = Depends(get_db), _=Depends(get_admin_parcial_atual)):
     oficial = db.query(models.Oficial).filter(models.Oficial.id == 1).first()
     if oficial:
         oficial.campeao = body.campeao
