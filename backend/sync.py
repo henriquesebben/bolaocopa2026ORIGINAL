@@ -237,31 +237,13 @@ async def _fetch_allsportsapi2_dia(day: int, month: int, year: int) -> list:
         return []
 
 
-async def _fetch_allsportsapi2() -> list:
-    """
-    Busca jogos da AllSportsApi2 (novo provider).
-    Nas primeiras 9h UTC (até 6h BRT) também busca ontem para capturar jogos
-    noturnos que terminaram após a meia-noite UTC — sem gastar chamada extra
-    no resto do dia.
-    Converte para o formato esperado pelo código (compatível com API-Football).
-    """
-    hoje = datetime.now(timezone.utc)
+_COPA_KEYWORDS = ("world cup", "fifa world", "copa do mundo", "2026")
 
-    matches_hoje = await _fetch_allsportsapi2_dia(hoje.day, hoje.month, hoje.year)
 
-    # Até 9h UTC (= 6h BRT) jogos da madrugada anterior podem não ter sido capturados
-    if hoje.hour < 9:
-        ontem = hoje - timedelta(days=1)
-        matches_ontem = await _fetch_allsportsapi2_dia(ontem.day, ontem.month, ontem.year)
-    else:
-        matches_ontem = []
-
-    all_matches = matches_hoje + matches_ontem
-
-    # Filtrar apenas jogos da Copa do Mundo e converter para o formato API-Football
+def _converter_matches(all_matches: list) -> list:
+    """Filtra jogos da Copa do Mundo e converte para o formato de fixture (API-Football)."""
     converted = []
     seen_ids: set = set()
-    copa_keywords = ("world cup", "fifa world", "copa do mundo", "2026")
     for match in all_matches:
         match_id = match.get("id")
         if match_id in seen_ids:
@@ -270,8 +252,7 @@ async def _fetch_allsportsapi2() -> list:
 
         tournament = match.get("tournament", {}).get("name", "").lower()
         category = match.get("tournament", {}).get("category", {}).get("name", "").lower()
-        full_text = tournament + " " + category
-        if not any(kw in full_text for kw in copa_keywords):
+        if not any(kw in (tournament + " " + category) for kw in _COPA_KEYWORDS):
             logger.debug(f"[sync] Jogo ignorado — torneio não identificado como Copa: '{tournament}'")
             continue
 
@@ -315,6 +296,22 @@ async def _fetch_allsportsapi2() -> list:
         })
 
     return converted
+
+
+async def _fetch_allsportsapi2() -> list:
+    """
+    Busca jogos da AllSportsApi2 (novo provider).
+    Nas primeiras 9h UTC (até 6h BRT) também busca ontem para capturar jogos
+    noturnos que terminaram após a meia-noite UTC — sem gastar chamada extra
+    no resto do dia.
+    Converte para o formato esperado pelo código (compatível com API-Football).
+    """
+    hoje = datetime.now(timezone.utc)
+    matches = await _fetch_allsportsapi2_dia(hoje.day, hoje.month, hoje.year)
+    if hoje.hour < 9:
+        ontem = hoje - timedelta(days=1)
+        matches += await _fetch_allsportsapi2_dia(ontem.day, ontem.month, ontem.year)
+    return _converter_matches(matches)
 
 
 def _converter_status(status_str: str) -> str:
@@ -532,6 +529,52 @@ async def sync_manual() -> dict:
     else:
         atualizados = 0
     return {"atualizados": atualizados, "jogos_hoje": len(_janelas), "log": _ultimo_sync_log}
+
+
+# ── Backfill histórico ───────────────────────────────────────────────────────
+
+async def backfill_resultados(n_dias: int = 20) -> dict:
+    """
+    Busca resultados dos últimos N dias na API e salva no banco.
+    Útil para recuperar resultados perdidos quando o sync estava inativo.
+    Ao final, recalcula automaticamente os confrontos do mata-mata.
+    """
+    if not RAPIDAPI_KEY:
+        return {"erro": "RAPIDAPI_KEY não configurado", "atualizados": 0, "datas": []}
+
+    hoje = datetime.now(timezone.utc)
+    total_atualizados = 0
+    datas_processadas = []
+
+    for i in range(n_dias, 0, -1):  # do mais antigo para o mais recente
+        dia = hoje - timedelta(days=i)
+        if not _registrar_chamada():
+            logger.warning("[backfill] Cota diária atingida, parando")
+            break
+        raw = await _fetch_allsportsapi2_dia(dia.day, dia.month, dia.year)
+        fixtures = _converter_matches(raw)
+        if fixtures:
+            n = await _processar(fixtures)
+            if n:
+                total_atualizados += n
+                datas_processadas.append(dia.strftime("%Y-%m-%d"))
+                logger.info(f"[backfill] {dia.strftime('%d/%m')}: {n} resultado(s) salvo(s)")
+
+    # Recalcula confrontos do R32 após backfill
+    from .database import SessionLocal
+    from .progresso import popular_confrontos_r32
+    db = SessionLocal()
+    try:
+        r32_info = popular_confrontos_r32(db)
+        db.commit()
+    finally:
+        db.close()
+
+    return {
+        "datas_processadas": datas_processadas,
+        "atualizados": total_atualizados,
+        "r32": r32_info,
+    }
 
 
 # ── Notificações push ─────────────────────────────────────────────────────────

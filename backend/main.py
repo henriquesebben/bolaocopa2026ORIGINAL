@@ -39,7 +39,7 @@ from .auth import (
 from .database import Base, engine, get_db, SessionLocal
 from . import models, schemas
 from .jogos import JOGOS, JOGOS_POR_ID, TODOS_TIMES
-from .sync import iniciar_scheduler, sync_manual, status_sync, fetch_raw_hoje, _norm
+from .sync import iniciar_scheduler, sync_manual, status_sync, fetch_raw_hoje, backfill_resultados, _norm
 from .progresso import propagar_progressao, popular_confrontos_r32
 
 
@@ -733,6 +733,14 @@ def ranking(db: Session = Depends(get_db), _=Depends(get_jogador_atual)):
 @app.post("/api/admin/sync")
 async def sync_agora(_=Depends(get_admin_atual)):
     resultado = await sync_manual()
+    return resultado
+
+
+@app.post("/api/admin/backfill")
+async def backfill_agora(n_dias: int = 20, _=Depends(get_admin_atual)):
+    """Busca resultados dos últimos N dias na API e recalcula os confrontos do mata-mata."""
+    resultado = await backfill_resultados(n_dias)
+    _cache_invalidar()
     return resultado
 
 

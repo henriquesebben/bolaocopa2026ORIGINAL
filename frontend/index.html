@@ -269,6 +269,7 @@
           <p id="sync-status-txt" style="font-size:13px; color:#555; margin-top:3px;">Verificando...</p>
         </div>
         <button class="acao" onclick="syncAgora()" id="btn-sync">🔄 Sincronizar agora</button>
+        <button class="acao" onclick="backfillAgora()" id="btn-backfill" style="background:#1565c0;">📥 Buscar histórico (20 dias)</button>
       </div>
 
       <h3>👥 Gerenciar Jogadores</h3>
@@ -1745,6 +1746,27 @@
         renderMataMataAdmin();
       } catch(e) {
         toast("❌ " + e.message, "#d32f2f");
+      }
+    }
+
+    async function backfillAgora() {
+      const btn = document.getElementById("btn-backfill");
+      if (btn) { btn.disabled = true; btn.textContent = "⏳ Buscando..."; }
+      try {
+        const r = await api("POST", "/api/admin/backfill?n_dias=20");
+        const r32 = r.r32 || {};
+        toast(`✅ Backfill: ${r.atualizados} resultado(s) salvo(s) em ${(r.datas_processadas||[]).length} dia(s). R32: ${r32.confrontos_atualizados||0} confronto(s) preenchido(s)`);
+        const resultados = await api("GET", "/api/resultados");
+        resultadosCache = Object.fromEntries(resultados.map(res => [res.jogo_id, res]));
+        await atualizarJogosCache();
+        renderAdmin();
+        renderRanking();
+        renderInicio();
+        await atualizarStatusSync();
+      } catch (e) {
+        toast("❌ " + (e.message || "Erro no backfill"), "#d32f2f");
+      } finally {
+        if (btn) { btn.disabled = false; btn.textContent = "📥 Buscar histórico (20 dias)"; }
       }
     }
 
