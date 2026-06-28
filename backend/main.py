@@ -140,9 +140,6 @@ async def lifespan(_app: FastAPI):
                 jaux.is_admin_parcial = True
                 db.commit()
 
-        # Recalcula confrontos do mata-mata com os resultados já salvos no banco
-        popular_confrontos_r32(db)
-        db.commit()
     finally:
         db.close()
 
