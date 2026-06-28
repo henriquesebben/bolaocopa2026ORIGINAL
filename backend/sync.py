@@ -512,9 +512,16 @@ async def job_principal():
         return  # fora de janela e agenda recente → zero chamadas à API
 
     fixtures = await _fetch_hoje()
+    # Sempre atualiza janelas (mesmo vazio) para evitar chamadas repetidas à API
+    # quando nenhum jogo da Copa é encontrado hoje — previne esgotar a cota diária.
+    _atualizar_janelas(fixtures)
     if fixtures:
-        _atualizar_janelas(fixtures)  # sempre atualiza janelas quando há dados
         await _processar(fixtures)
+    else:
+        global _ultimo_sync_log
+        now_str = datetime.now(timezone.utc).strftime("%d/%m %H:%M UTC")
+        _ultimo_sync_log = f"{now_str} — nenhum jogo da Copa encontrado hoje na API"
+        logger.info("[sync] Nenhum jogo da Copa retornado pela API hoje")
 
 
 # ── Sync manual (chamado pelo endpoint /api/admin/sync) ───────────────────────
