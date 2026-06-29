@@ -204,7 +204,7 @@ def calcular_pontos_jogo(
         else:  # empate nos 90min → quem avançou via ET/pênaltis
             real_avanca = resultado.avanca
         if real_avanca and palpite.avanca == real_avanca:
-            pts += 1
+            pts += 2
 
     return pts, stat
 
