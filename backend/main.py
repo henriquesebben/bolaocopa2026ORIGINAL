@@ -195,9 +195,16 @@ def calcular_pontos_jogo(
     else:
         pts, stat = 0, None
 
-    # Bônus +1 no mata-mata: palpitou empate E acertou quem avança
-    if eh_mata_mata and pc == pf and palpite.avanca and resultado.avanca and palpite.avanca == resultado.avanca:
-        pts += 1
+    # Bônus +1 no mata-mata: palpitou empate E acertou quem avança de fase
+    if eh_mata_mata and pc == pf and palpite.avanca:
+        if rc > rf:
+            real_avanca = "casa"
+        elif rf > rc:
+            real_avanca = "fora"
+        else:  # empate nos 90min → quem avançou via ET/pênaltis
+            real_avanca = resultado.avanca
+        if real_avanca and palpite.avanca == real_avanca:
+            pts += 1
 
     return pts, stat
 
