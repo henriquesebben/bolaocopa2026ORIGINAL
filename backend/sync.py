@@ -28,7 +28,7 @@ from .progresso import propagar_progressao, popular_confrontos_r32
 logger = logging.getLogger(__name__)
 
 RAPIDAPI_KEY         = os.getenv("RAPIDAPI_KEY", "")
-API_PROVIDER         = os.getenv("API_PROVIDER", "api-football").lower()  # 'api-football' ou 'allsportsapi2'
+API_PROVIDER         = os.getenv("API_PROVIDER", "espn").lower()  # 'espn' | 'api-football' | 'allsportsapi2'
 WC2026_LEAGUE_ID     = int(os.getenv("WC2026_LEAGUE_ID", "1"))
 SEASON               = 2026
 SYNC_INTERVAL_MINS   = int(os.getenv("SYNC_INTERVAL_MINS", "30"))
@@ -314,6 +314,70 @@ async def _fetch_allsportsapi2() -> list:
     return _converter_matches(matches)
 
 
+_ESPN_URL = "https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard"
+_ESPN_HEADERS = {"User-Agent": "Mozilla/5.0"}
+
+
+async def _fetch_espn_dia(date: datetime) -> list:
+    """Busca jogos da Copa no dia informado via ESPN API (gratuita, sem chave)."""
+    date_str = date.strftime("%Y%m%d")
+    try:
+        async with httpx.AsyncClient(timeout=15) as c:
+            r = await c.get(_ESPN_URL, params={"dates": date_str}, headers=_ESPN_HEADERS)
+            r.raise_for_status()
+            return r.json().get("events", [])
+    except Exception as e:
+        logger.error(f"[sync] Erro na ESPN API ({date_str}): {e}")
+        return []
+
+
+def _converter_espn(events: list) -> list:
+    """Converte eventos ESPN para o formato interno de fixture."""
+    fixtures = []
+    for e in events:
+        try:
+            c = e["competitions"][0]
+            teams = c["competitors"]
+            home = next((t for t in teams if t.get("homeAway") == "home"), None)
+            away = next((t for t in teams if t.get("homeAway") == "away"), None)
+            if not home or not away:
+                continue
+
+            state = c["status"]["type"].get("state", "pre")
+            if state == "post":
+                status_short = "FT"
+            elif state == "in":
+                status_short = "1H"
+            else:
+                status_short = "NS"
+
+            home_score = int(home["score"]) if home.get("score") else 0
+            away_score = int(away["score"]) if away.get("score") else 0
+
+            fixtures.append({
+                "fixture": {"id": e.get("id", ""), "date": e.get("date", ""), "status": {"short": status_short}},
+                "league": {"name": "FIFA World Cup", "country": "World"},
+                "teams": {
+                    "home": {"name": home["team"]["displayName"], "winner": home.get("winner")},
+                    "away": {"name": away["team"]["displayName"], "winner": away.get("winner")},
+                },
+                "goals": {"home": home_score, "away": away_score},
+            })
+        except Exception as ex:
+            logger.warning(f"[sync] Erro ao converter evento ESPN: {ex}")
+    return fixtures
+
+
+async def _fetch_espn() -> list:
+    """Busca jogos da Copa do dia atual via ESPN API (gratuita, sem chave)."""
+    hoje = datetime.now(timezone.utc)
+    events = await _fetch_espn_dia(hoje)
+    if hoje.hour < 9:
+        ontem = hoje - timedelta(days=1)
+        events += await _fetch_espn_dia(ontem)
+    return _converter_espn(events)
+
+
 def _converter_status(status_str: str) -> str:
     """Converte status da AllSportsApi2 para o formato da API-Football."""
     status_map = {
@@ -334,23 +398,49 @@ def _converter_status(status_str: str) -> str:
 
 
 async def _fetch_hoje() -> list:
-    if not RAPIDAPI_KEY:
-        logger.warning("RAPIDAPI_KEY não configurado — sync desativado")
-        return []
     if not _registrar_chamada():
         return []  # teto diário atingido
 
+    if API_PROVIDER == "espn":
+        return await _fetch_espn()
+    if not RAPIDAPI_KEY:
+        logger.warning("RAPIDAPI_KEY não configurado — sync desativado")
+        return []
     if API_PROVIDER == "allsportsapi2":
         return await _fetch_allsportsapi2()
-    else:
-        return await _fetch_api_football()
+    return await _fetch_api_football()
 
 
 async def fetch_raw_hoje() -> dict:
-    """Retorna dados brutos da API para diagnóstico — não consome cota extra se já chamado hoje."""
+    """Retorna dados brutos da API para diagnóstico."""
+    hoje = datetime.now(timezone.utc)
+
+    if API_PROVIDER == "espn":
+        try:
+            events = await _fetch_espn_dia(hoje)
+            if hoje.hour < 9:
+                events += await _fetch_espn_dia(hoje - timedelta(days=1))
+            fixtures = _converter_espn(events)
+            copa = [{
+                "home": f["teams"]["home"]["name"],
+                "away": f["teams"]["away"]["name"],
+                "home_score": f["goals"]["home"],
+                "away_score": f["goals"]["away"],
+                "status": f["fixture"]["status"]["short"],
+                "winner_home": f["teams"]["home"].get("winner"),
+            } for f in fixtures]
+            return {
+                "provider": "espn",
+                "total_jogos_hoje_e_ontem": len(copa),
+                "copa_filtrados": len(copa),
+                "copa_jogos": copa,
+                "todos_torneios": [],
+            }
+        except Exception as e:
+            return {"provider": "espn", "erro": str(e)}
+
     if not RAPIDAPI_KEY:
         return {"erro": "RAPIDAPI_KEY não configurado"}
-    hoje = datetime.now(timezone.utc)
     try:
         matches_hoje = await _fetch_allsportsapi2_dia(hoje.day, hoje.month, hoje.year)
         if hoje.hour < 9:
@@ -376,14 +466,13 @@ async def fetch_raw_hoje() -> dict:
                 "status": raw_status,
                 "homeScore": m.get("homeScore"),
                 "awayScore": m.get("awayScore"),
-                "winnerCode": m.get("winnerCode"),
-                "startTimestamp": m.get("startTimestamp"),
             })
 
         copa_keywords = ("world cup", "fifa world", "copa do mundo", "2026")
         copa = [m for m in resumo if any(kw in (m["tournament"] + " " + m["category"]).lower() for kw in copa_keywords)]
 
         return {
+            "provider": API_PROVIDER,
             "total_jogos_hoje_e_ontem": len(resumo),
             "copa_filtrados": len(copa),
             "copa_jogos": copa,
