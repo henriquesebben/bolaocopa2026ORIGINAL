@@ -180,44 +180,26 @@ def calcular_pontos_jogo(
     pc, pf = palpite.gols_casa, palpite.gols_fora
     rc, rf = resultado.gols_casa, resultado.gols_fora
 
-    if eh_mata_mata:
-        # Determina quem avança em cada lado (resultado real e palpite)
-        resultado_avanca = resultado.avanca if rc == rf else ("casa" if rc > rf else "fora")
-        palpite_avanca = palpite.avanca if pc == pf else ("casa" if pc > pf else "fora")
-        acertou_avanca = bool(resultado_avanca and palpite_avanca == resultado_avanca)
-        placar_exato = (pc == rc and pf == rf)
-        # Palpitou empate E jogo terminou empatado nos 90min (mas placar diferente)
-        acertou_empate = (pc == pf and rc == rf and not placar_exato)
-
-        if placar_exato and acertou_avanca:
-            return 10 * multiplicador, "placar_exato"
-        if placar_exato:
-            # Acertou o placar dos 90 min mas errou quem avança
-            return 5 * multiplicador, None
-        if acertou_empate and acertou_avanca:
-            # Acertou que terminaria empatado + quem avança
-            return 7 * multiplicador, "vencedor_mais_gols"
-        if acertou_avanca:
-            return 5 * multiplicador, "so_vencedor"
-        if acertou_empate:
-            # Acertou que terminaria empatado mas errou quem avança
-            return 2 * multiplicador, "gols_de_um_time"
+    # Pontuação base — mesma lógica para todas as fases
+    if pc == rc and pf == rf:
+        pts, stat = 10 * multiplicador, "placar_exato"
+    elif pc == pf and rc == rf:
+        pts, stat = 5 * multiplicador, "so_vencedor"
+    elif (pc > pf and rc > rf) or (pc < pf and rc < rf):
         if pc == rc or pf == rf:
-            return 1 * multiplicador, "gols_de_um_time"
-        return 0, None
+            pts, stat = 7 * multiplicador, "vencedor_mais_gols"
+        else:
+            pts, stat = 5 * multiplicador, "so_vencedor"
+    elif pc == rc or pf == rf:
+        pts, stat = 2 * multiplicador, "gols_de_um_time"
     else:
-        # Fase de grupos / 3° lugar
-        if pc == rc and pf == rf:
-            return 10, "placar_exato"
-        if pc == pf and rc == rf:
-            return 5, "so_vencedor"
-        if (pc > pf and rc > rf) or (pc < pf and rc < rf):
-            if pc == rc or pf == rf:
-                return 7, "vencedor_mais_gols"
-            return 5, "so_vencedor"
-        if pc == rc or pf == rf:
-            return 2, "gols_de_um_time"
-        return 0, None
+        pts, stat = 0, None
+
+    # Bônus +1 no mata-mata: palpitou empate E acertou quem avança
+    if eh_mata_mata and pc == pf and palpite.avanca and resultado.avanca and palpite.avanca == resultado.avanca:
+        pts += 1
+
+    return pts, stat
 
 
 def calcular_pontos_total(
