@@ -1395,30 +1395,22 @@
       const rc = Number(r.gols_casa), rf = Number(r.gols_fora);
       if (isNaN(pc) || isNaN(pf)) return null;
       const mult = jogo.multiplicador || 1;
+
+      // Pontuação base — mesma lógica para todas as fases
       let pts;
+      if (pc === rc && pf === rf) pts = 10;
+      else if (pc === pf && rc === rf) pts = 5;
+      else if ((pc > pf && rc > rf) || (pc < pf && rc < rf))
+        pts = (pc === rc || pf === rf) ? 7 : 5;
+      else if (pc === rc || pf === rf) pts = 2;
+      else pts = 0;
 
-      if (jogo.eh_mata_mata) {
-        const rAvanca = rc === rf ? r.avanca : (rc > rf ? "casa" : "fora");
-        const pAvanca = pc === pf ? p.avanca : (pc > pf ? "casa" : "fora");
-        const acertouAvanca = rAvanca && pAvanca === rAvanca;
-        const placarExato = (pc === rc && pf === rf);
-        const acertouEmpate = (pc === pf && rc === rf && !placarExato);
-
-        if (placarExato && acertouAvanca) pts = 10;
-        else if (placarExato) pts = 5;
-        else if (acertouEmpate && acertouAvanca) pts = 7;
-        else if (acertouAvanca) pts = 5;
-        else if (acertouEmpate) pts = 2;
-        else if (pc === rc || pf === rf) pts = 1;
-        else pts = 0;
-      } else {
-        if (pc === rc && pf === rf) pts = 10;
-        else if (pc === pf && rc === rf) pts = 5;
-        else if ((pc > pf && rc > rf) || (pc < pf && rc < rf))
-          pts = (pc === rc || pf === rf) ? 7 : 5;
-        else if (pc === rc || pf === rf) pts = 2;
-        else pts = 0;
+      // Bônus +1 no mata-mata: palpitou empate E acertou quem avança de fase
+      if (jogo.eh_mata_mata && pc === pf && p.avanca) {
+        const realAvanca = rc > rf ? "casa" : rf > rc ? "fora" : r.avanca;
+        if (realAvanca && p.avanca === realAvanca) pts += 1;
       }
+
       return pts * mult;
     }
 
