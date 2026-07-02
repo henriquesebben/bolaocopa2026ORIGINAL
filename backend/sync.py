@@ -240,6 +240,22 @@ async def _fetch_allsportsapi2_dia(day: int, month: int, year: int) -> list:
 _COPA_KEYWORDS = ("world cup", "fifa world", "copa do mundo", "2026")
 
 
+def _placar_90min(score):
+    """
+    Extrai o placar dos 90min regulamentares de um objeto de placar da AllSportsApi2/SofaScore.
+    Em jogos com prorrogação, "current" já vem somado com ET/pênaltis — por isso preferimos
+    "normaltime" (ou period1+period2) para manter apenas o resultado dos 90min.
+    """
+    if not isinstance(score, dict):
+        return score
+    if score.get("normaltime") is not None:
+        return score["normaltime"]
+    p1, p2 = score.get("period1"), score.get("period2")
+    if p1 is not None and p2 is not None:
+        return p1 + p2
+    return score.get("current")
+
+
 def _converter_matches(all_matches: list) -> list:
     """Filtra jogos da Copa do Mundo e converte para o formato de fixture (API-Football)."""
     converted = []
@@ -264,12 +280,8 @@ def _converter_matches(all_matches: list) -> list:
         if isinstance(raw_status, dict):
             raw_status = raw_status.get("type", "")
 
-        home_score = match.get("homeScore")
-        away_score = match.get("awayScore")
-        if isinstance(home_score, dict):
-            home_score = home_score.get("current")
-        if isinstance(away_score, dict):
-            away_score = away_score.get("current")
+        home_score = _placar_90min(match.get("homeScore"))
+        away_score = _placar_90min(match.get("awayScore"))
 
         winner_code = match.get("winnerCode")
         home_winner = (winner_code == 1) if winner_code is not None else None
@@ -315,6 +327,7 @@ async def _fetch_allsportsapi2() -> list:
 
 
 _ESPN_URL = "https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/scoreboard"
+_ESPN_SUMMARY_URL = "https://site.api.espn.com/apis/site/v2/sports/soccer/fifa.world/summary"
 _ESPN_HEADERS = {"User-Agent": "Mozilla/5.0"}
 
 
@@ -331,7 +344,46 @@ async def _fetch_espn_dia(date: datetime) -> list:
         return []
 
 
-def _converter_espn(events: list) -> list:
+def _status_curto_espn(status_type: dict) -> str:
+    """Mapeia o status detalhado da ESPN para os códigos usados internamente,
+    preservando a distinção entre tempo normal, prorrogação (AET) e pênaltis (PEN)."""
+    nome = (status_type.get("name") or "").lower()
+    detalhe = (status_type.get("detail") or status_type.get("shortDetail") or "").lower()
+    if "pen" in nome or "pen" in detalhe:
+        return "PEN"
+    if "aet" in nome or "extra" in nome or "extra" in detalhe:
+        return "AET"
+    if status_type.get("state") == "post":
+        return "FT"
+    if status_type.get("state") == "in":
+        return "1H"
+    return "NS"
+
+
+async def _fetch_espn_placar_90min(event_id: str) -> Optional[tuple]:
+    """
+    Busca o placar dos 90min regulamentares via linescores do endpoint de resumo.
+    Necessário porque o placar do scoreboard já vem somado com prorrogação/pênaltis.
+    linescores tem uma entrada por período: [1ºT, 2ºT, (ET1, ET2, (pênaltis))].
+    """
+    if not event_id:
+        return None
+    try:
+        async with httpx.AsyncClient(timeout=15) as c:
+            r = await c.get(_ESPN_SUMMARY_URL, params={"event": event_id}, headers=_ESPN_HEADERS)
+            r.raise_for_status()
+            comp = r.json()["header"]["competitions"][0]
+            casa = next(t for t in comp["competitors"] if t.get("homeAway") == "home")
+            fora = next(t for t in comp["competitors"] if t.get("homeAway") == "away")
+            casa_90 = sum(int(p["displayValue"]) for p in casa["linescores"][:2])
+            fora_90 = sum(int(p["displayValue"]) for p in fora["linescores"][:2])
+            return casa_90, fora_90
+    except Exception as e:
+        logger.warning(f"[sync] Erro ao buscar placar dos 90min (ESPN summary, evento {event_id}): {e}")
+        return None
+
+
+async def _converter_espn(events: list) -> list:
     """Converte eventos ESPN para o formato interno de fixture."""
     fixtures = []
     for e in events:
@@ -343,16 +395,21 @@ def _converter_espn(events: list) -> list:
             if not home or not away:
                 continue
 
-            state = c["status"]["type"].get("state", "pre")
-            if state == "post":
-                status_short = "FT"
-            elif state == "in":
-                status_short = "1H"
-            else:
-                status_short = "NS"
+            status_short = _status_curto_espn(c["status"].get("type", {}))
 
             home_score = int(home["score"]) if home.get("score") else 0
             away_score = int(away["score"]) if away.get("score") else 0
+
+            if status_short in ("AET", "PEN"):
+                placar_90 = await _fetch_espn_placar_90min(e.get("id", ""))
+                if placar_90:
+                    home_score, away_score = placar_90
+                else:
+                    logger.warning(
+                        f"[sync] Não foi possível obter o placar dos 90min do jogo {e.get('id')} "
+                        f"({status_short}) — usando placar final ({home_score}:{away_score}) como fallback; "
+                        f"corrija manualmente pelo painel de admin se necessário."
+                    )
 
             fixtures.append({
                 "fixture": {"id": e.get("id", ""), "date": e.get("date", ""), "status": {"short": status_short}},
@@ -375,7 +432,7 @@ async def _fetch_espn() -> list:
     if hoje.hour < 9:
         ontem = hoje - timedelta(days=1)
         events += await _fetch_espn_dia(ontem)
-    return _converter_espn(events)
+    return await _converter_espn(events)
 
 
 def _converter_status(status_str: str) -> str:
@@ -420,7 +477,7 @@ async def fetch_raw_hoje() -> dict:
             events = await _fetch_espn_dia(hoje)
             if hoje.hour < 9:
                 events += await _fetch_espn_dia(hoje - timedelta(days=1))
-            fixtures = _converter_espn(events)
+            fixtures = await _converter_espn(events)
             copa = [{
                 "home": f["teams"]["home"]["name"],
                 "away": f["teams"]["away"]["name"],
@@ -520,8 +577,12 @@ async def _processar(fixtures: list) -> int:
             if status not in ("FT", "AET", "PEN"):
                 continue  # jogo não finalizado
 
-            gols_casa = f["goals"]["home"]
-            gols_fora = f["goals"]["away"]
+            # Preferimos o placar dos 90min regulamentares (score.fulltime, disponível na
+            # API-Football bruta) para não gravar o placar somado com prorrogação/pênaltis.
+            # Para ESPN e AllSportsApi2, "goals" já vem como placar de 90min (ver conversores).
+            fulltime = (f.get("score") or {}).get("fulltime") or {}
+            gols_casa = fulltime.get("home", f["goals"]["home"])
+            gols_fora = fulltime.get("away", f["goals"]["away"])
             if gols_casa is None or gols_fora is None:
                 continue
 
